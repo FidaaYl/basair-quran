@@ -5,12 +5,15 @@ import {
   SkipBack, 
   SkipForward, 
   Repeat, 
+  Shuffle,
   Volume2, 
   VolumeX, 
-  Mic2,
-  Gauge
+  ListMusic,
+  ChevronUp,
+  ChevronDown
 } from 'lucide-react';
 import { RECITERS } from '../data/reciters';
+import reciterAvatar from '../assets/reciter-avatar.jpg';
 
 export default function AudioPlayerBar({
   isPlaying,
@@ -27,12 +30,12 @@ export default function AudioPlayerBar({
   onToggleRepeatAyah,
   totalAyahs,
 }) {
+  const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
-  const [showReciterMenu, setShowReciterMenu] = useState(false);
+  const [showRecitersList, setShowRecitersList] = useState(false);
 
   const activeReciterObj = RECITERS.find((r) => r.id === selectedReciter) || RECITERS[0];
   const ayahNum = currentAyahIndex + 1;
-
   const rates = [0.75, 1, 1.25, 1.5];
 
   const handleNextRate = () => {
@@ -42,112 +45,139 @@ export default function AudioPlayerBar({
   };
 
   return (
-    <div className="audio-player-dock">
-      <div className="audio-player-inner">
-        {/* Ayah & Surah Track Info */}
-        <div className="player-track-info">
-          <div className="track-icon-badge">
-            <span className="track-icon-glow">📖</span>
+    <div className="audio-player-dock-modern">
+      <div className="player-inner-modern">
+        {/* 1. Left Section: Reciter Avatar & Track Info */}
+        <div className="player-left-section">
+          <button 
+            onClick={() => setShowRecitersList(!showRecitersList)}
+            className="player-chevron-btn"
+            title="اختيار القارئ"
+          >
+            {showRecitersList ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+          </button>
+
+          <div className="reciter-thumb-circle" onClick={() => setShowRecitersList(!showRecitersList)}>
+            <img 
+              src={reciterAvatar} 
+              alt={activeReciterObj.nameAr}
+              className="reciter-thumb-img"
+            />
           </div>
-          <div className="track-text">
-            <div className="track-surah-title">
-              <span className="font-calligraphy">{currentSurah ? currentSurah.name : 'سورة'}</span>
-              <span className="track-ayah-badge">آية {ayahNum} من {totalAyahs || 1}</span>
-            </div>
-            <div className="track-reciter-name">
-              <Mic2 size={12} className="reciter-mini-icon" />
-              <span>{activeReciterObj.nameAr}</span>
-            </div>
+
+          <div className="reciter-text-block">
+            <span className="reciter-name-bold font-calligraphy">{activeReciterObj.nameAr}</span>
+            <span className="reciter-surah-caption">سورة {currentSurah?.name || 'الفاتحة'}</span>
           </div>
+
+          {/* Reciters Selection Popup */}
+          {showRecitersList && (
+            <div className="reciters-dock-popover animate-fade-in">
+              <div className="popover-title-row">
+                <span>اختر القارئ المفضل</span>
+                <button onClick={() => setShowRecitersList(false)} className="popover-close-btn">✕</button>
+              </div>
+              <div className="reciters-choice-list">
+                {RECITERS.map((r) => (
+                  <button
+                    key={r.id}
+                    onClick={() => {
+                      onSelectReciter(r.id);
+                      setShowRecitersList(false);
+                    }}
+                    className={`reciter-choice-row ${selectedReciter === r.id ? 'active' : ''}`}
+                  >
+                    <span className="choice-name">{r.nameAr}</span>
+                    <span className="choice-style">{r.subtext}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Central Controls: Prev, Play/Pause, Next */}
-        <div className="player-core-controls">
-          <button 
-            onClick={onPrevAyah} 
-            className="player-btn prev-btn" 
-            title="الآية السابقة"
-            disabled={currentAyahIndex <= 0}
-          >
-            <SkipForward size={20} />
+        {/* 2. Left-Center Tools: Shuffle, Speed, Repeat Ayah */}
+        <div className="player-subtools-row">
+          <button className="subtool-icon-btn" title="تبديل عشوائي (Shuffle)">
+            <Shuffle size={16} />
           </button>
 
-          <button
-            onClick={onTogglePlay}
-            className={`player-btn play-main-btn ${isPlaying ? 'playing' : ''}`}
-            title={isPlaying ? 'إيقاف مؤقت' : 'تشغيل التلاوة'}
-            aria-label={isPlaying ? 'إيقاف مؤقت' : 'تشغيل'}
-          >
-            {isPlaying ? <Pause size={22} /> : <Play size={22} className="play-triangle-offset" />}
+          <button onClick={handleNextRate} className="speed-badge-btn" title="سرعة التلاوة">
+            <span>{playbackRate}x</span>
           </button>
 
           <button 
-            onClick={onNextAyah} 
-            className="player-btn next-btn" 
-            title="الآية التالية"
-            disabled={currentAyahIndex >= totalAyahs - 1}
+            onClick={onToggleRepeatAyah} 
+            className={`repeat-toggle-pill ${isRepeatAyah ? 'active' : ''}`}
+            title="تكرار الآية للحفظ"
           >
-            <SkipBack size={20} />
+            <span>تكرار الآية</span>
+            <span className="toggle-switch-track">
+              <span className={`toggle-switch-knob ${isRepeatAyah ? 'on' : 'off'}`} />
+            </span>
           </button>
         </div>
 
-        {/* Extended Tools: Repeat, Speed, Reciter Switcher */}
-        <div className="player-extended-tools">
-          {/* Repeat Ayah Mode (Essential for Hifdh) */}
-          <button
-            onClick={onToggleRepeatAyah}
-            className={`tool-btn repeat-tool-btn ${isRepeatAyah ? 'active' : ''}`}
-            title={isRepeatAyah ? 'إلغاء تكرار الآية' : 'تفعيل تكرار الآية للحفظ (Loop)'}
-          >
-            <Repeat size={16} />
-            <span className="tool-label">تكرار الآية</span>
-          </button>
+        {/* 3. Center: Timeline & Core Playback Controls */}
+        <div className="player-center-section">
+          {/* Timeline Scrubber */}
+          <div className="timeline-scrubber-row">
+            <span className="time-digit">01:24</span>
+            <div className="timeline-track">
+              <div className="timeline-progress" style={{ width: `${totalAyahs > 0 ? (ayahNum / totalAyahs) * 100 : 25}%` }}>
+                <span className="timeline-thumb" />
+              </div>
+            </div>
+            <span className="time-digit">05:32</span>
+          </div>
 
-          {/* Speed Selector */}
-          <button
-            onClick={handleNextRate}
-            className="tool-btn rate-tool-btn"
-            title="تغيير سرعة التلاوة"
-          >
-            <Gauge size={16} />
-            <span className="rate-text">{playbackRate}x</span>
-          </button>
-
-          {/* Reciter Selector Menu */}
-          <div className="reciter-selector-wrap">
-            <button
-              onClick={() => setShowReciterMenu(!showReciterMenu)}
-              className="tool-btn reciter-tool-btn"
-              title="اختيار القارئ"
+          {/* Controls: Prev, Play/Pause, Next */}
+          <div className="playback-btns-row">
+            <button 
+              onClick={onPrevAyah} 
+              disabled={currentAyahIndex <= 0}
+              className="dock-play-btn skip" 
+              title="الآية السابقة"
             >
-              <Mic2 size={16} />
-              <span className="reciter-short-label">{activeReciterObj.nameAr.split(' ')[0]}...</span>
+              <SkipForward size={18} />
             </button>
 
-            {showReciterMenu && (
-              <div className="reciters-popover animate-fade-in">
-                <div className="popover-header">
-                  <span>اختر القارئ</span>
-                  <button onClick={() => setShowReciterMenu(false)} className="popover-close-x">✕</button>
-                </div>
-                <div className="popover-list">
-                  {RECITERS.map((r) => (
-                    <button
-                      key={r.id}
-                      onClick={() => {
-                        onSelectReciter(r.id);
-                        setShowReciterMenu(false);
-                      }}
-                      className={`reciter-option-btn ${selectedReciter === r.id ? 'active' : ''}`}
-                    >
-                      <span className="reciter-name-ar">{r.nameAr}</span>
-                      <span className="reciter-style-sub">{r.subtext}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+            <button 
+              onClick={onTogglePlay} 
+              className={`dock-play-btn main ${isPlaying ? 'playing' : ''}`}
+              title={isPlaying ? 'إيقاف مؤقت' : 'تشغيل'}
+            >
+              {isPlaying ? <Pause size={20} /> : <Play size={20} className="offset-play" />}
+            </button>
+
+            <button 
+              onClick={onNextAyah} 
+              disabled={currentAyahIndex >= totalAyahs - 1}
+              className="dock-play-btn skip" 
+              title="الآية التالية"
+            >
+              <SkipBack size={18} />
+            </button>
           </div>
+        </div>
+
+        {/* 4. Right Controls: Volume & Queue */}
+        <div className="player-right-section">
+          <button 
+            onClick={() => setIsMuted(!isMuted)} 
+            className="volume-icon-btn"
+            title={isMuted ? 'إلغاء الكتم' : 'كتم الصوت'}
+          >
+            {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+          </button>
+
+          <div className="volume-slider-track">
+            <div className="volume-slider-fill" style={{ width: isMuted ? '0%' : '75%' }} />
+          </div>
+
+          <button className="queue-list-btn" title="قائمة التلاوات">
+            <ListMusic size={18} />
+          </button>
         </div>
       </div>
     </div>

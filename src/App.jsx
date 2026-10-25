@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
+import SidebarLeft from './components/SidebarLeft';
+import SidebarRight from './components/SidebarRight';
 import Navbar from './components/Navbar';
 import ReaderView from './components/ReaderView';
 import MemorizationStudio from './components/MemorizationStudio';
@@ -17,9 +19,8 @@ import { getAyahAudioUrl } from './data/reciters';
 import { SURAHS_LIST } from './data/surahsList';
 
 export default function App() {
-  // Navigation & Theme
   const [activeTab, setActiveTab] = useState('reader');
-  const [theme, setTheme] = useState(() => localStorage.getItem('basair_theme') || 'dark');
+  const [theme, setTheme] = useState(() => localStorage.getItem('basair_theme') || 'light');
 
   // Surah & Ayahs state
   const [currentSurahNumber, setCurrentSurahNumber] = useState(1);
@@ -41,13 +42,13 @@ export default function App() {
   const [tafsirModal, setTafsirModal] = useState({ isOpen: false, surahNumber: 1, ayahNumber: 1, surahName: '', ayahText: '' });
   const [cardModal, setCardModal] = useState({ isOpen: false, ayah: null, surah: null });
 
-  // Sync theme with DOM documentElement
+  // Sync theme
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('basair_theme', theme);
   }, [theme]);
 
-  // Load Surah details when currentSurahNumber changes
+  // Load Surah details
   useEffect(() => {
     let isSubscribed = true;
     setIsLoadingSurah(true);
@@ -78,7 +79,7 @@ export default function App() {
     };
   }, [currentSurahNumber]);
 
-  // Configure HTML5 Audio events
+  // Audio event listeners
   useEffect(() => {
     const audio = audioRef.current;
 
@@ -109,7 +110,7 @@ export default function App() {
     };
   }, [isRepeatAyah, surahData, currentAyahIndex]);
 
-  // Handle Audio source updates
+  // Audio source update
   useEffect(() => {
     if (!surahData || !surahData.ayahs || surahData.ayahs.length === 0) return;
     const currentAyah = surahData.ayahs[currentAyahIndex];
@@ -137,7 +138,7 @@ export default function App() {
     }
   }, [playbackRate]);
 
-  // Audio Control Handlers
+  // Audio Handlers
   const handleTogglePlay = () => {
     if (!surahData || !surahData.ayahs[currentAyahIndex]) return;
     const audio = audioRef.current;
@@ -211,90 +212,127 @@ export default function App() {
 
   // Tafsir Modal Handler
   const handleOpenTafsir = (surahNum, ayahNum, ayahTxt) => {
+    const sNum = surahNum || currentSurahNumber;
+    const aNum = ayahNum || (currentAyahIndex + 1);
+    const text = ayahTxt || (surahData?.ayahs[currentAyahIndex]?.textAr || '');
     setTafsirModal({
       isOpen: true,
-      surahNumber: surahNum,
-      ayahNumber: ayahNum,
+      surahNumber: sNum,
+      ayahNumber: aNum,
       surahName: surahData ? surahData.name : '',
-      ayahText: ayahTxt,
+      ayahText: text,
     });
   };
 
   // Ayah Card Modal Handler
   const handleOpenCardModal = (ayah, surah) => {
+    const a = ayah || (surahData?.ayahs[currentAyahIndex]);
+    const s = surah || surahData;
     setCardModal({
       isOpen: true,
-      ayah,
-      surah,
+      ayah: a,
+      surah: s,
     });
   };
 
   const currentSurahMeta = SURAHS_LIST.find((s) => s.number === currentSurahNumber);
 
   return (
-    <div className="app-container">
-      {/* Top Navigation Bar */}
-      <Navbar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        theme={theme}
-        setTheme={setTheme}
-        onOpenSurahModal={() => setIsSurahModalOpen(true)}
-        onOpenRestModal={() => setIsRestModalOpen(true)}
-        currentSurah={currentSurahMeta}
-      />
+    <div className="basair-master-app-container">
+      {/* 3-Column Master Application Grid */}
+      <div className="app-layout-3col">
+        {/* Left Navigation Sidebar with Logo & Spiritual Quote */}
+        <SidebarLeft
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          onOpenBookmarks={() => setIsSurahModalOpen(true)}
+          onOpenSurahModal={() => setIsSurahModalOpen(true)}
+        />
 
-      {/* Main View Router */}
-      <main className="main-content">
-        <div className="content-wrapper">
-          {activeTab === 'reader' && (
-            <ReaderView
-              surahData={surahData}
-              isLoading={isLoadingSurah}
-              error={surahError}
-              currentAyahIndex={currentAyahIndex}
-              isPlaying={isPlaying}
-              onPlayAyah={handlePlaySpecificAyah}
-              onOpenTafsir={handleOpenTafsir}
-              onOpenCardModal={handleOpenCardModal}
-              onSelectPrevSurah={handleSelectPrevSurah}
-              onSelectNextSurah={handleSelectNextSurah}
-            />
-          )}
+        {/* Center Main Stage (Header + Content Views) */}
+        <div className="center-stage-column">
+          {/* Top Bar matching screenshot */}
+          <Navbar
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            theme={theme}
+            setTheme={setTheme}
+            onOpenSurahModal={() => setIsSurahModalOpen(true)}
+            onOpenRestModal={() => setIsRestModalOpen(true)}
+            currentSurah={currentSurahMeta}
+          />
 
-          {activeTab === 'memorize' && (
-            <MemorizationStudio
-              surahData={surahData}
-              onSelectSurah={handleSelectSurah}
-            />
-          )}
+          {/* Active View Router */}
+          <main className="center-main-scrollable">
+            {activeTab === 'reader' && (
+              <ReaderView
+                surahData={surahData}
+                isLoading={isLoadingSurah}
+                error={surahError}
+                currentAyahIndex={currentAyahIndex}
+                isPlaying={isPlaying}
+                onPlayAyah={handlePlaySpecificAyah}
+                onOpenTafsir={handleOpenTafsir}
+                onOpenCardModal={handleOpenCardModal}
+                onSelectPrevSurah={handleSelectPrevSurah}
+                onSelectNextSurah={handleSelectNextSurah}
+                onTriggerMemorize={() => setActiveTab('memorize')}
+                onTriggerTadabbur={() => setActiveTab('tadabbur')}
+                onTriggerMutashabihat={() => setActiveTab('mutashabihat')}
+                theme={theme}
+                setTheme={setTheme}
+                onOpenSurahSearch={() => setIsSurahModalOpen(true)}
+              />
+            )}
 
-          {activeTab === 'mutashabihat' && (
-            <MutashabihatView
-              onSelectSurah={(surahNum) => {
-                handleSelectSurah(surahNum);
-                setActiveTab('reader');
-              }}
-            />
-          )}
+            {activeTab === 'memorize' && (
+              <MemorizationStudio
+                surahData={surahData}
+                onSelectSurah={handleSelectSurah}
+              />
+            )}
 
-          {activeTab === 'tadabbur' && (
-            <TadabburView
-              onSelectSurah={(surahNum) => {
-                handleSelectSurah(surahNum);
-                setActiveTab('reader');
-              }}
-              onOpenCardModal={handleOpenCardModal}
-            />
-          )}
+            {activeTab === 'mutashabihat' && (
+              <MutashabihatView
+                onSelectSurah={(surahNum) => {
+                  handleSelectSurah(surahNum);
+                  setActiveTab('reader');
+                }}
+              />
+            )}
 
-          {activeTab === 'scholars' && (
-            <ScholarsLibraryView />
-          )}
+            {activeTab === 'tadabbur' && (
+              <TadabburView
+                onSelectSurah={(surahNum) => {
+                  handleSelectSurah(surahNum);
+                  setActiveTab('reader');
+                }}
+                onOpenCardModal={handleOpenCardModal}
+              />
+            )}
+
+            {activeTab === 'scholars' && (
+              <ScholarsLibraryView />
+            )}
+          </main>
         </div>
-      </main>
 
-      {/* Persistent Audio Dock Bar */}
+        {/* Right Sidebar (Daily Wird, Quick Tools, Favorite Reciters) */}
+        <SidebarRight
+          currentSurah={currentSurahMeta}
+          currentAyahIndex={currentAyahIndex}
+          totalAyahs={surahData ? surahData.numberOfAyahs : 7}
+          selectedReciter={selectedReciter}
+          onSelectReciter={handleSelectReciter}
+          setActiveTab={setActiveTab}
+          onOpenCardModal={() => handleOpenCardModal()}
+          onOpenTafsir={() => handleOpenTafsir()}
+          isPlaying={isPlaying}
+          onTogglePlay={handleTogglePlay}
+        />
+      </div>
+
+      {/* Modern Bottom Audio Dock matching screenshot */}
       <AudioPlayerBar
         isPlaying={isPlaying}
         onTogglePlay={handleTogglePlay}
@@ -337,7 +375,7 @@ export default function App() {
         surah={cardModal.surah}
       />
 
-      {/* REST API Explorer & Diagnostics Modal (TryHackMe REST course demonstration) */}
+      {/* REST API Explorer & Diagnostics Modal */}
       <RestApiExplorerModal
         isOpen={isRestModalOpen}
         onClose={() => setIsRestModalOpen(false)}

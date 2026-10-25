@@ -12,8 +12,17 @@ import {
   ZoomIn,
   ZoomOut,
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
+  Search,
+  Moon,
+  Sun,
+  Brain,
+  Sparkles,
+  MessageCircle,
+  Type,
+  Headphones
 } from 'lucide-react';
+import { getSurahWordByWord } from '../services/quranApi';
 
 export default function ReaderView({
   surahData,
@@ -26,10 +35,19 @@ export default function ReaderView({
   onOpenCardModal,
   onSelectPrevSurah,
   onSelectNextSurah,
+  onTriggerMemorize,
+  onTriggerTadabbur,
+  onTriggerMutashabihat,
+  theme,
+  setTheme,
+  onOpenSurahSearch,
 }) {
-  const [fontSize, setFontSize] = useState(28); // 24 to 40px
-  const [activeLangMode, setActiveLangMode] = useState('ar-en'); // 'ar', 'ar-en', 'ar-fr', 'all'
+  const [fontSize, setFontSize] = useState(28);
+  const [activeLangMode, setActiveLangMode] = useState('ar-en');
   const [copiedAyahNum, setCopiedAyahNum] = useState(null);
+  const [isWbwActive, setIsWbwActive] = useState(false);
+  const [wbwData, setWbwData] = useState({});
+
   const [bookmarks, setBookmarks] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('basair_bookmarks') || '[]');
@@ -39,8 +57,16 @@ export default function ReaderView({
   });
 
   const ayahRefs = useRef([]);
+  const wordAudioRef = useRef(new Audio());
 
-  // Auto-scroll active Ayah into view when playing
+  useEffect(() => {
+    if (isWbwActive && surahData?.number) {
+      getSurahWordByWord(surahData.number).then((data) => {
+        setWbwData(data);
+      });
+    }
+  }, [isWbwActive, surahData?.number]);
+
   useEffect(() => {
     if (isPlaying && ayahRefs.current[currentAyahIndex]) {
       ayahRefs.current[currentAyahIndex].scrollIntoView({
@@ -69,13 +95,20 @@ export default function ReaderView({
     localStorage.setItem('basair_bookmarks', JSON.stringify(updated));
   };
 
+  const handlePlayWordAudio = (audioUrl) => {
+    if (!audioUrl) return;
+    const a = wordAudioRef.current;
+    a.src = audioUrl;
+    a.play().catch(console.error);
+  };
+
   if (isLoading) {
     return (
       <div className="reader-loading-state">
         <div className="loading-spinner-ornament">
           <span className="spinner-star">✦</span>
         </div>
-        <p className="loading-text">جاري تحميل السورة الكريمة من المصحف الشريف...</p>
+        <p className="loading-text">جاري استرجاع السورة الكريمة من المصحف الشريف...</p>
       </div>
     );
   }
@@ -93,184 +126,265 @@ export default function ReaderView({
   const isAlFatihah = surahData.number === 1;
 
   return (
-    <div className="reader-container">
-      {/* Surah Header Banner */}
-      <div className="surah-header-banner">
-        <div className="surah-nav-arrows">
+    <div className="reader-container-modern">
+      {/* 1. Surah Header Banner Card matching screenshot */}
+      <div className="surah-header-card-screenshot">
+        {/* Diamond Header & Nav */}
+        <div className="header-diamond-row">
           <button
             onClick={onSelectPrevSurah}
             disabled={surahData.number <= 1}
-            className="surah-nav-btn prev"
+            className="surah-prev-next-btn"
             title="السورة السابقة"
           >
-            <ChevronRight size={20} />
-            <span className="btn-label-desktop">السابقة</span>
+            <ChevronRight size={16} />
+            <span>السورة السابقة</span>
           </button>
 
-          <div className="surah-title-meta-box">
-            <span className="surah-ornament-top">۞</span>
-            <h1 className="surah-main-name font-calligraphy">{surahData.name}</h1>
-            <div className="surah-tags-row">
-              <span className="surah-tag revelation">
-                {surahData.revelationType === 'Meccan' ? 'مكية' : 'مدنية'}
-              </span>
-              <span className="surah-tag count">{surahData.numberOfAyahs} آيات</span>
-              <span className="surah-tag number">ترتيبها {surahData.number}</span>
-              <span className="surah-tag transliteration">{surahData.englishName}</span>
-            </div>
-            <span className="surah-ornament-bottom">۞</span>
+          <div className="surah-diamond-title-wrap">
+            <span className="diamond-star text-gold">❖</span>
+            <h1 className="surah-diamond-name font-calligraphy">{surahData.name}</h1>
+            <span className="diamond-star text-gold">❖</span>
           </div>
 
           <button
             onClick={onSelectNextSurah}
             disabled={surahData.number >= 114}
-            className="surah-nav-btn next"
+            className="surah-prev-next-btn"
             title="السورة التالية"
           >
-            <span className="btn-label-desktop">التالية</span>
-            <ChevronLeft size={20} />
+            <span>السورة التالية</span>
+            <ChevronLeft size={16} />
           </button>
         </div>
 
-        {/* Display Settings Toolbar (Font scale, Language selector) */}
-        <div className="reader-toolbar-row">
-          <div className="toolbar-group font-scale-group">
-            <span className="toolbar-label">حجم الخط:</span>
+        {/* Metadata Badges (مكية / مدنية، آيات، ترتيبها) */}
+        <div className="surah-badges-row-screenshot">
+          <span className="badge-pill revelation">
+            {surahData.revelationType === 'Meccan' ? 'مكية' : 'مدنية'}
+          </span>
+          <span className="badge-pill count">{surahData.numberOfAyahs} آيات</span>
+          <span className="badge-pill order">ترتيبها {surahData.number}</span>
+        </div>
+
+        <div className="diamond-bottom-divider">
+          <span className="diamond-divider-point">❖</span>
+        </div>
+
+        {/* Toolbar matching user screenshot */}
+        <div className="reader-toolbar-screenshot">
+          {/* Search Trigger */}
+          <button onClick={onOpenSurahSearch} className="tb-tool-btn search" title="بحث في السور">
+            <Search size={16} />
+          </button>
+
+          {/* Theme Segmented Switch */}
+          <div className="tb-segmented-theme">
             <button 
-              onClick={() => setFontSize((s) => Math.max(22, s - 3))} 
-              className="toolbar-btn" 
-              title="تصغير خط المصحف"
+              onClick={() => setTheme?.('dark')} 
+              className={`tb-theme-btn ${theme === 'dark' ? 'active' : ''}`}
+              title="النمط الليلي"
             >
-              <ZoomOut size={16} />
+              <Moon size={14} />
             </button>
-            <span className="font-size-indicator">{fontSize}px</span>
             <button 
-              onClick={() => setFontSize((s) => Math.min(42, s + 3))} 
-              className="toolbar-btn" 
-              title="تكبير خط المصحف"
+              onClick={() => setTheme?.('light')} 
+              className={`tb-theme-btn ${theme === 'light' ? 'active' : ''}`}
+              title="النمط النهاري"
             >
-              <ZoomIn size={16} />
+              <Sun size={14} />
+            </button>
+            <span className="tb-theme-label">المظهر</span>
+          </div>
+
+          {/* Font Scale Pill */}
+          <div className="tb-tool-dropdown font-scale">
+            <button 
+              onClick={() => setFontSize((s) => (s >= 36 ? 24 : s + 4))}
+              className="tb-tool-pill" 
+              title="تغيير حجم خط المصحف"
+            >
+              <Type size={14} />
+              <span>{fontSize}px</span>
+              <span className="tb-sublabel">حجم الخط</span>
             </button>
           </div>
 
-          <div className="toolbar-group lang-group">
-            <Languages size={16} className="lang-icon" />
-            <span className="toolbar-label">الترجمة:</span>
+          {/* Translation Dropdown */}
+          <div className="tb-tool-dropdown translation">
+            <Languages size={15} className="lang-icon-prefix" />
             <select
               value={activeLangMode}
               onChange={(e) => setActiveLangMode(e.target.value)}
-              className="lang-select"
+              className="tb-translation-select"
             >
+              <option value="ar-en">عربي + (English - Sahih)</option>
+              <option value="ar-fr">عربي + (Français - Hamidullah)</option>
               <option value="ar">العربية فقط (المصحف الشريف)</option>
-              <option value="ar-en">عربي + إنجليزي (English - Sahih)</option>
-              <option value="ar-fr">عربي + فرنسي (Français - Hamidullah)</option>
-              <option value="all">الكل (عربي + English + Français)</option>
+              <option value="all">الكل (English + French)</option>
             </select>
+            <span className="tb-sublabel">الترجمة</span>
           </div>
+
+          {/* Word by Word Mode */}
+          <button
+            onClick={() => setIsWbwActive(!isWbwActive)}
+            className={`tb-tool-pill wbw ${isWbwActive ? 'active' : ''}`}
+            title="تفعيل الترجمة كلمة بكلمة ونطق المفردات"
+          >
+            <Sparkles size={14} />
+            <span>كلمة بكلمة</span>
+          </button>
         </div>
       </div>
 
-      {/* Basmala Banner (except for Surah At-Tawbah and Surah Al-Fatihah where Basmala is verse 1) */}
+      {/* Basmala Banner */}
       {!isAtTawbah && !isAlFatihah && (
-        <div className="basmala-banner">
-          <p className="basmala-text font-quran">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>
+        <div className="basmala-banner-screenshot">
+          <p className="basmala-text-screenshot font-quran">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>
         </div>
       )}
 
-      {/* Ayahs Flow */}
-      <div className="ayahs-stream-wrapper">
+      {/* 2. Ayahs Cards Stream matching screenshot */}
+      <div className="ayahs-stream-screenshot">
         {surahData.ayahs.map((ayah, index) => {
           const isCurrentActive = index === currentAyahIndex;
           const isBookmarked = bookmarks.includes(`${surahData.number}:${ayah.numberInSurah}`);
           const isCopied = copiedAyahNum === ayah.numberInSurah;
+          const ayahWords = wbwData[ayah.numberInSurah] || null;
 
           return (
             <article
               key={ayah.number}
               ref={(el) => (ayahRefs.current[index] = el)}
-              className={`ayah-card-container ${isCurrentActive ? 'active-playing' : ''}`}
+              className={`ayah-card-screenshot ${isCurrentActive ? 'active-highlight' : ''}`}
               id={`ayah-${ayah.numberInSurah}`}
             >
-              {/* Ayah Header Tools */}
-              <div className="ayah-meta-header">
-                <div className="ayah-badge-left">
-                  <span className="ayah-index-pill">الآية {ayah.numberInSurah}</span>
-                  {ayah.juz && <span className="juz-pill">الجزء {ayah.juz}</span>}
-                </div>
+              {/* Header: Ayah Index (Left) & Actions (Right) */}
+              <div className="ayah-card-top-header">
+                <span className="ayah-count-caption">
+                  الآية {ayah.numberInSurah} من {surahData.numberOfAyahs}
+                </span>
 
-                <div className="ayah-action-buttons">
-                  {/* Play Ayah Audio */}
+                <div className="ayah-action-icons-row">
                   <button
-                    onClick={() => onPlayAyah(index)}
-                    className={`ayah-action-btn play ${isCurrentActive && isPlaying ? 'active' : ''}`}
-                    title={isCurrentActive && isPlaying ? 'إيقاف مؤقت' : 'استمع لهذه الآية'}
+                    onClick={() => toggleBookmark(ayah)}
+                    className={`card-tool-btn bookmark ${isBookmarked ? 'active' : ''}`}
+                    title="حفظ علامة مرجعية"
                   >
-                    {isCurrentActive && isPlaying ? <Pause size={15} /> : <Play size={15} />}
-                    <span>{isCurrentActive && isPlaying ? 'جاري التلاوة' : 'استماع'}</span>
+                    <Bookmark size={15} />
                   </button>
 
-                  {/* Open Tafsir */}
-                  <button
-                    onClick={() => onOpenTafsir(surahData.number, ayah.numberInSurah, ayah.textAr)}
-                    className="ayah-action-btn tafsir"
-                    title="تفسير الميسر لهذه الآية"
-                  >
-                    <BookOpen size={15} />
-                    <span>التفسير</span>
-                  </button>
-
-                  {/* Create Quote Card */}
-                  <button
-                    onClick={() => onOpenCardModal(ayah, surahData)}
-                    className="ayah-action-btn card"
-                    title="تصميم بطاقة ومشاركتها"
-                  >
-                    <Share2 size={15} />
-                    <span>بطاقة</span>
-                  </button>
-
-                  {/* Copy Ayah Text */}
                   <button
                     onClick={() => handleCopyAyah(ayah)}
-                    className="ayah-action-btn copy"
-                    title="نسخ الآية الكريمة"
+                    className="card-tool-btn copy"
+                    title="نسخ الآية"
                   >
                     {isCopied ? <Check size={15} className="text-emerald" /> : <Copy size={15} />}
                   </button>
 
-                  {/* Bookmark */}
                   <button
-                    onClick={() => toggleBookmark(ayah)}
-                    className={`ayah-action-btn bookmark ${isBookmarked ? 'active' : ''}`}
-                    title={isBookmarked ? 'إزالة من المحفوظات' : 'حفظ الآية كعلامة مرجعية'}
+                    onClick={() => onPlayAyah(index)}
+                    className={`card-tool-btn listen-btn ${isCurrentActive && isPlaying ? 'active' : ''}`}
+                    title="استماع لهذه الآية"
                   >
-                    <Bookmark size={15} />
+                    {isCurrentActive && isPlaying ? <Pause size={14} /> : <Headphones size={14} />}
+                    <span>استماع</span>
+                  </button>
+
+                  <button
+                    onClick={() => onOpenTafsir(surahData.number, ayah.numberInSurah, ayah.textAr)}
+                    className="card-tool-btn tafsir-btn"
+                    title="تفسير الميسر"
+                  >
+                    <BookOpen size={14} />
+                    <span>التفسير</span>
+                  </button>
+
+                  <button
+                    onClick={() => onOpenCardModal(ayah, surahData)}
+                    className="card-tool-btn share-btn"
+                    title="مشاركة وتصميم بطاقة"
+                  >
+                    <Share2 size={14} />
+                    <span>مشاركة</span>
                   </button>
                 </div>
               </div>
 
-              {/* Arabic Uthmani Text */}
-              <div className="ayah-arabic-text-wrap" style={{ fontSize: `${fontSize}px` }}>
-                <p className="ayah-arabic-content font-quran">
-                  {ayah.textAr}
-                  <span className="ayah-symbol" title={`آية ${ayah.numberInSurah}`}>
-                    ۝{ayah.numberInSurah.toLocaleString('ar-EG')}
-                  </span>
-                </p>
+              {/* Arabic Quranic Text */}
+              <div className="ayah-body-arabic" style={{ fontSize: `${fontSize}px` }}>
+                {isWbwActive && ayahWords ? (
+                  <div className="wbw-words-container font-quran">
+                    {ayahWords.map((word) => (
+                      <span
+                        key={word.id}
+                        onClick={() => handlePlayWordAudio(word.audioUrl)}
+                        className="wbw-word-interactive-unit"
+                        title={`${word.translationEn} (${word.transliteration}) — اضغط للاستماع`}
+                      >
+                        <span className="wbw-word-arabic">{word.textUthmani}</span>
+                        <span className="wbw-word-subtext">{word.translationEn}</span>
+                      </span>
+                    ))}
+                    <span className="ayah-symbol-screenshot">
+                      ۝ {ayah.numberInSurah.toLocaleString('ar-EG')}
+                    </span>
+                  </div>
+                ) : (
+                  <p className="ayah-arabic-text-flow font-quran">
+                    {ayah.textAr}
+                    <span className="ayah-symbol-screenshot" title={`آية ${ayah.numberInSurah}`}>
+                      ۝ {ayah.numberInSurah.toLocaleString('ar-EG')}
+                    </span>
+                  </p>
+                )}
               </div>
 
-              {/* Multi-language Translations */}
+              {/* Translation */}
               {(activeLangMode === 'ar-en' || activeLangMode === 'all') && ayah.textEn && (
-                <div className="ayah-translation-block en">
-                  <span className="lang-tag">English (Sahih)</span>
-                  <p className="translation-text">{ayah.textEn}</p>
+                <div className="ayah-translation-row-screenshot">
+                  <span className="trans-tag">ENGLISH (SAHIH)</span>
+                  <p className="trans-text">{ayah.textEn}</p>
                 </div>
               )}
 
               {(activeLangMode === 'ar-fr' || activeLangMode === 'all') && ayah.textFr && (
-                <div className="ayah-translation-block fr">
-                  <span className="lang-tag">Français (Hamidullah)</span>
-                  <p className="translation-text">{ayah.textFr}</p>
+                <div className="ayah-translation-row-screenshot fr">
+                  <span className="trans-tag">FRANÇAIS (HAMIDULLAH)</span>
+                  <p className="trans-text">{ayah.textFr}</p>
+                </div>
+              )}
+
+              {/* Interactive Bottom Actions Bar on Active Ayah (matching screenshot) */}
+              {isCurrentActive && (
+                <div className="active-ayah-bottom-tools animate-fade-in">
+                  <div className="active-pills-row">
+                    <button onClick={onTriggerMemorize} className="active-action-pill memorize">
+                      <Brain size={15} />
+                      <span>احفظ</span>
+                    </button>
+
+                    <button onClick={onTriggerTadabbur} className="active-action-pill tadabbur">
+                      <MessageCircle size={15} />
+                      <span>التدبر</span>
+                    </button>
+
+                    <button onClick={onTriggerMutashabihat} className="active-action-pill mutashabihat">
+                      <Sparkles size={15} />
+                      <span>المتشابهات</span>
+                    </button>
+                  </div>
+
+                  <div className="active-progress-wrap">
+                    <span className="progress-fraction-badge">{ayah.numberInSurah} / {surahData.numberOfAyahs}</span>
+                    <div className="ayah-mini-progress-track">
+                      <div 
+                        className="ayah-mini-progress-fill" 
+                        style={{ width: `${(ayah.numberInSurah / surahData.numberOfAyahs) * 100}%` }} 
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
             </article>

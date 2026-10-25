@@ -4,13 +4,15 @@ import {
   Pause, 
   SkipBack, 
   SkipForward, 
-  Repeat, 
+  Repeat2, 
   Shuffle,
   Volume2, 
   VolumeX, 
   ListMusic,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  Gauge,
+  X
 } from 'lucide-react';
 import { RECITERS } from '../data/reciters';
 import reciterAvatar from '../assets/reciter-avatar.jpg';
@@ -75,7 +77,9 @@ export default function AudioPlayerBar({
             <div className="reciters-dock-popover animate-fade-in">
               <div className="popover-title-row">
                 <span>اختر القارئ المفضل</span>
-                <button onClick={() => setShowRecitersList(false)} className="popover-close-btn">✕</button>
+                <button onClick={() => setShowRecitersList(false)} className="popover-close-btn" aria-label="إغلاق">
+                  <X size={15} />
+                </button>
               </div>
               <div className="reciters-choice-list">
                 {RECITERS.map((r) => (
@@ -103,6 +107,7 @@ export default function AudioPlayerBar({
           </button>
 
           <button onClick={handleNextRate} className="speed-badge-btn" title="سرعة التلاوة">
+            <Gauge size={13} className="speed-pill-icon" />
             <span>{playbackRate}x</span>
           </button>
 
@@ -111,6 +116,7 @@ export default function AudioPlayerBar({
             className={`repeat-toggle-pill ${isRepeatAyah ? 'active' : ''}`}
             title="تكرار الآية للحفظ"
           >
+            <Repeat2 size={14} className="repeat-pill-icon" />
             <span>تكرار الآية</span>
             <span className="toggle-switch-track">
               <span className={`toggle-switch-knob ${isRepeatAyah ? 'on' : 'off'}`} />

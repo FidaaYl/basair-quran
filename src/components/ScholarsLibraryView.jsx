@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Headphones, Play, Pause, BookOpen, Clock, Tag, UserCheck, Sparkles } from 'lucide-react';
+import { AudioLines, Play, Pause, BookOpen, Clock, Tag, UserCheck, Sparkles } from 'lucide-react';
 import { SCHOLARS_BOOKS } from '../data/scholarsBooks';
 
 export default function ScholarsLibraryView() {
@@ -39,8 +39,8 @@ export default function ScholarsLibraryView() {
       <div className="scholars-hero-card">
         <div className="badge-row">
           <div className="scholars-badge">
-            <Headphones size={16} className="text-gold" />
-            <span>مكتبة العلماء والكتب الصوتية (Islamic Scholars Audiobooks — مستوحاة من Rawy.net)</span>
+            <AudioLines size={16} className="text-gold" />
+            <span>مكتبة العلماء والكتب الصوتية (Islamic Scholars Audiobooks)</span>
           </div>
         </div>
         <h2 className="scholars-title font-calligraphy">

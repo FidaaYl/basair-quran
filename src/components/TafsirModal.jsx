@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, BookOpen, Copy, Check, Sparkles } from 'lucide-react';
+import { X, BookOpenText, Copy, Check } from 'lucide-react';
 import { getAyahTafsir } from '../services/quranApi';
 
 export default function TafsirModal({ isOpen, onClose, surahNumber, ayahNumber, surahName, ayahText }) {
@@ -36,7 +36,7 @@ export default function TafsirModal({ isOpen, onClose, surahNumber, ayahNumber, 
         {/* Header */}
         <div className="modal-header">
           <div className="modal-title-wrap">
-            <BookOpen size={20} className="modal-icon text-emerald" />
+            <BookOpenText size={20} className="modal-icon text-emerald" />
             <div>
               <h2 className="modal-title">تفسير الميسر</h2>
               <p className="modal-subtitle">
@@ -58,7 +58,9 @@ export default function TafsirModal({ isOpen, onClose, surahNumber, ayahNumber, 
         <div className="tafsir-body-content">
           {isLoading ? (
             <div className="tafsir-loading">
-              <span className="spinner-star">✦</span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="spinner-star animate-spin text-emerald">
+                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" strokeDasharray="14 30" />
+              </svg>
               <p>جاري استرجاع التفسير الميسر المعتمد...</p>
             </div>
           ) : (

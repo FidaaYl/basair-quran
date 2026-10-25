@@ -5,112 +5,162 @@
 
 :root {
   /* Font Families */
-  --font-arabic-quran: 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif;
+  --font-arabic-quran: 'Amiri Quran', 'Scheherazade New', 'Amiri', serif;
   --font-arabic-calligraphy: 'Amiri', serif;
   --font-ui: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  /* Universal Brand Colors */
-  --brand-emerald-50: #ecfdf5;
-  --brand-emerald-500: #10b981;
-  --brand-emerald-600: #059669;
-  --brand-emerald-700: #047857;
-  --brand-emerald-900: #064e3b;
+  /* Universal 4px Base Spacing Scale */
+  --space-1: 4px;   /* micro */
+  --space-2: 8px;   /* compact */
+  --space-3: 12px;  /* control */
+  --space-4: 16px;  /* standard */
+  --space-6: 24px;  /* component */
+  --space-8: 32px;  /* section */
+  --space-12: 48px; /* major section */
+  --space-16: 64px; /* large page */
 
-  --brand-gold-300: #fde047;
-  --brand-gold-500: #eab308;
-  --brand-gold-600: #ca8a04;
-  --brand-gold-700: #a16207;
-
-  /* Shared Spacing Scale (4/8pt) */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
-
-  /* Border Radii */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
+  /* Component Geometry */
+  --radius-sm: 8px;   /* small controls */
+  --radius-md: 10px;  /* standard buttons & inputs */
+  --radius-lg: 14px;  /* standard cards */
+  --radius-xl: 18px;  /* large feature panels */
   --radius-full: 9999px;
 
-  /* Transitions */
+  /* Control Heights */
+  --control-height: 42px;
+  --touch-target-min: 44px;
+
+  /* Transitions (140-220ms) */
   --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ==========================================================================
    Theme: Layl / Dark Mode (Default)
-   Deep celestial obsidian, refined emerald, soft gilded accents
+   Charcoal and deep green-black surfaces with luminous emerald and gold
    ========================================================================== */
 [data-theme='dark'] {
-  --bg-app: #050e12;
-  --bg-surface: #081419;
-  --bg-surface-elevated: #0d1d24;
-  --bg-surface-hover: #122730;
-  --bg-card: #0b1920;
-  --bg-glass: rgba(8, 20, 25, 0.88);
+  --color-background: #0C1215;
+  --color-navigation: #10181D;
+  --color-surface: #141E23;
+  --color-surface-elevated: #1A272C;
+  --color-surface-hover: #223137;
+  --color-active-verse: #102A27;
+  --color-active-verse-border: #176B56;
 
-  --text-primary: #ffffff;
-  --text-secondary: #9cb3bd;
-  --text-muted: #607d8b;
-  --text-emerald: #2dd4bf;
-  --text-gold: #f5c862;
+  --color-primary: #19A681;
+  --color-primary-deep: #087F63;
+  --color-text-primary: #E8EEE9;
+  --color-text-secondary: #A7B6AE;
+  --color-text-muted: #7E9087;
 
-  --border-subtle: rgba(45, 212, 191, 0.12);
-  --border-medium: rgba(45, 212, 191, 0.22);
-  --border-gold: rgba(212, 175, 55, 0.35);
-  --border-emerald: rgba(20, 184, 166, 0.45);
+  --color-border: #28363A;
+  --color-border-strong: #35474A;
+  --color-border-subtle: #1C272C;
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.6);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.7);
-  --shadow-emerald: 0 0 24px rgba(20, 184, 166, 0.22);
+  --color-accent-gold: #D2AA60;
+  --color-gold-bg: #29271F;
 
-  --ayah-active-bg: rgba(13, 148, 136, 0.12);
-  --ayah-active-border: #14b8a6;
-  --masked-word-bg: #122730;
-  --masked-word-border: #1a3845;
+  --color-success: #50B887;
+  --color-warning: #D7A454;
+  --color-error: #E17D7D;
+  --color-focus: #45C6A1;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.65);
+  --shadow-emerald: 0 0 20px rgba(25, 166, 129, 0.18);
+
+  /* Legacy mappings for seamless compatibility */
+  --bg-app: var(--color-background);
+  --bg-surface: var(--color-surface);
+  --bg-surface-elevated: var(--color-surface-elevated);
+  --bg-surface-hover: var(--color-surface-hover);
+  --bg-card: var(--color-surface);
+  --bg-glass: rgba(16, 24, 29, 0.92);
+
+  --text-primary: var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --text-muted: var(--color-text-muted);
+  --text-emerald: var(--color-primary);
+  --text-gold: var(--color-accent-gold);
+
+  --border-subtle: var(--color-border);
+  --border-medium: var(--color-border-strong);
+  --border-gold: rgba(210, 170, 96, 0.35);
+  --border-emerald: rgba(25, 166, 129, 0.35);
+
+  --ayah-active-bg: var(--color-active-verse);
+  --ayah-active-border: var(--color-active-verse-border);
+  --masked-word-bg: #1A272C;
+  --masked-word-border: #28363A;
 }
 
 /* ==========================================================================
    Theme: Noor / Light Mode
-   Warm manuscript parchment, deep forest emerald, antiqued gold
+   Warm ivory, white primary surfaces, refined emerald & antique gold
    ========================================================================== */
 [data-theme='light'] {
-  --bg-app: #fbf9f5;
-  --bg-surface: #ffffff;
-  --bg-surface-elevated: #f4efe6;
-  --bg-surface-hover: #ece5d8;
-  --bg-card: #ffffff;
-  --bg-glass: rgba(255, 255, 255, 0.9);
+  --color-background: #F8F6F0;
+  --color-surface: #FFFFFF;
+  --color-surface-secondary: #F1EFE7;
+  --color-surface-tertiary: #E9EEE7;
+  --color-surface-elevated: #F1EFE7;
+  --color-surface-hover: #EBE7DD;
+  --color-glass: rgba(255, 255, 255, 0.94);
 
-  --text-primary: #1c1917;
-  --text-secondary: #57534e;
-  --text-muted: #857f77;
-  --text-emerald: #065f46;
-  --text-gold: #92400e;
+  --color-primary: #087F63;
+  --color-primary-deep: #086B55;
+  --color-heading-forest: #173F37;
 
-  --border-subtle: rgba(28, 25, 23, 0.08);
-  --border-medium: rgba(28, 25, 23, 0.14);
-  --border-gold: rgba(180, 83, 9, 0.25);
-  --border-emerald: rgba(5, 150, 105, 0.25);
+  --color-text-primary: #263A33;
+  --color-text-secondary: #65736B;
+  --color-text-muted: #818981;
 
-  --shadow-sm: 0 1px 3px rgba(28, 25, 23, 0.05);
-  --shadow-md: 0 4px 14px rgba(28, 25, 23, 0.08);
-  --shadow-lg: 0 12px 28px rgba(28, 25, 23, 0.12);
-  --shadow-emerald: 0 0 20px rgba(5, 150, 105, 0.08);
+  --color-border: #E4E2D9;
+  --color-border-strong: #D4DDD5;
+  --color-border-subtle: #ECEAE2;
 
-  --ayah-active-bg: rgba(5, 150, 105, 0.08);
-  --ayah-active-border: rgba(5, 150, 105, 0.35);
-  --masked-word-bg: #e7e0d3;
-  --masked-word-border: #d3c7b3;
+  --color-sage-highlight: #E8F0E9;
+  --color-accent-gold: #B58A43;
+  --color-gold-bg: #F6F0E2;
+
+  --color-active-verse: #F0F6F1;
+  --color-active-verse-border: #087F63;
+
+  --color-success: #267B55;
+  --color-warning: #A66A24;
+  --color-error: #B54141;
+  --color-focus: #087F63;
+
+  --shadow-sm: 0 1px 3px rgba(38, 58, 51, 0.05);
+  --shadow-md: 0 4px 14px rgba(38, 58, 51, 0.08);
+  --shadow-lg: 0 12px 28px rgba(38, 58, 51, 0.1);
+  --shadow-emerald: 0 0 20px rgba(8, 127, 99, 0.12);
+
+  /* Legacy mappings */
+  --bg-app: var(--color-background);
+  --bg-surface: var(--color-surface);
+  --bg-surface-elevated: var(--color-surface-elevated);
+  --bg-surface-hover: var(--color-surface-hover);
+  --bg-card: var(--color-surface);
+  --bg-glass: var(--color-glass);
+
+  --text-primary: var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --text-muted: var(--color-text-muted);
+  --text-emerald: var(--color-primary);
+  --text-gold: var(--color-accent-gold);
+
+  --border-subtle: var(--color-border);
+  --border-medium: var(--color-border-strong);
+  --border-gold: rgba(181, 138, 67, 0.35);
+  --border-emerald: rgba(8, 127, 99, 0.35);
+
+  --ayah-active-bg: var(--color-active-verse);
+  --ayah-active-border: var(--color-active-verse-border);
+  --masked-word-bg: #E9EEE7;
+  --masked-word-border: #D4DDD5;
 }
 
 /* ==========================================================================

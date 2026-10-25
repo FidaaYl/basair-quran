@@ -1,14 +1,15 @@
 import React from 'react';
 import { 
-  Sparkles, 
+  GitCompare, 
   Brain, 
-  BookOpen, 
-  Headphones, 
+  BookOpenText, 
+  AudioLines, 
   Lightbulb, 
-  Image as ImageIcon,
+  Share2,
   Flame,
   ChevronLeft,
-  Volume2
+  Volume2,
+  Sprout
 } from 'lucide-react';
 import { RECITERS } from '../data/reciters';
 import reciterAvatar from '../assets/reciter-avatar.jpg';
@@ -31,11 +32,11 @@ export default function SidebarRight({
 
   const quickTools = [
     { id: 'memorize', label: 'معمل الحفظ', icon: Brain, action: () => setActiveTab('memorize') },
-    { id: 'mutashabihat', label: 'المتشابهات', icon: Sparkles, action: () => setActiveTab('mutashabihat') },
-    { id: 'tafsir', label: 'التفسير', icon: BookOpen, action: () => onOpenTafsir?.() },
-    { id: 'listen', label: 'الإستماع', icon: Headphones, action: () => onTogglePlay?.() },
+    { id: 'mutashabihat', label: 'المتشابهات', icon: GitCompare, action: () => setActiveTab('mutashabihat') },
+    { id: 'tafsir', label: 'التفسير', icon: BookOpenText, action: () => onOpenTafsir?.() },
+    { id: 'listen', label: 'الإستماع', icon: AudioLines, action: () => onTogglePlay?.() },
     { id: 'tadabbur', label: 'تدبر', icon: Lightbulb, action: () => setActiveTab('tadabbur') },
-    { id: 'cards', label: 'بطاقات الآيات', icon: ImageIcon, action: () => onOpenCardModal?.() },
+    { id: 'cards', label: 'بطاقات الآيات', icon: Share2, action: () => onOpenCardModal?.() },
   ];
 
   return (
@@ -43,8 +44,11 @@ export default function SidebarRight({
       {/* 1. Daily Wird & Habit Tracker */}
       <div className="sidebar-card wird-card">
         <div className="wird-header-row">
-          <div className="wird-icon-wrap">
-            <span className="wird-icon-symbol">۞</span>
+          <div className="wird-icon-wrap" title="ورد القرآن اليومي">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-gold">
+              <path d="M12 2L14.8 6.5L20 6.8L16.5 10.7L17.5 16L12 13.8L6.5 16L7.5 10.7L4 6.8L9.2 6.5L12 2Z" />
+              <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
           </div>
           <div>
             <h3 className="wird-title">وردك اليوم</h3>
@@ -66,7 +70,10 @@ export default function SidebarRight({
         <div className="wird-stats-list">
           <div className="wird-stat-row">
             <span className="wird-stat-label">مستواك الحالي</span>
-            <span className="wird-level-badge">مبتدئ 🌿</span>
+            <span className="wird-level-badge">
+              <Sprout size={13} className="text-emerald" />
+              <span>مبتدئ</span>
+            </span>
           </div>
 
           <div className="wird-streak-row">

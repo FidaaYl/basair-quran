@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Brain, Sparkles, Compass, Headphones, Moon, Sun, Search, User, Terminal } from 'lucide-react';
+import { BookOpen, Brain, GitCompare, Lightbulb, AudioLines, Moon, Sun, Search, User, Terminal } from 'lucide-react';
 
 export default function Navbar({ 
   activeTab, 
@@ -17,9 +17,9 @@ export default function Navbar({
   const navItems = [
     { id: 'reader', label: 'المصحف والتلاوة', icon: BookOpen },
     { id: 'memorize', label: 'معمل الحفظ', icon: Brain },
-    { id: 'mutashabihat', label: 'المتشابهات', icon: Sparkles },
-    { id: 'tadabbur', label: 'بصائر وتدبر', icon: Compass },
-    { id: 'scholars', label: 'كتب العلماء', icon: Headphones },
+    { id: 'mutashabihat', label: 'المتشابهات', icon: GitCompare },
+    { id: 'tadabbur', label: 'بصائر وتدبر', icon: Lightbulb },
+    { id: 'scholars', label: 'كتب العلماء', icon: AudioLines },
   ];
 
   return (

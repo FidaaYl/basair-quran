@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Bookmark, Calendar, Settings, Sparkles } from 'lucide-react';
+import { BookOpen, Bookmark, Calendar, Settings2 } from 'lucide-react';
 import logoBasair from '../assets/logo-basair.png';
 
 export default function SidebarLeft({ activeTab, setActiveTab, onOpenBookmarks, onOpenSurahModal }) {
@@ -7,7 +7,7 @@ export default function SidebarLeft({ activeTab, setActiveTab, onOpenBookmarks, 
     { id: 'reader', label: 'المصحف', icon: BookOpen },
     { id: 'bookmarks', label: 'الإشارات المرجعية', icon: Bookmark },
     { id: 'memorize', label: 'خطط الحفظ', icon: Calendar },
-    { id: 'settings', label: 'الإعدادات', icon: Settings },
+    { id: 'settings', label: 'الإعدادات', icon: Settings2 },
   ];
 
   return (
@@ -53,7 +53,11 @@ export default function SidebarLeft({ activeTab, setActiveTab, onOpenBookmarks, 
 
       {/* Bottom Spiritual Inscription Card with user's uploaded artwork */}
       <div className="sidebar-bottom-quote-card">
-        <div className="quote-ornament-star">✦</div>
+        <div className="quote-ornament-star">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-gold">
+            <path d="M12 2L14.8 6.5L20 6.8L16.5 10.7L17.5 16L12 13.8L6.5 16L7.5 10.7L4 6.8L9.2 6.5L12 2Z" />
+          </svg>
+        </div>
         <p className="quote-text font-calligraphy">
           وَمَا أُمِرُوا إِلَّا لِيَعْبُدُوا اللَّهَ مُخْلِصِينَ لَهُ الدِّينَ
         </p>

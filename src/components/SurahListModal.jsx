@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { X, Search, Sparkles } from 'lucide-react';
+import { X, Search, BookOpen } from 'lucide-react';
 import { SURAHS_LIST } from '../data/surahsList';
 import { searchSurahs } from '../services/quranApi';
 
@@ -37,7 +37,7 @@ export default function SurahListModal({ isOpen, onClose, onSelectSurah, current
         {/* Modal Header */}
         <div className="modal-header">
           <div className="modal-title-wrap">
-            <Sparkles size={20} className="modal-icon text-gold" />
+            <BookOpen size={20} className="modal-icon text-emerald" />
             <div>
               <h2 className="modal-title">فهرس سور القرآن الكريم</h2>
               <p className="modal-subtitle">اختر السورة للانتقال المباشر أو البحث السريع (114 سورة)</p>

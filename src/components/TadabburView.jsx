@@ -1,6 +1,23 @@
 import React, { useState } from 'react';
-import { Compass, Heart, Sparkles, BookOpen, Share2, MessageCircle } from 'lucide-react';
+import { 
+  Lightbulb, 
+  Heart, 
+  Sparkles, 
+  BookOpen, 
+  Share2, 
+  Shield, 
+  Sun, 
+  Compass,
+  Info
+} from 'lucide-react';
 import { EMOTIONAL_STATES, PROPHETIC_DUAS } from '../data/thematicAyahs';
+
+const EMOTION_ICONS = {
+  anxiety: Shield,
+  sadness: Heart,
+  gratitude: Sun,
+  guidance: Compass,
+};
 
 export default function TadabburView({ onSelectSurah, onOpenCardModal }) {
   const [activeTab, setActiveTab] = useState('emotions'); // 'emotions', 'duas'
@@ -14,7 +31,7 @@ export default function TadabburView({ onSelectSurah, onOpenCardModal }) {
       <div className="tadabbur-hero-card">
         <div className="badge-row">
           <div className="tadabbur-badge">
-            <Compass size={16} className="text-emerald" />
+            <Lightbulb size={16} className="text-emerald" />
             <span>بصائر وتدبر القرآن الكريم (Thematic Reflection & Sanctuary)</span>
           </div>
         </div>
@@ -54,13 +71,14 @@ export default function TadabburView({ onSelectSurah, onOpenCardModal }) {
             <div className="emotions-chips-scroll">
               {EMOTIONAL_STATES.map((emo) => {
                 const isSelected = emo.id === selectedEmotionId;
+                const EmoIcon = EMOTION_ICONS[emo.id] || Heart;
                 return (
                   <button
                     key={emo.id}
                     onClick={() => setSelectedEmotionId(emo.id)}
                     className={`emotion-pill-btn ${isSelected ? 'active' : ''}`}
                   >
-                    <span className="emotion-emoji">{emo.emoji}</span>
+                    <EmoIcon size={16} className={`emotion-icon ${isSelected ? 'text-emerald' : 'text-muted'}`} />
                     <div className="emotion-labels">
                       <span className="emotion-ar">{emo.labelAr}</span>
                       <span className="emotion-en">{emo.labelEn}</span>
@@ -160,6 +178,14 @@ export default function TadabburView({ onSelectSurah, onOpenCardModal }) {
           </div>
         </div>
       )}
+
+      {/* Contemplative Notice */}
+      <div className="tadabbur-disclaimer-card">
+        <Info size={16} className="text-emerald" />
+        <p>
+          ملاحظة: هذا القسم مخصص للاستئناس الروحي والتأمل والتدبر الإيماني في آيات الذكر الحكيم، وليس بديلاً عن الاستشارات الطبية أو النفسية المتخصصة عند الحاجة.
+        </p>
+      </div>
     </div>
   );
 }

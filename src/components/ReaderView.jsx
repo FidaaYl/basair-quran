@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { 
   Play, 
   Pause, 
-  BookOpen, 
+  BookOpenText, 
   Share2, 
   Copy, 
   Check, 
@@ -17,10 +17,11 @@ import {
   Moon,
   Sun,
   Brain,
-  Sparkles,
-  MessageCircle,
+  GitCompare,
+  Lightbulb,
   Type,
-  Headphones
+  AudioLines,
+  Sparkles
 } from 'lucide-react';
 import { getSurahWordByWord } from '../services/quranApi';
 
@@ -288,7 +289,7 @@ export default function ReaderView({
                     className={`card-tool-btn listen-btn ${isCurrentActive && isPlaying ? 'active' : ''}`}
                     title="استماع لهذه الآية"
                   >
-                    {isCurrentActive && isPlaying ? <Pause size={14} /> : <Headphones size={14} />}
+                    {isCurrentActive && isPlaying ? <Pause size={14} /> : <AudioLines size={14} />}
                     <span>استماع</span>
                   </button>
 
@@ -297,7 +298,7 @@ export default function ReaderView({
                     className="card-tool-btn tafsir-btn"
                     title="تفسير الميسر"
                   >
-                    <BookOpen size={14} />
+                    <BookOpenText size={14} />
                     <span>التفسير</span>
                   </button>
 
@@ -366,12 +367,12 @@ export default function ReaderView({
                     </button>
 
                     <button onClick={onTriggerTadabbur} className="active-action-pill tadabbur">
-                      <MessageCircle size={15} />
+                      <Lightbulb size={15} />
                       <span>التدبر</span>
                     </button>
 
                     <button onClick={onTriggerMutashabihat} className="active-action-pill mutashabihat">
-                      <Sparkles size={15} />
+                      <GitCompare size={15} />
                       <span>المتشابهات</span>
                     </button>
                   </div>

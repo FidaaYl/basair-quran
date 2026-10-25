@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Search, BookOpen, Lightbulb, Compass, ArrowLeftRight } from 'lucide-react';
+import { GitCompare, Search, BookOpen, Lightbulb, Compass, ArrowLeftRight } from 'lucide-react';
 import { MUTASHABIHAT_DATA } from '../data/mutashabihat';
 
 export default function MutashabihatView({ onSelectSurah }) {
@@ -22,7 +22,7 @@ export default function MutashabihatView({ onSelectSurah }) {
       <div className="mutashabihat-hero-card">
         <div className="badge-row">
           <div className="mutashabihat-badge">
-            <Sparkles size={16} className="text-gold" />
+            <GitCompare size={16} className="text-gold" />
             <span>مستكشف المتشابهات اللفظية وتوجيه الفروق (Mutashabihat Explorer)</span>
           </div>
         </div>

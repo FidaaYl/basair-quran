@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, BookOpenText, Copy, Check } from 'lucide-react';
+import { ICONS, RosetteSpinner } from './common/IconSystem';
 import { getAyahTafsir } from '../services/quranApi';
 
 export default function TafsirModal({ isOpen, onClose, surahNumber, ayahNumber, surahName, ayahText }) {
@@ -24,6 +24,11 @@ export default function TafsirModal({ isOpen, onClose, surahNumber, ayahNumber, 
 
   if (!isOpen) return null;
 
+  const TafsirIcon = ICONS.tafsir;
+  const CloseIcon = ICONS.close;
+  const CopyIcon = ICONS.copy;
+  const CheckIcon = ICONS.check;
+
   const handleCopy = () => {
     navigator.clipboard.writeText(`${ayahText}\n\nتفسير الميسر:\n${tafsirText}\n\n[سورة ${surahName}: آية ${ayahNumber}]`);
     setCopied(true);
@@ -31,21 +36,27 @@ export default function TafsirModal({ isOpen, onClose, surahNumber, ayahNumber, 
   };
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="tafsir-modal-card animate-fade-in" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-backdrop" onClick={onClose} role="presentation">
+      <div 
+        className="tafsir-modal-card animate-fade-in" 
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tafsir-modal-title"
+      >
         {/* Header */}
         <div className="modal-header">
           <div className="modal-title-wrap">
-            <BookOpenText size={20} className="modal-icon text-emerald" />
+            <TafsirIcon size={20} strokeWidth={1.8} className="modal-icon text-emerald" />
             <div>
-              <h2 className="modal-title">تفسير الميسر</h2>
+              <h2 id="tafsir-modal-title" className="modal-title">تفسير الميسر</h2>
               <p className="modal-subtitle">
                 سورة {surahName} — الآية {ayahNumber} (مجمع الملك فهد لطباعة المصحف الشريف)
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="modal-close-btn" aria-label="إغلاق التفسير">
-            <X size={20} />
+          <button onClick={onClose} className="modal-close-btn" aria-label="إغلاق لوحة التفسير">
+            <CloseIcon size={20} strokeWidth={1.8} />
           </button>
         </div>
 
@@ -57,10 +68,8 @@ export default function TafsirModal({ isOpen, onClose, surahNumber, ayahNumber, 
         {/* Tafsir Content */}
         <div className="tafsir-body-content">
           {isLoading ? (
-            <div className="tafsir-loading">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="spinner-star animate-spin text-emerald">
-                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" strokeDasharray="14 30" />
-              </svg>
+            <div className="tafsir-loading" role="status" aria-live="polite">
+              <RosetteSpinner size={28} className="text-emerald" />
               <p>جاري استرجاع التفسير الميسر المعتمد...</p>
             </div>
           ) : (
@@ -71,7 +80,11 @@ export default function TafsirModal({ isOpen, onClose, surahNumber, ayahNumber, 
         {/* Footer Actions */}
         <div className="tafsir-footer-actions">
           <button onClick={handleCopy} className="action-pill copy-btn">
-            {copied ? <Check size={16} className="text-emerald" /> : <Copy size={16} />}
+            {copied ? (
+              <CheckIcon size={16} strokeWidth={1.8} className="text-emerald" />
+            ) : (
+              <CopyIcon size={16} strokeWidth={1.8} />
+            )}
             <span>{copied ? 'تم نسخ التفسير والآية' : 'نسخ التفسير'}</span>
           </button>
           <button onClick={onClose} className="action-pill close-btn">

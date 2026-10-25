@@ -30,6 +30,14 @@
   --control-height: 42px;
   --touch-target-min: 44px;
 
+  /* Standardized Iconography Tokens */
+  --icon-nav: 20px;
+  --icon-action: 18px;
+  --icon-player: 20px;
+  --icon-player-main: 22px;
+  --icon-meta: 15px;
+  --icon-stroke: 1.8px;
+
   /* Transitions (140-220ms) */
   --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
   --transition-normal: 200ms cubic-bezier(0.16, 1, 0.3, 1);

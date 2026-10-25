@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { AudioLines, Play, Pause, BookOpen, Clock, Tag, UserCheck, Sparkles } from 'lucide-react';
+import { ICONS } from './common/IconSystem';
 import { SCHOLARS_BOOKS } from '../data/scholarsBooks';
 
 export default function ScholarsLibraryView() {
@@ -7,8 +7,6 @@ export default function ScholarsLibraryView() {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const audioPlayerRef = useRef(new Audio());
-
-  const activeBook = SCHOLARS_BOOKS.find((b) => b.id === activeBookId) || SCHOLARS_BOOKS[0];
 
   const handlePlayBookAudio = (book) => {
     const audio = audioPlayerRef.current;
@@ -33,13 +31,20 @@ export default function ScholarsLibraryView() {
     ? SCHOLARS_BOOKS 
     : SCHOLARS_BOOKS.filter((b) => b.category === selectedCategory);
 
+  const AudioLinesIcon = ICONS.scholars;
+  const PlayIcon = ICONS.play;
+  const PauseIcon = ICONS.pause;
+  const ClockIcon = ICONS.clock;
+  const BookOpenIcon = ICONS.mushaf;
+  const UserCheckIcon = ICONS.userCheck;
+
   return (
-    <div className="scholars-wrapper">
+    <div className="scholars-wrapper" role="region" aria-label="مكتبة الكتب الصوتية للعلماء">
       {/* Hero Header */}
       <div className="scholars-hero-card">
         <div className="badge-row">
           <div className="scholars-badge">
-            <AudioLines size={16} className="text-gold" />
+            <AudioLinesIcon size={18} strokeWidth={1.8} className="text-gold" />
             <span>مكتبة العلماء والكتب الصوتية (Islamic Scholars Audiobooks)</span>
           </div>
         </div>
@@ -51,12 +56,14 @@ export default function ScholarsLibraryView() {
         </p>
 
         {/* Category Filter Pills */}
-        <div className="scholars-filters-row">
+        <div className="scholars-filters-row" role="radiogroup" aria-label="تصفية الكتب حسب التصنيف">
           {categories.map((cat, idx) => (
             <button
               key={idx}
               onClick={() => setSelectedCategory(cat)}
               className={`scholar-filter-chip ${selectedCategory === cat ? 'active' : ''}`}
+              role="radio"
+              aria-checked={selectedCategory === cat}
             >
               {cat === 'all' ? 'جميع الكتب والمصنفات' : cat}
             </button>
@@ -80,7 +87,7 @@ export default function ScholarsLibraryView() {
 
               <div className="book-card-body">
                 <div className="book-author-row">
-                  <UserCheck size={16} className="author-badge-icon" />
+                  <UserCheckIcon size={16} strokeWidth={1.8} className="author-badge-icon" />
                   <span className="book-author font-calligraphy">{book.author}</span>
                 </div>
 
@@ -88,30 +95,35 @@ export default function ScholarsLibraryView() {
 
                 <div className="book-meta-chips">
                   <div className="meta-chip">
-                    <Clock size={13} />
+                    <ClockIcon size={14} strokeWidth={1.8} />
                     <span>{book.totalDuration}</span>
                   </div>
                   <div className="meta-chip">
-                    <BookOpen size={13} />
+                    <BookOpenIcon size={14} strokeWidth={1.8} />
                     <span>{book.chaptersCount} فصلاً</span>
                   </div>
                 </div>
 
                 <div className="book-tags-row">
-                  {book.tags.map((t, tIdx) => (
-                    <span key={tIdx} className="scholar-tag">#{t}</span>
+                  {book.tags.map((tag, tIdx) => (
+                    <span key={tIdx} className="scholar-tag">#{tag}</span>
                   ))}
                 </div>
-              </div>
 
-              <div className="book-card-footer">
-                <button
-                  onClick={() => handlePlayBookAudio(book)}
-                  className={`book-play-btn ${isCurrentlyPlaying ? 'playing' : ''}`}
-                >
-                  {isCurrentlyPlaying ? <Pause size={18} /> : <Play size={18} />}
-                  <span>{isCurrentlyPlaying ? 'إيقاف الاستماع' : 'استمع للمقدمة والشرح'}</span>
-                </button>
+                <div className="book-card-footer">
+                  <button
+                    onClick={() => handlePlayBookAudio(book)}
+                    className={`play-book-btn ${isCurrentlyPlaying ? 'playing' : ''}`}
+                    aria-label={isCurrentlyPlaying ? `إيقاف استماع ${book.title}` : `بدء استماع ${book.title}`}
+                  >
+                    {isCurrentlyPlaying ? (
+                      <PauseIcon size={16} strokeWidth={1.8} />
+                    ) : (
+                      <PlayIcon size={16} strokeWidth={1.8} />
+                    )}
+                    <span>{isCurrentlyPlaying ? 'إيقاف الاستماع' : 'استماع صوتي'}</span>
+                  </button>
+                </div>
               </div>
             </article>
           );

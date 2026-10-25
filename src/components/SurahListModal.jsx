@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { X, Search, BookOpen } from 'lucide-react';
+import { ICONS } from './common/IconSystem';
 import { SURAHS_LIST } from '../data/surahsList';
 import { searchSurahs } from '../services/quranApi';
 
@@ -31,20 +31,30 @@ export default function SurahListModal({ isOpen, onClose, onSelectSurah, current
 
   if (!isOpen) return null;
 
+  const BookOpenIcon = ICONS.mushaf;
+  const CloseIcon = ICONS.close;
+  const SearchIcon = ICONS.search;
+
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="surah-modal-content animate-fade-in" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-backdrop" onClick={onClose} role="presentation">
+      <div 
+        className="surah-modal-content animate-fade-in" 
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="surahs-modal-title"
+      >
         {/* Modal Header */}
         <div className="modal-header">
           <div className="modal-title-wrap">
-            <BookOpen size={20} className="modal-icon text-emerald" />
+            <BookOpenIcon size={20} strokeWidth={1.8} className="modal-icon text-emerald" />
             <div>
-              <h2 className="modal-title">فهرس سور القرآن الكريم</h2>
+              <h2 id="surahs-modal-title" className="modal-title">فهرس سور القرآن الكريم</h2>
               <p className="modal-subtitle">اختر السورة للانتقال المباشر أو البحث السريع (114 سورة)</p>
             </div>
           </div>
           <button onClick={onClose} className="modal-close-btn" aria-label="إغلاق الفهرس">
-            <X size={20} />
+            <CloseIcon size={20} strokeWidth={1.8} />
           </button>
         </div>
 

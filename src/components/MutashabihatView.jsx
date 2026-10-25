@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { GitCompare, Search, BookOpen, Lightbulb, Compass, ArrowLeftRight } from 'lucide-react';
+import { ICONS } from './common/IconSystem';
 import { MUTASHABIHAT_DATA } from '../data/mutashabihat';
 
 export default function MutashabihatView({ onSelectSurah }) {
   const [searchFilter, setSearchFilter] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
 
   const filteredData = MUTASHABIHAT_DATA.filter((item) => {
     const matchesSearch =
@@ -16,13 +15,18 @@ export default function MutashabihatView({ onSelectSurah }) {
     return matchesSearch;
   });
 
+  const GitCompareIcon = ICONS.mutashabihat;
+  const SearchIcon = ICONS.search;
+  const BookOpenIcon = ICONS.mushaf;
+  const LightbulbIcon = ICONS.tadabbur;
+
   return (
-    <div className="mutashabihat-wrapper">
+    <div className="mutashabihat-wrapper" role="region" aria-label="مستكشف المتشابهات اللفظية">
       {/* Hero Header */}
       <div className="mutashabihat-hero-card">
         <div className="badge-row">
           <div className="mutashabihat-badge">
-            <GitCompare size={16} className="text-gold" />
+            <GitCompareIcon size={18} strokeWidth={1.8} className="text-gold" />
             <span>مستكشف المتشابهات اللفظية وتوجيه الفروق (Mutashabihat Explorer)</span>
           </div>
         </div>
@@ -35,13 +39,14 @@ export default function MutashabihatView({ onSelectSurah }) {
 
         {/* Search */}
         <div className="mutashabihat-search-box">
-          <Search size={18} className="search-icon" />
+          <SearchIcon size={18} strokeWidth={1.8} className="search-icon" />
           <input
             type="text"
             value={searchFilter}
             onChange={(e) => setSearchFilter(e.target.value)}
             placeholder="ابحث في المتشابهات بالسورة، الموضع، أو الكلمة (مثال: البقرة، رغداً، شهيداً)..."
             className="mutashabihat-search-input"
+            aria-label="البحث في مواضع المتشابهات القرآنية"
           />
         </div>
       </div>
@@ -49,7 +54,7 @@ export default function MutashabihatView({ onSelectSurah }) {
       {/* Comparisons Feed */}
       <div className="mutashabihat-cards-grid">
         {filteredData.length === 0 ? (
-          <div className="empty-results-state">
+          <div className="empty-results-state" role="status">
             <p>لم يتم العثور على مواضع متشابهة تطابق بحثك.</p>
           </div>
         ) : (
@@ -74,15 +79,16 @@ export default function MutashabihatView({ onSelectSurah }) {
                         onClick={() => onSelectSurah(v.surahNumber)}
                         className="jump-surah-btn"
                         title="الانتقال إلى هذه السورة في المصحف"
+                        aria-label={`الانتقال إلى سورة ${v.reference}`}
                       >
-                        <BookOpen size={14} />
+                        <BookOpenIcon size={16} strokeWidth={1.8} />
                         <span>فتح السورة</span>
                       </button>
                     </div>
 
                     <div className="compared-arabic-text font-quran">
                       {v.textBefore}
-                      <span className="diff-highlight-pill" title="الكلمة الفارقة">
+                      <span className="diff-highlight-pill" title="الكلمة الفارقة المميزة">
                         {v.differingWord}
                       </span>
                       {v.textAfter}
@@ -94,7 +100,7 @@ export default function MutashabihatView({ onSelectSurah }) {
               {/* Mnemonic Rule & Guidance */}
               <div className="mnemonic-rule-box">
                 <div className="rule-title-row">
-                  <Lightbulb size={18} className="text-gold" />
+                  <LightbulbIcon size={18} strokeWidth={1.8} className="text-gold" />
                   <span className="rule-title">ضابط الحفظ والتوجيه البلاغي:</span>
                 </div>
                 <p className="rule-explanation-text">{item.rule}</p>

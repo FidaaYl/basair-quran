@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { X, Copy, Check, Palette, Download, Type } from 'lucide-react';
+import { ICONS, CornerArabesque } from './common/IconSystem';
 import mihrabDarkArt from '../assets/mihrab-quote-card.png';
 import mihrabLightArt from '../assets/mihrab-quote-card-light.png';
 
@@ -12,6 +12,13 @@ export default function AyahCardModal({ isOpen, onClose, ayah, surah }) {
   const cardRef = useRef(null);
 
   if (!isOpen || !ayah || !surah) return null;
+
+  const PaletteIcon = ICONS.palette;
+  const CloseIcon = ICONS.close;
+  const TypeIcon = ICONS.type;
+  const DownloadIcon = ICONS.download;
+  const CopyIcon = ICONS.copy;
+  const CheckIcon = ICONS.check;
 
   const cardThemes = [
     { id: 'mihrab-dark', label: 'المحراب الليلي', isArtwork: true, bgImg: mihrabDarkArt },
@@ -157,14 +164,14 @@ export default function AyahCardModal({ isOpen, onClose, ayah, surah }) {
         {/* Header */}
         <div className="modal-header">
           <div className="modal-title-wrap">
-            <Palette size={20} className="modal-icon text-gold" />
+            <PaletteIcon size={20} strokeWidth={1.8} className="modal-icon text-gold" />
             <div>
               <h2 className="modal-title">مصمم بطاقات الآيات القرآنية</h2>
               <p className="modal-subtitle">صمم بطاقة اقتباس قرآنية راقية للمشاركة والإهداء بجودة فائقة</p>
             </div>
           </div>
           <button onClick={onClose} className="modal-close-btn" aria-label="إغلاق المصمم">
-            <X size={20} />
+            <CloseIcon size={20} strokeWidth={1.8} />
           </button>
         </div>
 
@@ -186,7 +193,7 @@ export default function AyahCardModal({ isOpen, onClose, ayah, surah }) {
           <div className="card-subcontrols-row">
             {/* Font Size Pills */}
             <div className="size-pills-group">
-              <Type size={14} className="text-muted" />
+              <TypeIcon size={14} strokeWidth={1.8} className="text-muted" />
               {[24, 28, 34].map((sz) => (
                 <button
                   key={sz}
@@ -210,7 +217,7 @@ export default function AyahCardModal({ isOpen, onClose, ayah, surah }) {
           </div>
         </div>
 
-        {/* Live Card Preview */}
+        {/* Live Card Preview with Authentic Corner Arabesques */}
         <div className="card-preview-stage">
           <div 
             ref={cardRef} 
@@ -223,10 +230,10 @@ export default function AyahCardModal({ isOpen, onClose, ayah, surah }) {
                 : undefined
             }
           >
-            <div className="card-ornament-corner top-left">❖</div>
-            <div className="card-ornament-corner top-right">❖</div>
-            <div className="card-ornament-corner bottom-left">❖</div>
-            <div className="card-ornament-corner bottom-right">❖</div>
+            <div className="card-ornament-corner top-left"><CornerArabesque position="top-left" size={18} /></div>
+            <div className="card-ornament-corner top-right"><CornerArabesque position="top-right" size={18} /></div>
+            <div className="card-ornament-corner bottom-left"><CornerArabesque position="bottom-left" size={18} /></div>
+            <div className="card-ornament-corner bottom-right"><CornerArabesque position="bottom-right" size={18} /></div>
 
             <div className="card-header-badge">
               <span className="bismillah font-quran">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</span>
@@ -258,11 +265,11 @@ export default function AyahCardModal({ isOpen, onClose, ayah, surah }) {
         {/* Footer Actions */}
         <div className="card-modal-footer">
           <button onClick={handleExportCard} disabled={isExporting} className="action-pill download-btn">
-            <Download size={16} />
+            <DownloadIcon size={16} strokeWidth={1.8} />
             <span>{isExporting ? 'جاري تجهيز الصورة...' : 'تحميل البطاقة عالية الدقة (PNG)'}</span>
           </button>
           <button onClick={handleCopyCardText} className="action-pill copy-btn">
-            {copied ? <Check size={16} className="text-emerald" /> : <Copy size={16} />}
+            {copied ? <CheckIcon size={16} strokeWidth={1.8} className="text-emerald" /> : <CopyIcon size={16} strokeWidth={1.8} />}
             <span>{copied ? 'تم نسخ نص الآية' : 'نسخ نص الاقتباس'}</span>
           </button>
           <button onClick={onClose} className="action-pill close-btn">

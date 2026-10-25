@@ -1,16 +1,5 @@
 import React from 'react';
-import { 
-  GitCompare, 
-  Brain, 
-  BookOpenText, 
-  AudioLines, 
-  Lightbulb, 
-  Share2,
-  Flame,
-  ChevronLeft,
-  Volume2,
-  Sprout
-} from 'lucide-react';
+import { ICONS, IslamicRosette } from './common/IconSystem';
 import { RECITERS } from '../data/reciters';
 import reciterAvatar from '../assets/reciter-avatar.jpg';
 
@@ -31,24 +20,25 @@ export default function SidebarRight({
   const activeReciterObj = RECITERS.find((r) => r.id === selectedReciter) || RECITERS[0];
 
   const quickTools = [
-    { id: 'memorize', label: 'معمل الحفظ', icon: Brain, action: () => setActiveTab('memorize') },
-    { id: 'mutashabihat', label: 'المتشابهات', icon: GitCompare, action: () => setActiveTab('mutashabihat') },
-    { id: 'tafsir', label: 'التفسير', icon: BookOpenText, action: () => onOpenTafsir?.() },
-    { id: 'listen', label: 'الإستماع', icon: AudioLines, action: () => onTogglePlay?.() },
-    { id: 'tadabbur', label: 'تدبر', icon: Lightbulb, action: () => setActiveTab('tadabbur') },
-    { id: 'cards', label: 'بطاقات الآيات', icon: Share2, action: () => onOpenCardModal?.() },
+    { id: 'memorize', label: 'معمل الحفظ', icon: ICONS.memorize, action: () => setActiveTab('memorize') },
+    { id: 'mutashabihat', label: 'المتشابهات', icon: ICONS.mutashabihat, action: () => setActiveTab('mutashabihat') },
+    { id: 'tafsir', label: 'التفسير', icon: ICONS.tafsir, action: () => onOpenTafsir?.() },
+    { id: 'listen', label: 'الإستماع', icon: ICONS.audio, action: () => onTogglePlay?.() },
+    { id: 'tadabbur', label: 'تدبر', icon: ICONS.tadabbur, action: () => setActiveTab('tadabbur') },
+    { id: 'cards', label: 'بطاقات الآيات', icon: ICONS.share, action: () => onOpenCardModal?.() },
   ];
 
+  const SproutIcon = ICONS.level;
+  const FlameIcon = ICONS.streak;
+  const ChevronLeftIcon = ICONS.chevronLeft;
+
   return (
-    <aside className="sidebar-right">
+    <aside className="sidebar-right" aria-label="الشريط الجانبي للأدوات والورد القرآني">
       {/* 1. Daily Wird & Habit Tracker */}
       <div className="sidebar-card wird-card">
         <div className="wird-header-row">
-          <div className="wird-icon-wrap" title="ورد القرآن اليومي">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-gold">
-              <path d="M12 2L14.8 6.5L20 6.8L16.5 10.7L17.5 16L12 13.8L6.5 16L7.5 10.7L4 6.8L9.2 6.5L12 2Z" />
-              <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
+          <div className="wird-icon-wrap" title="ورد القرآن اليومي" aria-hidden="true">
+            <IslamicRosette size={20} className="text-gold" />
           </div>
           <div>
             <h3 className="wird-title">وردك اليوم</h3>
@@ -62,7 +52,14 @@ export default function SidebarRight({
             <span className="progress-fraction font-calligraphy">{currentAyahNum} / {totalAyahs || 7}</span>
           </div>
           <div className="wird-progress-track">
-            <div className="wird-progress-fill" style={{ width: `${progressPercent}%` }} />
+            <div 
+              className="wird-progress-fill" 
+              style={{ width: `${progressPercent}%` }} 
+              role="progressbar"
+              aria-valuenow={progressPercent}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            />
           </div>
         </div>
 
@@ -71,7 +68,7 @@ export default function SidebarRight({
           <div className="wird-stat-row">
             <span className="wird-stat-label">مستواك الحالي</span>
             <span className="wird-level-badge">
-              <Sprout size={13} className="text-emerald" />
+              <SproutIcon size={14} strokeWidth={1.8} className="text-emerald" />
               <span>مبتدئ</span>
             </span>
           </div>
@@ -79,10 +76,12 @@ export default function SidebarRight({
           <div className="wird-streak-row">
             <div className="streak-title-wrap">
               <span className="wird-stat-label">سلسلة القراءة</span>
-              <span className="streak-days">12 يوماً <Flame size={14} className="text-gold" /></span>
+              <span className="streak-days">
+                12 يوماً <FlameIcon size={14} strokeWidth={1.8} className="text-gold" />
+              </span>
             </div>
             {/* 7-day Habit Dots */}
-            <div className="habit-dots-row">
+            <div className="habit-dots-row" aria-label="أيام القراءة المتتالية">
               {[true, true, true, true, true, true, false].map((active, idx) => (
                 <span key={idx} className={`habit-dot ${active ? 'active' : ''}`} />
               ))}
@@ -99,7 +98,7 @@ export default function SidebarRight({
         </div>
       </div>
 
-      {/* 2. Quick Tools Grid (2 columns) */}
+      {/* 2. Quick Tools Grid (2 columns, 18px icons, 1.8px stroke) */}
       <div className="sidebar-card tools-grid-card">
         <h4 className="tools-card-title">أدوات سريعة</h4>
         <div className="quick-tools-grid">
@@ -110,8 +109,9 @@ export default function SidebarRight({
                 key={tool.id}
                 onClick={tool.action}
                 className="quick-tool-btn"
+                aria-label={tool.label}
               >
-                <Icon size={16} className="quick-tool-icon" />
+                <Icon size={18} strokeWidth={1.8} className="quick-tool-icon" />
                 <span className="quick-tool-label">{tool.label}</span>
               </button>
             );
@@ -123,10 +123,17 @@ export default function SidebarRight({
       <div className="sidebar-card reciters-widget-card">
         <div className="reciters-widget-header">
           <h4 className="tools-card-title">القراء المفضلين</h4>
-          <ChevronLeft size={16} className="text-muted" />
+          <ChevronLeftIcon size={16} strokeWidth={1.8} className="text-muted" />
         </div>
 
-        <div className="active-reciter-card" onClick={onTogglePlay}>
+        <div 
+          className="active-reciter-card" 
+          onClick={onTogglePlay}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onTogglePlay?.(); }}
+          aria-label={`القارئ الحالي: ${activeReciterObj.nameAr}، اضغط للتشغيل أو الإيقاف`}
+        >
           <div className="reciter-avatar-wrap">
             <img 
               src={reciterAvatar} 
@@ -138,7 +145,7 @@ export default function SidebarRight({
             <span className="reciter-main-name font-calligraphy">{activeReciterObj.nameAr}</span>
             <span className="reciter-surah-note">سورة {currentSurah?.name || 'الفاتحة'}</span>
           </div>
-          <div className="audio-wave-anim">
+          <div className="audio-wave-anim" aria-hidden="true">
             <span className={`wave-bar ${isPlaying ? 'animated' : ''}`} />
             <span className={`wave-bar ${isPlaying ? 'animated' : ''}`} />
             <span className={`wave-bar ${isPlaying ? 'animated' : ''}`} />

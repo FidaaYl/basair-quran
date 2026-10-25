@@ -3,18 +3,17 @@ import {
   Brain, 
   Eye, 
   EyeOff, 
-  Sparkles, 
   CheckCircle, 
-  RefreshCw, 
-  Sliders, 
   Trophy, 
-  HelpCircle,
   Flame,
-  ArrowRight
+  ArrowRight,
+  GitCompare,
+  Lightbulb
 } from 'lucide-react';
+import { VerseMedallion } from './common/IconSystem';
 import confetti from 'canvas-confetti';
 
-export default function MemorizationStudio({ surahData, onSelectSurah }) {
+export default function MemorizationStudio({ surahData, _onSelectSurah }) {
   const [activeDrill, setActiveDrill] = useState('masking'); // 'masking', 'firstLetter', 'nextAyah'
   const [maskRatio, setMaskRatio] = useState(0.5); // 0.25, 0.5, 1.0
   const [revealedWords, setRevealedWords] = useState({}); // { `${ayahIdx}-${wordIdx}`: true }
@@ -225,9 +224,7 @@ export default function MemorizationStudio({ surahData, onSelectSurah }) {
                         </span>
                       );
                     })}
-                    <span className="ayah-symbol">
-                      ۝{ayah.numberInSurah.toLocaleString('ar-EG')}
-                    </span>
+                    <VerseMedallion number={ayah.numberInSurah} size={28} />
                   </div>
                 </div>
               );
@@ -270,9 +267,7 @@ export default function MemorizationStudio({ surahData, onSelectSurah }) {
                         </span>
                       );
                     })}
-                    <span className="ayah-symbol">
-                      ۝{ayah.numberInSurah.toLocaleString('ar-EG')}
-                    </span>
+                    <VerseMedallion number={ayah.numberInSurah} size={28} />
                   </div>
                 </div>
               );

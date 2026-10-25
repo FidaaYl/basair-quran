@@ -1,17 +1,17 @@
 import React from 'react';
-import { BookOpen, Bookmark, Calendar, Settings2 } from 'lucide-react';
+import { ICONS, IslamicRosette } from './common/IconSystem';
 import logoBasair from '../assets/logo-basair.png';
 
 export default function SidebarLeft({ activeTab, setActiveTab, onOpenBookmarks, onOpenSurahModal }) {
   const menuItems = [
-    { id: 'reader', label: 'المصحف', icon: BookOpen },
-    { id: 'bookmarks', label: 'الإشارات المرجعية', icon: Bookmark },
-    { id: 'memorize', label: 'خطط الحفظ', icon: Calendar },
-    { id: 'settings', label: 'الإعدادات', icon: Settings2 },
+    { id: 'reader', label: 'المصحف الشريف', icon: ICONS.mushaf },
+    { id: 'bookmarks', label: 'الإشارات المرجعية', icon: ICONS.bookmarks },
+    { id: 'memorize', label: 'خطط الحفظ', icon: ICONS.memorize },
+    { id: 'settings', label: 'الإعدادات العامة', icon: ICONS.settings },
   ];
 
   return (
-    <aside className="sidebar-left">
+    <aside className="sidebar-left" aria-label="شريط التنقل الجانبي">
       {/* Brand & Logo from user asset */}
       <div className="sidebar-brand-block">
         <div className="brand-logo-img-wrap">
@@ -27,8 +27,8 @@ export default function SidebarLeft({ activeTab, setActiveTab, onOpenBookmarks, 
         </div>
       </div>
 
-      {/* Navigation List */}
-      <nav className="sidebar-nav-list" aria-label="شريط التنقل الجانبي">
+      {/* Navigation List with standardized 20px icons and 1.8px stroke */}
+      <nav className="sidebar-nav-list" aria-label="قائمة الأقسام">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id || (item.id === 'reader' && activeTab === 'reader');
@@ -43,20 +43,20 @@ export default function SidebarLeft({ activeTab, setActiveTab, onOpenBookmarks, 
                 }
               }}
               className={`sidebar-nav-item ${isActive ? 'active' : ''}`}
+              aria-current={isActive ? 'page' : undefined}
+              aria-label={item.label}
             >
-              <Icon size={18} className="sidebar-item-icon" />
+              <Icon size={20} strokeWidth={1.8} className="sidebar-item-icon" />
               <span className="sidebar-item-text">{item.label}</span>
             </button>
           );
         })}
       </nav>
 
-      {/* Bottom Spiritual Inscription Card with user's uploaded artwork */}
+      {/* Bottom Spiritual Inscription Card with user's uploaded artwork and authentic Islamic Rosette */}
       <div className="sidebar-bottom-quote-card">
-        <div className="quote-ornament-star">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-gold">
-            <path d="M12 2L14.8 6.5L20 6.8L16.5 10.7L17.5 16L12 13.8L6.5 16L7.5 10.7L4 6.8L9.2 6.5L12 2Z" />
-          </svg>
+        <div className="quote-ornament-star" aria-hidden="true">
+          <IslamicRosette size={18} className="text-gold" />
         </div>
         <p className="quote-text font-calligraphy">
           وَمَا أُمِرُوا إِلَّا لِيَعْبُدُوا اللَّهَ مُخْلِصِينَ لَهُ الدِّينَ

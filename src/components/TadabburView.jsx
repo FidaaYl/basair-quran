@@ -1,22 +1,12 @@
 import React, { useState } from 'react';
-import { 
-  Lightbulb, 
-  Heart, 
-  Sparkles, 
-  BookOpen, 
-  Share2, 
-  Shield, 
-  Sun, 
-  Compass,
-  Info
-} from 'lucide-react';
+import { ICONS } from './common/IconSystem';
 import { EMOTIONAL_STATES, PROPHETIC_DUAS } from '../data/thematicAyahs';
 
 const EMOTION_ICONS = {
-  anxiety: Shield,
-  sadness: Heart,
-  gratitude: Sun,
-  guidance: Compass,
+  anxiety: ICONS.shield,
+  sadness: ICONS.heart,
+  gratitude: ICONS.sun,
+  guidance: ICONS.compass,
 };
 
 export default function TadabburView({ onSelectSurah, onOpenCardModal }) {
@@ -25,13 +15,20 @@ export default function TadabburView({ onSelectSurah, onOpenCardModal }) {
 
   const currentEmotion = EMOTIONAL_STATES.find((e) => e.id === selectedEmotionId) || EMOTIONAL_STATES[0];
 
+  const LightbulbIcon = ICONS.tadabbur;
+  const HeartIcon = ICONS.heart;
+  const SparklesIcon = ICONS.streak;
+  const BookOpenIcon = ICONS.mushaf;
+  const ShareIcon = ICONS.share;
+  const InfoIcon = ICONS.info;
+
   return (
-    <div className="tadabbur-wrapper">
+    <div className="tadabbur-wrapper" role="region" aria-label="بصائر وتدبر القرآن الكريم">
       {/* Hero Header */}
       <div className="tadabbur-hero-card">
         <div className="badge-row">
           <div className="tadabbur-badge">
-            <Lightbulb size={16} className="text-emerald" />
+            <LightbulbIcon size={18} strokeWidth={1.8} className="text-emerald" />
             <span>بصائر وتدبر القرآن الكريم (Thematic Reflection & Sanctuary)</span>
           </div>
         </div>
@@ -43,20 +40,24 @@ export default function TadabburView({ onSelectSurah, onOpenCardModal }) {
         </p>
 
         {/* Sub-tabs */}
-        <div className="tadabbur-nav-row">
+        <div className="tadabbur-nav-row" role="tablist" aria-label="أقسام التدبر">
           <button
             onClick={() => setActiveTab('emotions')}
             className={`tadabbur-subtab-btn ${activeTab === 'emotions' ? 'active' : ''}`}
+            role="tab"
+            aria-selected={activeTab === 'emotions'}
           >
-            <Heart size={16} />
+            <HeartIcon size={18} strokeWidth={1.8} />
             <span>حالات الوجدان والسكينة (Emotional Guidance)</span>
           </button>
 
           <button
             onClick={() => setActiveTab('duas')}
             className={`tadabbur-subtab-btn ${activeTab === 'duas' ? 'active' : ''}`}
+            role="tab"
+            aria-selected={activeTab === 'duas'}
           >
-            <Sparkles size={16} />
+            <SparklesIcon size={18} strokeWidth={1.8} />
             <span>أدعية الأنبياء ومواقف الإجابة (Prophetic Duas)</span>
           </button>
         </div>
@@ -64,21 +65,24 @@ export default function TadabburView({ onSelectSurah, onOpenCardModal }) {
 
       {/* Section 1: Emotional Guidance */}
       {activeTab === 'emotions' && (
-        <div className="emotions-section animate-fade-in">
+        <div className="emotions-section animate-fade-in" role="tabpanel">
           {/* Emotion Selector Pills */}
           <div className="emotions-selector-bar">
             <span className="selector-title">كيف تشعر الآن؟</span>
-            <div className="emotions-chips-scroll">
+            <div className="emotions-chips-scroll" role="radiogroup" aria-label="اختر حالتك الوجدانية">
               {EMOTIONAL_STATES.map((emo) => {
                 const isSelected = emo.id === selectedEmotionId;
-                const EmoIcon = EMOTION_ICONS[emo.id] || Heart;
+                const EmoIcon = EMOTION_ICONS[emo.id] || HeartIcon;
                 return (
                   <button
                     key={emo.id}
                     onClick={() => setSelectedEmotionId(emo.id)}
                     className={`emotion-pill-btn ${isSelected ? 'active' : ''}`}
+                    role="radio"
+                    aria-checked={isSelected}
+                    aria-label={emo.labelAr}
                   >
-                    <EmoIcon size={16} className={`emotion-icon ${isSelected ? 'text-emerald' : 'text-muted'}`} />
+                    <EmoIcon size={18} strokeWidth={1.8} className={`emotion-icon ${isSelected ? 'text-emerald' : 'text-muted'}`} />
                     <div className="emotion-labels">
                       <span className="emotion-ar">{emo.labelAr}</span>
                       <span className="emotion-en">{emo.labelEn}</span>
@@ -90,7 +94,7 @@ export default function TadabburView({ onSelectSurah, onOpenCardModal }) {
           </div>
 
           <div className="emotion-header-context">
-            <h3 className="context-title">{currentEmotion.labelAr}</h3>
+            <h3 className="context-title font-calligraphy">{currentEmotion.labelAr}</h3>
             <p className="context-desc">{currentEmotion.descriptionAr}</p>
           </div>
 
@@ -99,7 +103,7 @@ export default function TadabburView({ onSelectSurah, onOpenCardModal }) {
             {currentEmotion.verses.map((v, idx) => (
               <div key={idx} className="tadabbur-card">
                 <div className="tadabbur-card-top">
-                  <span className="tadabbur-surah-ref">
+                  <span className="tadabbur-surah-ref font-calligraphy">
                     سورة {v.surahName} (الآية {v.ayahNumber})
                   </span>
                   <div className="tadabbur-actions">
@@ -107,8 +111,9 @@ export default function TadabburView({ onSelectSurah, onOpenCardModal }) {
                       onClick={() => onSelectSurah(v.surahNumber)}
                       className="tadabbur-btn jump"
                       title="فتح السورة في المصحف"
+                      aria-label={`قراءة سورة ${v.surahName} في المصحف`}
                     >
-                      <BookOpen size={14} />
+                      <BookOpenIcon size={16} strokeWidth={1.8} />
                       <span>قراءة في المصحف</span>
                     </button>
                     <button
@@ -118,27 +123,28 @@ export default function TadabburView({ onSelectSurah, onOpenCardModal }) {
                           { name: v.surahName, number: v.surahNumber }
                         )
                       }
-                      className="tadabbur-btn card"
-                      title="تصميم بطاقة دعوية"
+                      className="tadabbur-btn share"
+                      title="تصميم بطاقة اقتباس"
+                      aria-label="تصميم بطاقة للآية"
                     >
-                      <Share2 size={14} />
-                      <span>بطاقة</span>
+                      <ShareIcon size={16} strokeWidth={1.8} />
+                      <span>مشاركة الآية</span>
                     </button>
                   </div>
                 </div>
 
-                <p className="tadabbur-arabic-text font-quran">{v.ayahText}</p>
+                <div className="tadabbur-arabic-text font-quran">
+                  "{v.ayahText}"
+                </div>
 
-                {/* Translation */}
                 <div className="tadabbur-translations-box">
                   <p className="tadabbur-en">{v.translationEn}</p>
                   <p className="tadabbur-fr">{v.translationFr}</p>
                 </div>
 
-                {/* Tadabbur Reflection Note */}
-                <div className="reflection-note-box">
+                <div className="tadabbur-reflection-box">
                   <div className="reflection-badge">
-                    <MessageCircle size={15} className="text-emerald" />
+                    <LightbulbIcon size={16} strokeWidth={1.8} className="text-emerald" />
                     <span>بصيرة وتأمل:</span>
                   </div>
                   <p className="reflection-text">{v.reflectionAr}</p>
@@ -151,13 +157,13 @@ export default function TadabburView({ onSelectSurah, onOpenCardModal }) {
 
       {/* Section 2: Prophetic Duas */}
       {activeTab === 'duas' && (
-        <div className="duas-section animate-fade-in">
+        <div className="duas-section animate-fade-in" role="tabpanel">
           <div className="duas-cards-grid">
             {PROPHETIC_DUAS.map((item, idx) => (
               <div key={idx} className="prophetic-dua-card">
                 <div className="dua-prophet-badge">
-                  <Sparkles size={16} className="text-gold" />
-                  <span className="prophet-name">{item.prophet}</span>
+                  <LightbulbIcon size={16} strokeWidth={1.8} className="text-gold" />
+                  <span className="prophet-name font-calligraphy">{item.prophet}</span>
                   <span className="prophet-name-en">({item.prophetEn})</span>
                 </div>
 
@@ -180,8 +186,8 @@ export default function TadabburView({ onSelectSurah, onOpenCardModal }) {
       )}
 
       {/* Contemplative Notice */}
-      <div className="tadabbur-disclaimer-card">
-        <Info size={16} className="text-emerald" />
+      <div className="tadabbur-disclaimer-card" role="note">
+        <InfoIcon size={18} strokeWidth={1.8} className="text-emerald" />
         <p>
           ملاحظة: هذا القسم مخصص للاستئناس الروحي والتأمل والتدبر الإيماني في آيات الذكر الحكيم، وليس بديلاً عن الاستشارات الطبية أو النفسية المتخصصة عند الحاجة.
         </p>

@@ -1,0 +1,240 @@
+/* ==========================================================================
+   Basa'ir (بَصَائِر) Design System Tokens & Base Styles
+   Senior Product Design & Accessible Token Architecture
+   ========================================================================== */
+
+:root {
+  /* Font Families */
+  --font-arabic-quran: 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif;
+  --font-arabic-calligraphy: 'Amiri', serif;
+  --font-ui: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Universal Brand Colors */
+  --brand-emerald-50: #ecfdf5;
+  --brand-emerald-500: #10b981;
+  --brand-emerald-600: #059669;
+  --brand-emerald-700: #047857;
+  --brand-emerald-900: #064e3b;
+
+  --brand-gold-300: #fde047;
+  --brand-gold-500: #eab308;
+  --brand-gold-600: #ca8a04;
+  --brand-gold-700: #a16207;
+
+  /* Shared Spacing Scale (4/8pt) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Border Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   Theme: Layl / Dark Mode (Default)
+   Deep celestial obsidian, refined emerald, soft gilded accents
+   ========================================================================== */
+[data-theme='dark'] {
+  --bg-app: #080d12;
+  --bg-surface: #0f1620;
+  --bg-surface-elevated: #16202e;
+  --bg-surface-hover: #1c293a;
+  --bg-card: #121b27;
+  --bg-glass: rgba(15, 22, 32, 0.85);
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-emerald: #34d399;
+  --text-gold: #fbbf24;
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.15);
+  --border-gold: rgba(234, 179, 8, 0.3);
+  --border-emerald: rgba(16, 185, 129, 0.3);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.6);
+  --shadow-emerald: 0 0 20px rgba(16, 185, 129, 0.15);
+
+  --ayah-active-bg: rgba(16, 185, 129, 0.12);
+  --ayah-active-border: rgba(16, 185, 129, 0.4);
+  --masked-word-bg: #1e293b;
+  --masked-word-border: #334155;
+}
+
+/* ==========================================================================
+   Theme: Noor / Light Mode
+   Warm manuscript parchment, deep forest emerald, antiqued gold
+   ========================================================================== */
+[data-theme='light'] {
+  --bg-app: #fbf9f5;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #f4efe6;
+  --bg-surface-hover: #ece5d8;
+  --bg-card: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.9);
+
+  --text-primary: #1c1917;
+  --text-secondary: #57534e;
+  --text-muted: #857f77;
+  --text-emerald: #065f46;
+  --text-gold: #92400e;
+
+  --border-subtle: rgba(28, 25, 23, 0.08);
+  --border-medium: rgba(28, 25, 23, 0.14);
+  --border-gold: rgba(180, 83, 9, 0.25);
+  --border-emerald: rgba(5, 150, 105, 0.25);
+
+  --shadow-sm: 0 1px 3px rgba(28, 25, 23, 0.05);
+  --shadow-md: 0 4px 14px rgba(28, 25, 23, 0.08);
+  --shadow-lg: 0 12px 28px rgba(28, 25, 23, 0.12);
+  --shadow-emerald: 0 0 20px rgba(5, 150, 105, 0.08);
+
+  --ayah-active-bg: rgba(5, 150, 105, 0.08);
+  --ayah-active-border: rgba(5, 150, 105, 0.35);
+  --masked-word-bg: #e7e0d3;
+  --masked-word-border: #d3c7b3;
+}
+
+/* ==========================================================================
+   Base Reset & Typography
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  min-height: 100vh;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  direction: rtl;
+  text-align: right;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* Modern Accessible Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-app);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-emerald-600);
+}
+
+/* Interactive elements base styles */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--brand-emerald-500);
+  outline-offset: 2px;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+/* ==========================================================================
+   Typography Classes
+   ========================================================================== */
+.font-quran {
+  font-family: var(--font-arabic-quran);
+  line-height: 2.2;
+}
+
+.font-calligraphy {
+  font-family: var(--font-arabic-calligraphy);
+}
+
+/* Ayah end verse number symbol */
+.ayah-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 6px;
+  font-family: var(--font-arabic-quran);
+  color: var(--text-gold);
+  font-size: 1.15em;
+  user-select: none;
+}
+
+/* ==========================================================================
+   App Layout Utilities
+   ========================================================================== */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding-bottom: 110px; /* Space for sticky bottom audio bar */
+}
+
+.content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .content-wrapper {
+    padding: 0 var(--space-6);
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
+  50% { box-shadow: 0 0 25px rgba(16, 185, 129, 0.45); }
+}
+
+.pulse-glow {
+  animation: pulseGlow 2s infinite ease-in-out;
+}

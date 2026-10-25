@@ -1,0 +1,16 @@
+# Render Blueprint Specification for Basa'ir (بَصَائِر)
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: basair-quran
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate

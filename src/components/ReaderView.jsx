@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
-  Play, 
   Pause, 
   BookOpenText, 
   Share2, 
@@ -8,9 +7,6 @@ import {
   Check, 
   Bookmark, 
   Languages, 
-  Volume2,
-  ZoomIn,
-  ZoomOut,
   ChevronRight,
   ChevronLeft,
   Search,

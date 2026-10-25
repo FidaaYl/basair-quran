@@ -247,6 +247,7 @@ export default function App() {
           setActiveTab={setActiveTab}
           onOpenBookmarks={() => setIsSurahModalOpen(true)}
           onOpenSurahModal={() => setIsSurahModalOpen(true)}
+          theme={theme}
         />
 
         {/* Center Main Stage (Header + Content Views) */}

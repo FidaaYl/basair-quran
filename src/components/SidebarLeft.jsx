@@ -1,8 +1,7 @@
-import React from 'react';
-import { ICONS, IslamicRosette } from './common/IconSystem';
+import { ICONS } from './common/IconSystem';
 import logoBasair from '../assets/logo-basair.png';
 
-export default function SidebarLeft({ activeTab, setActiveTab, onOpenBookmarks, onOpenSurahModal }) {
+export default function SidebarLeft({ activeTab, setActiveTab, onOpenBookmarks, onOpenSurahModal, theme = 'dark' }) {
   const menuItems = [
     { id: 'reader', label: 'المصحف الشريف', icon: ICONS.mushaf },
     { id: 'bookmarks', label: 'الإشارات المرجعية', icon: ICONS.bookmarks },
@@ -53,15 +52,18 @@ export default function SidebarLeft({ activeTab, setActiveTab, onOpenBookmarks, 
         })}
       </nav>
 
-      {/* Bottom Spiritual Inscription Card with user's uploaded artwork and authentic Islamic Rosette */}
-      <div className="sidebar-bottom-quote-card">
-        <div className="quote-ornament-star" aria-hidden="true">
-          <IslamicRosette size={18} className="text-gold" />
+      {/* Bottom Spiritual Inscription Card with user's uploaded authentic Mihrab artwork */}
+      <div 
+        className="sidebar-bottom-quote-card"
+        role="region"
+        aria-label="آية وتذكرة يومية"
+      >
+        <div className="quote-card-center-stage">
+          <p className="quote-text font-calligraphy">
+            وَمَا أُمِرُوا إِلَّا لِيَعْبُدُوا اللَّهَ مُخْلِصِينَ لَهُ الدِّينَ
+          </p>
+          <span className="quote-reference">سورة البينة - الآية 5</span>
         </div>
-        <p className="quote-text font-calligraphy">
-          وَمَا أُمِرُوا إِلَّا لِيَعْبُدُوا اللَّهَ مُخْلِصِينَ لَهُ الدِّينَ
-        </p>
-        <span className="quote-reference">سورة البينة - الآية 5</span>
       </div>
     </aside>
   );

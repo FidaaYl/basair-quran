@@ -48,29 +48,39 @@
   background-color: var(--bg-surface);
   display: flex;
   flex-direction: column;
-  padding: var(--space-5) var(--space-4);
+  padding: 16px 14px 10px;
   position: sticky;
   top: 0;
-  height: 100vh;
-  overflow-y: auto;
+  height: calc(100vh - 74px);
+  max-height: calc(100vh - 74px);
+  overflow: hidden;
   direction: rtl;
+  box-sizing: border-box;
+}
+
+@media (max-height: 660px) {
+  .sidebar-left {
+    overflow-y: auto;
+  }
 }
 
 .sidebar-brand-block {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding-bottom: var(--space-5);
-  margin-bottom: var(--space-4);
+  padding-bottom: 12px;
+  margin-bottom: 10px;
   border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
 }
 
 .brand-logo-img-wrap {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .brand-logo-img {
@@ -85,7 +95,7 @@
 }
 
 .brand-main-title {
-  font-size: 22px;
+  font-size: 21px;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.1;
@@ -101,18 +111,18 @@
 .sidebar-nav-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  flex: 1;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
 .sidebar-nav-item {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: 10px 14px;
+  padding: 9px 12px;
   border-radius: var(--radius-md);
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 500;
   transition: all var(--transition-fast);
   text-align: right;
@@ -141,60 +151,97 @@
   flex-shrink: 0;
 }
 
+/* ==========================================================================
+   Mihrab Quote Card (User Artwork Inscription)
+   - Preserves 576x1024 (9:16) aspect ratio without clipping
+   - Fully adapts to Light Mode (white/ivory) and Dark Mode (charcoal/emerald)
+   - Perfectly centers Quranic Ayah & Surah Reference in open arch sanctuary
+   - Fits cleanly in sidebar without scrolling down
+   ========================================================================== */
 .sidebar-bottom-quote-card {
-  margin-top: auto;
-  min-height: 250px;
-  border-radius: var(--radius-xl);
-  border: 1px solid rgba(212, 175, 55, 0.45);
-  text-align: center;
+  width: 100%;
+  max-width: 220px;
+  margin: auto auto 0 auto;
+  aspect-ratio: 576 / 1024;
+  max-height: min(370px, calc(100vh - 350px));
+  border-radius: 12px;
   position: relative;
   overflow: hidden;
-  background-size: cover;
-  background-position: center top;
+  background-size: 100% 100%;
+  background-position: center;
   background-repeat: no-repeat;
+  flex-shrink: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  padding: 48px 12px 18px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 [data-theme='light'] .sidebar-bottom-quote-card {
-  background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.15)),
-    url('./assets/mihrab-quote-card.png');
-  border-color: rgba(212, 175, 55, 0.5);
+  background-image: url('./assets/mihrab-quote-card-light.png');
+  border: 1px solid rgba(180, 145, 60, 0.25);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
 [data-theme='dark'] .sidebar-bottom-quote-card {
   background-image: url('./assets/mihrab-quote-card.png');
-  border-color: rgba(212, 175, 55, 0.4);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55);
 }
 
-.quote-ornament-star {
-  color: #f5c862;
-  font-size: 15px;
-  margin-bottom: 6px;
-  text-shadow: 0 0 12px rgba(245, 200, 98, 0.6);
+.quote-card-center-stage {
+  position: absolute;
+  top: 24%;
+  bottom: 37%;
+  left: 10%;
+  right: 10%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+  padding: 0 4px;
 }
 
 .quote-text {
-  font-size: 13.5px;
-  line-height: 1.7;
+  font-size: clamp(12px, 1.3vw, 14px);
+  line-height: 1.68;
+  margin-bottom: 6px;
+  text-align: center;
+  direction: rtl;
+  letter-spacing: 0.2px;
+}
+
+[data-theme='dark'] .quote-text {
   color: #ffffff;
-  margin-bottom: 4px;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95), 0 0 14px rgba(245, 200, 98, 0.35);
+  font-weight: 700;
+}
+
+[data-theme='light'] .quote-text {
+  color: #123024;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.9);
   font-weight: 700;
 }
 
 .quote-reference {
-  display: block;
+  display: inline-block;
   font-size: 10.5px;
-  color: #f5c862;
   font-weight: 600;
+  letter-spacing: 0.3px;
+  text-align: center;
+  direction: rtl;
+}
+
+[data-theme='dark'] .quote-reference {
+  color: #f5c862;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+}
+
+[data-theme='light'] .quote-reference {
+  color: #8c5d10;
+  text-shadow: none;
 }
 
 /* --------------------------------------------------------------------------
@@ -863,9 +910,11 @@
   padding: var(--space-5) var(--space-4);
   position: sticky;
   top: 0;
-  height: 100vh;
+  height: calc(100vh - 74px);
+  max-height: calc(100vh - 74px);
   overflow-y: auto;
   direction: rtl;
+  box-sizing: border-box;
 }
 
 .sidebar-card {

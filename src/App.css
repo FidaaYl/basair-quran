@@ -131,8 +131,10 @@
 }
 
 [data-theme='dark'] .sidebar-nav-item.active {
-  background-color: rgba(16, 185, 129, 0.18);
-  color: #34d399;
+  background-color: #064e4b;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(6, 78, 75, 0.4);
 }
 
 .sidebar-item-icon {
@@ -141,32 +143,58 @@
 
 .sidebar-bottom-quote-card {
   margin-top: auto;
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  background-color: var(--bg-surface-elevated);
-  border: 1px solid var(--border-gold);
+  min-height: 250px;
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(212, 175, 55, 0.45);
   text-align: center;
   position: relative;
   overflow: hidden;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 48px 12px 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='light'] .sidebar-bottom-quote-card {
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.15)),
+    url('./assets/mihrab-quote-card.png');
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+[data-theme='dark'] .sidebar-bottom-quote-card {
+  background-image: url('./assets/mihrab-quote-card.png');
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
 }
 
 .quote-ornament-star {
-  color: var(--text-gold);
-  font-size: 14px;
-  margin-bottom: 4px;
+  color: #f5c862;
+  font-size: 15px;
+  margin-bottom: 6px;
+  text-shadow: 0 0 12px rgba(245, 200, 98, 0.6);
 }
 
 .quote-text {
-  font-size: 14.5px;
+  font-size: 13.5px;
   line-height: 1.7;
-  color: var(--text-primary);
-  margin-bottom: 6px;
+  color: #ffffff;
+  margin-bottom: 4px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
+  font-weight: 700;
 }
 
 .quote-reference {
   display: block;
-  font-size: 11px;
-  color: var(--text-gold);
+  font-size: 10.5px;
+  color: #f5c862;
+  font-weight: 600;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
 }
 
 /* --------------------------------------------------------------------------
@@ -289,7 +317,9 @@
 }
 
 [data-theme='dark'] .nav-pill-btn.active {
-  background-color: #059669;
+  background-color: #064e4b;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(6, 78, 75, 0.5);
 }
 
 .navbar-right-tools {
@@ -596,8 +626,15 @@
 }
 
 .ayah-card-screenshot.active-highlight {
-  border: 1px solid #10b981;
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+  border: 1.5px solid #059669;
+  box-shadow: 0 0 20px rgba(5, 150, 105, 0.15);
+  background-color: rgba(5, 150, 105, 0.04);
+}
+
+[data-theme='dark'] .ayah-card-screenshot.active-highlight {
+  border: 1.5px solid #14b8a6;
+  box-shadow: 0 0 25px rgba(20, 184, 166, 0.22), inset 0 0 20px rgba(20, 184, 166, 0.04);
+  background-color: #0b1a20;
 }
 
 .ayah-card-top-header {
@@ -646,6 +683,15 @@
   color: #ffffff;
   border-color: #0d652d;
   font-weight: 600;
+}
+
+[data-theme='dark'] .card-tool-btn.listen-btn.active,
+[data-theme='dark'] .ayah-card-screenshot.active-highlight .card-tool-btn.listen-btn {
+  background-color: #064e4b;
+  color: #ffffff;
+  border-color: #0d9488;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(6, 78, 75, 0.6);
 }
 
 .ayah-body-arabic {
@@ -732,13 +778,21 @@
 }
 
 .active-action-pill.memorize {
-  border-color: var(--border-emerald);
-  color: var(--text-emerald);
+  border-color: #14b8a6;
+  color: #2dd4bf;
+  background-color: rgba(20, 184, 166, 0.12);
 }
 
 .active-action-pill.tadabbur {
-  border-color: var(--border-gold);
-  color: var(--text-gold);
+  border-color: #d4af37;
+  color: #f5c862;
+  background-color: rgba(212, 175, 55, 0.1);
+}
+
+.active-action-pill.mutashabihat {
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #9cb3bd;
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .active-progress-wrap {

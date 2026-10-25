@@ -20,7 +20,7 @@ import { SURAHS_LIST } from './data/surahsList';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('reader');
-  const [theme, setTheme] = useState(() => localStorage.getItem('basair_theme') || 'light');
+  const [theme, setTheme] = useState(() => localStorage.getItem('basair_theme') || 'dark');
 
   // Surah & Ayahs state
   const [currentSurahNumber, setCurrentSurahNumber] = useState(1);

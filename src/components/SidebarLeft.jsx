@@ -51,13 +51,13 @@ export default function SidebarLeft({ activeTab, setActiveTab, onOpenBookmarks, 
         })}
       </nav>
 
-      {/* Bottom Spiritual Inscription Card with pattern */}
+      {/* Bottom Spiritual Inscription Card with user's uploaded artwork */}
       <div className="sidebar-bottom-quote-card">
         <div className="quote-ornament-star">✦</div>
         <p className="quote-text font-calligraphy">
-          "وَمَا أُمِرُوا إِلَّا لِيَعْبُدُوا اللَّهَ مُخْلِصِينَ لَهُ الدِّينَ"
+          وَمَا أُمِرُوا إِلَّا لِيَعْبُدُوا اللَّهَ مُخْلِصِينَ لَهُ الدِّينَ
         </p>
-        <span className="quote-reference">سورة البينة: الآية 5</span>
+        <span className="quote-reference">سورة البينة - الآية 5</span>
       </div>
     </aside>
   );

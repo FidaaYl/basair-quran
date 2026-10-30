@@ -10,7 +10,7 @@ const EMOTION_ICONS = {
 };
 
 export default function TadabburView({ onSelectSurah, onOpenCardModal }) {
-  const [activeTab, setActiveTab] = useState('emotions'); // 'emotions', 'duas'
+  const [activeTab, setActiveTab] = useState('emotions');
   const [selectedEmotionId, setSelectedEmotionId] = useState('anxiety');
 
   const currentEmotion = EMOTIONAL_STATES.find((e) => e.id === selectedEmotionId) || EMOTIONAL_STATES[0];

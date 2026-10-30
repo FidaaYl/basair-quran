@@ -45,15 +45,16 @@ import {
   Server,
   Activity,
   ShieldCheck,
-  Palette
+  Palette,
+  RotateCcw,
+  Sparkles,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  Plus
 } from 'lucide-react';
 
-/* ==========================================================================
-   1. Centralized Semantic Icon Mapping
-   All functional icons across Basa'ir mapped to Lucide React with verified names
-   ========================================================================== */
 export const ICONS = {
-  // Navigation & Core Modules
   mushaf: BookOpen,
   bookmarks: Bookmark,
   memorize: Brain,
@@ -63,7 +64,6 @@ export const ICONS = {
   tafsir: BookOpenText,
   translation: Languages,
 
-  // Audio Playback
   audio: AudioLines,
   play: Play,
   pause: Pause,
@@ -76,7 +76,6 @@ export const ICONS = {
   volumeMute: VolumeX,
   queue: ListMusic,
 
-  // Interface & Settings
   search: Search,
   settings: Settings2,
   themeLight: Sun,
@@ -87,44 +86,38 @@ export const ICONS = {
   type: Type,
   palette: Palette,
 
-  // Actions & Feedback
+  plus: Plus,
   copy: Copy,
   check: Check,
   share: Share2,
   download: Download,
+  externalLink: ExternalLink,
   info: Info,
 
-  // Navigation Directionals
   chevronUp: ChevronUp,
   chevronDown: ChevronDown,
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
 
-  // Gamification & Habit (Restrained)
   streak: Flame,
   level: Sprout,
 
-  // Thematic States (Tadabbur)
   heart: Heart,
   shield: Shield,
   sun: Sun,
   compass: Compass,
 
-  // Scholars Library & Diagnostics
   clock: Clock,
   userCheck: UserCheck,
   server: Server,
   activity: Activity,
-  shieldCheck: ShieldCheck
+  shieldCheck: ShieldCheck,
+  refresh: RotateCcw,
+  sparkles: Sparkles,
+  eye: Eye,
+  eyeOff: EyeOff
 };
 
-/* ==========================================================================
-   2. Standardized Icon Components with Unified Sizing & Stroke
-   - Navigation: 20px, strokeWidth: 1.8
-   - Verse Actions: 18px, strokeWidth: 1.8
-   - Playback Controls: 20-22px, strokeWidth: 1.8
-   - Metadata / Compact: 15-16px, strokeWidth: 1.8
-   ========================================================================== */
 
 export const NavIcon = ({ icon: IconComponent, className = '', size = 20, strokeWidth = 1.8, ...props }) => {
   if (!IconComponent) return null;
@@ -146,15 +139,7 @@ export const MetaIcon = ({ icon: IconComponent, className = '', size = 15, strok
   return <IconComponent size={size} strokeWidth={strokeWidth} className={`meta-icon-standard ${className}`} {...props} />;
 };
 
-/* ==========================================================================
-   3. Custom Authentic Islamic Geometric SVG Ornaments
-   Clean scalable vectors for brand marks, rosettes, dividers & verse medallions.
-   Keeps decorative geometry strictly separated from functional UI icons.
-   ========================================================================== */
 
-/**
- * Authentic 8-Point Islamic Geometric Rosette (Khatam / Star Polygon)
- */
 export const IslamicRosette = ({ size = 22, className = 'text-gold', ...props }) => (
   <svg
     width={size}
@@ -188,10 +173,6 @@ export const IslamicRosette = ({ size = 22, className = 'text-gold', ...props })
   </svg>
 );
 
-/**
- * Authentic Quranic Verse End Medallion (Ayah Marker)
- * Renders an intricate geometric medallion with the Eastern Arabic numeral cleanly centered inside.
- */
 export const VerseMedallion = ({ number, size = 32, className = 'text-gold', ...props }) => {
   const arabicNum = typeof number === 'number' ? number.toLocaleString('ar-EG') : number;
   return (
@@ -240,10 +221,6 @@ export const VerseMedallion = ({ number, size = 32, className = 'text-gold', ...
   );
 };
 
-/**
- * Authentic Ornamental Horizontal Divider Rule
- * Elegant, restrained Islamic arabesque center with subtle tapered side rules.
- */
 export const OrnamentalDivider = ({ className = 'text-gold', ...props }) => (
   <div
     className={`ornamental-divider-wrap ${className}`}
@@ -265,9 +242,6 @@ export const OrnamentalDivider = ({ className = 'text-gold', ...props }) => (
   </div>
 );
 
-/**
- * Authentic Islamic Corner Arabesque for Premium Cards
- */
 export const CornerArabesque = ({ position = 'top-left', size = 16, className = 'text-gold', ...props }) => {
   const getTransform = () => {
     switch (position) {
@@ -301,9 +275,6 @@ export const CornerArabesque = ({ position = 'top-left', size = 16, className = 
   );
 };
 
-/**
- * Animated Islamic Rosette Spinner for Loading States
- */
 export const RosetteSpinner = ({ size = 26, className = 'text-emerald', ...props }) => (
   <svg
     width={size}

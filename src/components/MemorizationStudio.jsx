@@ -7,25 +7,22 @@ import {
   Trophy, 
   Flame,
   ArrowRight,
-  GitCompare,
-  Lightbulb
+  Sparkles
 } from 'lucide-react';
 import { VerseMedallion } from './common/IconSystem';
 import confetti from 'canvas-confetti';
 
 export default function MemorizationStudio({ surahData, _onSelectSurah }) {
-  const [activeDrill, setActiveDrill] = useState('masking'); // 'masking', 'firstLetter', 'nextAyah'
-  const [maskRatio, setMaskRatio] = useState(0.5); // 0.25, 0.5, 1.0
-  const [revealedWords, setRevealedWords] = useState({}); // { `${ayahIdx}-${wordIdx}`: true }
+  const [activeDrill, setActiveDrill] = useState('masking');
+  const [maskRatio, setMaskRatio] = useState(0.5);
+  const [revealedWords, setRevealedWords] = useState({});
   
-  // Next-Ayah Quiz State
   const [quizAyahIndex, setQuizAyahIndex] = useState(0);
   const [quizScore, setQuizScore] = useState(0);
   const [quizStreak, setQuizStreak] = useState(0);
   const [selectedQuizOption, setSelectedQuizOption] = useState(null);
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
 
-  // Masking helpers
   const toggleWordReveal = (ayahIdx, wordIdx) => {
     const key = `${ayahIdx}-${wordIdx}`;
     setRevealedWords((prev) => ({
@@ -49,7 +46,6 @@ export default function MemorizationStudio({ surahData, _onSelectSurah }) {
     setRevealedWords({});
   };
 
-  // Next-Ayah Quiz options generator
   const quizQuestion = useMemo(() => {
     if (!surahData || surahData.ayahs.length < 3) return null;
     const maxIndex = surahData.ayahs.length - 2;
@@ -57,7 +53,6 @@ export default function MemorizationStudio({ surahData, _onSelectSurah }) {
     const promptAyah = surahData.ayahs[currentIdx];
     const correctAyah = surahData.ayahs[currentIdx + 1];
 
-    // Pick 2 distractors from other ayahs in this surah
     const otherAyahs = surahData.ayahs.filter((_, i) => i !== currentIdx && i !== currentIdx + 1);
     const shuffledOthers = [...otherAyahs].sort(() => 0.5 - Math.random());
     const distractors = shuffledOthers.slice(0, 2);
@@ -209,7 +204,6 @@ export default function MemorizationStudio({ surahData, _onSelectSurah }) {
                   <div className="masked-words-flow font-quran">
                     {words.map((word, wIdx) => {
                       const key = `${aIdx}-${wIdx}`;
-                      // Deterministic mask based on word index and ratio
                       const shouldBeMaskedByDefault = ((wIdx * 7 + aIdx * 3) % 100) < (maskRatio * 100);
                       const isRevealed = revealedWords[key] ?? !shouldBeMaskedByDefault;
 

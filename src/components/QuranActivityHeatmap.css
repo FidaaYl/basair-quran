@@ -1,0 +1,108 @@
+/* ==========================================================================
+   Quran Activity Heatmap Styles (Emerald & Gold Manuscript Grid)
+   ========================================================================== */
+
+.quran-heatmap-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.heatmap-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.heatmap-title {
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  margin: 0 0 3px;
+  font-weight: 700;
+}
+
+.heatmap-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.legend-label {
+  padding: 0 3px;
+}
+
+.heatmap-grid-scroll {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.heatmap-cells-grid {
+  display: grid;
+  grid-template-rows: repeat(7, 13px);
+  grid-auto-flow: column;
+  grid-auto-columns: 13px;
+  gap: 4px;
+}
+
+.heatmap-cell {
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+  transition: transform 0.1s ease, filter 0.1s ease;
+  cursor: pointer;
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.25);
+  filter: brightness(1.2);
+}
+
+/* 4 Density Levels in Emerald/Gold */
+.heatmap-cell.level-0 {
+  background-color: var(--bg-surface-elevated, #1a272c);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.05));
+}
+
+[data-theme='light'] .heatmap-cell.level-0 {
+  background-color: #ebe7dd;
+  border-color: #ded9cd;
+}
+
+.heatmap-cell.level-1 {
+  background-color: rgba(16, 185, 129, 0.35);
+}
+
+.heatmap-cell.level-2 {
+  background-color: rgba(16, 185, 129, 0.7);
+}
+
+.heatmap-cell.level-3 {
+  background-color: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+}
+
+.heatmap-footer-note {
+  font-size: 0.78rem;
+  color: var(--color-accent-gold, #d2aa60);
+  opacity: 0.88;
+  font-family: 'Amiri', serif;
+  text-align: left;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-3);
+}
+

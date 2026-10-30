@@ -1,0 +1,27 @@
+{
+  "name": "بَصَائِر | Basa'ir",
+  "short_name": "بَصَائِر",
+  "description": "منصة بَصَائِر القرآنية الذكية — تلاوة، تدبر، مكتبة العلماء، واستوديو الحفظ والمطابقة",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#061714",
+  "theme_color": "#0B2B26",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "/logo-basair.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo-basair.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "books", "lifestyle"]
+}

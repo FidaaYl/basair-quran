@@ -14,10 +14,19 @@
   --space-2: 8px;   /* compact */
   --space-3: 12px;  /* control */
   --space-4: 16px;  /* standard */
+  --space-5: 20px;  /* medium */
   --space-6: 24px;  /* component */
   --space-8: 32px;  /* section */
+  --space-10: 40px; /* large section */
   --space-12: 48px; /* major section */
   --space-16: 64px; /* large page */
+
+  /* Brand Color Tokens Fallback */
+  --brand-emerald-500: #10B981;
+  --brand-emerald-600: #059669;
+  --brand-emerald-700: #047857;
+  --brand-gold-500: #F59E0B;
+  --brand-gold-600: #D97706;
 
   /* Component Geometry */
   --radius-sm: 8px;   /* small controls */
@@ -102,6 +111,12 @@
   --ayah-active-border: var(--color-active-verse-border);
   --masked-word-bg: #1A272C;
   --masked-word-border: #28363A;
+
+  --brand-emerald-500: #19A681;
+  --brand-emerald-600: #108E6E;
+  --brand-emerald-700: #087F63;
+  --brand-gold-500: #D2AA60;
+  --brand-gold-600: #B58A43;
 }
 
 /* ==========================================================================
@@ -169,6 +184,12 @@
   --ayah-active-border: var(--color-active-verse-border);
   --masked-word-bg: #E9EEE7;
   --masked-word-border: #D4DDD5;
+
+  --brand-emerald-500: #087F63;
+  --brand-emerald-600: #087F63;
+  --brand-emerald-700: #066952;
+  --brand-gold-500: #B58A43;
+  --brand-gold-600: #997232;
 }
 
 /* ==========================================================================

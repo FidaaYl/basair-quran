@@ -1,0 +1,561 @@
+/* ==========================================================================
+   Khatmah Planner View Styles
+   Harmonized with Basa'ir Design Tokens (Layl Dark & Noor Light)
+   ========================================================================== */
+
+.khatmah-view-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-6) 0;
+  width: 100%;
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --------------------------------------------------------------------------
+   1. Hero Card - Harmonized with .scholars-hero-card and .tadabbur-hero-card
+   -------------------------------------------------------------------------- */
+.khatmah-hero-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-8);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+.khatmah-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-gold);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-gold);
+}
+
+.khatmah-badge-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--color-warning, #d7a454);
+}
+
+.khatmah-hero-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  margin-top: var(--space-4);
+}
+
+.khatmah-hero-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.khatmah-title {
+  font-size: 28px;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2);
+  font-weight: 700;
+}
+
+.khatmah-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  max-width: 680px;
+  margin: 0 0 var(--space-5);
+}
+
+.khatmah-actions-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.khatmah-cta-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background-color: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 9px 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(25, 166, 129, 0.25);
+}
+
+.khatmah-cta-primary:hover {
+  background-color: var(--color-primary-deep);
+  transform: translateY(-1px);
+}
+
+.khatmah-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background-color: var(--bg-surface-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.khatmah-cta-secondary:hover {
+  background-color: var(--bg-surface-hover);
+  border-color: var(--border-gold);
+  color: var(--text-gold);
+}
+
+.khatmah-inline-toast {
+  margin-top: var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-sage-highlight, rgba(16, 185, 129, 0.12));
+  color: var(--color-primary);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   Dial Gauge (Subtle, Classical & Uncluttered)
+   -------------------------------------------------------------------------- */
+.khatmah-dial-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.khatmah-dial-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.dial-track {
+  fill: none;
+  stroke: var(--border-subtle);
+  stroke-width: 7;
+}
+
+.dial-indicator {
+  fill: none;
+  stroke: var(--color-accent-gold, #d2aa60);
+  stroke-width: 7;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.dial-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.dial-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.dial-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   2. KPI Grid (4 Cards in strict 1-row layout)
+   -------------------------------------------------------------------------- */
+.khatmah-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 1024px) {
+  .khatmah-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .khatmah-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.khatmah-kpi-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.khatmah-kpi-card:hover {
+  border-color: var(--border-gold);
+  transform: translateY(-1px);
+}
+
+.kpi-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpi-icon-box.gold {
+  background-color: var(--color-gold-bg, rgba(210, 170, 96, 0.15));
+  color: var(--color-accent-gold, #d2aa60);
+}
+
+.kpi-icon-box.emerald {
+  background-color: var(--color-sage-highlight, rgba(16, 185, 129, 0.15));
+  color: var(--color-primary);
+}
+
+.kpi-icon-box.amber {
+  background-color: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+
+.kpi-icon-box.teal {
+  background-color: rgba(20, 184, 166, 0.12);
+  color: #14b8a6;
+}
+
+.kpi-data {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.kpi-num {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.kpi-sub-num {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-weight: 500;
+}
+
+.kpi-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.kpi-sub-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   3. 30 Ajza' Manuscript Matrix
+   -------------------------------------------------------------------------- */
+.khatmah-matrix-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-8);
+  box-shadow: var(--shadow-sm);
+}
+
+.matrix-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.matrix-title {
+  font-size: 20px;
+  color: var(--text-primary);
+  margin: 0 0 3px;
+}
+
+.matrix-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.matrix-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.legend-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-bullet {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.legend-bullet.done {
+  background-color: var(--color-primary);
+}
+
+.legend-bullet.reading {
+  background-color: var(--color-accent-gold, #d2aa60);
+}
+
+.legend-bullet.waiting {
+  background-color: var(--border-subtle);
+  border: 1px solid var(--border-strong, #94a3b8);
+}
+
+.matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: var(--space-2);
+}
+
+.matrix-juz-cell {
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-family: inherit;
+  color: inherit;
+}
+
+.matrix-juz-cell:hover {
+  background-color: var(--bg-surface-hover);
+  border-color: var(--border-gold);
+}
+
+.matrix-juz-cell.completed {
+  background-color: var(--color-sage-highlight, rgba(16, 185, 129, 0.12));
+  border-color: var(--color-primary);
+}
+
+.matrix-juz-cell.current {
+  border-color: var(--color-accent-gold, #d2aa60);
+  background-color: var(--color-gold-bg, rgba(210, 170, 96, 0.12));
+}
+
+.juz-cell-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.juz-cell-num {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.juz-cell-check {
+  color: var(--color-primary);
+}
+
+.juz-cell-curr-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: var(--color-accent-gold, #d2aa60);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.juz-cell-ahzab {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   4. Modal / Dialog Styles
+   -------------------------------------------------------------------------- */
+.khatmah-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  animation: fadeIn 0.18s ease;
+}
+
+.khatmah-dialog {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-xl);
+  max-width: 480px;
+  width: 100%;
+  padding: var(--space-6);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.dialog-title {
+  font-size: 22px;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.dialog-desc {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.dialog-presets-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.dialog-preset-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: inherit;
+}
+
+.dialog-preset-card:hover, .dialog-preset-card.active {
+  background-color: var(--bg-surface-hover);
+  border-color: var(--border-gold);
+  color: var(--text-gold);
+}
+
+.preset-card-title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.preset-card-rate {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.dialog-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.dialog-field label {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.dialog-input {
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 9px 12px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.dialog-input:focus {
+  border-color: var(--border-gold);
+}
+
+.dialog-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.dialog-btn-save {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dialog-btn-cancel {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  font-size: 13px;
+  cursor: pointer;
+}

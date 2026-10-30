@@ -5,7 +5,7 @@ import { searchSurahs } from '../services/quranApi';
 
 export default function SurahListModal({ isOpen, onClose, onSelectSurah, currentSurahNumber }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState('all'); // 'all', 'Meccan', 'Medinan'
+  const [filterType, setFilterType] = useState('all');
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -61,7 +61,7 @@ export default function SurahListModal({ isOpen, onClose, onSelectSurah, current
         {/* Search Bar & Filters */}
         <div className="modal-search-row">
           <div className="search-input-wrapper">
-            <Search size={18} className="search-input-icon" />
+            <SearchIcon size={18} strokeWidth={1.8} className="search-input-icon" />
             <input
               type="text"
               autoFocus
@@ -71,8 +71,8 @@ export default function SurahListModal({ isOpen, onClose, onSelectSurah, current
               className="surah-search-input"
             />
             {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className="search-clear-btn">
-                <X size={14} />
+              <button onClick={() => setSearchQuery('')} className="search-clear-btn" aria-label="مسح البحث">
+                <CloseIcon size={14} strokeWidth={1.8} />
               </button>
             )}
           </div>

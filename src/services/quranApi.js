@@ -1,13 +1,10 @@
-// Quran API service with intelligent caching, multi-language support, Word-by-Word data, and REST Diagnostics
 
 const ALQURAN_BASE = 'https://api.alquran.cloud/v1';
 const QURAN_COM_BASE = 'https://api.quran.com/api/v4';
 
-// Cache stores for instant subsequent reads
 const memoryCache = new Map();
 const wbwCache = new Map();
 
-// REST API Metrics Logger for the TryHackMe REST course demonstration
 export const restApiLogs = [];
 const listeners = [];
 
@@ -19,7 +16,7 @@ export function subscribeToApiLogs(callback) {
   };
 }
 
-function logApiCall(method, url, status, durationMs, payloadSize, data) {
+export function logApiCall(method, url, status, durationMs, payloadSize, data) {
   const logItem = {
     id: Date.now() + Math.random().toString(36).substring(2, 6),
     timestamp: new Date().toLocaleTimeString(),
@@ -35,10 +32,27 @@ function logApiCall(method, url, status, durationMs, payloadSize, data) {
   listeners.forEach((cb) => cb([...restApiLogs]));
 }
 
-/**
- * Fetch full Surah with Arabic Uthmani text, English Sahih, and French Hamidullah translations
- * @param {number|string} surahNumber (1-114)
- */
+export function clearApiLogs() {
+  restApiLogs.length = 0;
+  listeners.forEach((cb) => cb([]));
+}
+
+export async function triggerTestApiCall(endpoint = 'ayah/1:1/ar.alafasy') {
+  const url = `${ALQURAN_BASE}/${endpoint}`;
+  const startTime = performance.now();
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    const duration = performance.now() - startTime;
+    logApiCall('GET', url, res.status, duration, JSON.stringify(data).length, data);
+    return data;
+  } catch (err) {
+    const duration = performance.now() - startTime;
+    logApiCall('GET', url, 500, duration, 0, { error: err.message });
+    throw err;
+  }
+}
+
 export async function getSurahDetails(surahNumber) {
   const cacheKey = `surah_${surahNumber}_multi`;
   if (memoryCache.has(cacheKey)) {
@@ -53,7 +67,6 @@ export async function getSurahDetails(surahNumber) {
       return parsed;
     }
   } catch (e) {
-    // Ignore storage issues
   }
 
   const url = `${ALQURAN_BASE}/surah/${surahNumber}/editions/quran-uthmani,en.sahih,fr.hamidullah`;
@@ -107,7 +120,6 @@ export async function getSurahDetails(surahNumber) {
     try {
       localStorage.setItem(cacheKey, JSON.stringify(result));
     } catch (e) {
-      // Storage might be full
     }
 
     return result;
@@ -118,10 +130,6 @@ export async function getSurahDetails(surahNumber) {
   }
 }
 
-/**
- * Fetch Word-by-Word data from Quran.com API v4 (Official QUL / Tarteel partner API)
- * @param {number|string} surahNumber
- */
 export async function getSurahWordByWord(surahNumber) {
   if (wbwCache.has(surahNumber)) return wbwCache.get(surahNumber);
 
@@ -160,15 +168,38 @@ export async function getSurahWordByWord(surahNumber) {
   }
 }
 
-/**
- * Fetch Tafsir Al-Muyassar for a specific Ayah
- */
-export async function getAyahTafsir(surahNumber, ayahNumberInSurah) {
-  const cacheKey = `tafsir_${surahNumber}_${ayahNumberInSurah}`;
+export async function getAyahComparativeTafsir(surahNumber, ayahNumberInSurah, scholar = 'muyassar') {
+  const cacheKey = `tafsir_${scholar}_${surahNumber}_${ayahNumberInSurah}`;
   if (memoryCache.has(cacheKey)) return memoryCache.get(cacheKey);
 
-  const url = `${ALQURAN_BASE}/ayah/${surahNumber}:${ayahNumberInSurah}/ar.muyassar`;
   const startTime = performance.now();
+
+  if (scholar === 'saadi') {
+    const url = `${QURAN_COM_BASE}/tafsirs/91/by_ayah/${surahNumber}:${ayahNumberInSurah}`;
+    try {
+      const res = await fetch(url);
+      const duration = performance.now() - startTime;
+      const json = await res.json();
+      logApiCall('GET', url, res.status, duration, JSON.stringify(json).length, json);
+
+      if (json && json.tafsir && json.tafsir.text) {
+        const clean = json.tafsir.text.replace(/<[^>]*>/g, '').trim();
+        memoryCache.set(cacheKey, clean);
+        return clean;
+      }
+    } catch (e) {
+      console.warn('As-Saadi fetch fallback:', e);
+    }
+  }
+
+  const editionMap = {
+    muyassar: 'ar.muyassar',
+    jalalayn: 'ar.jalalayn',
+    qurtubi: 'ar.qurtubi',
+  };
+
+  const edition = editionMap[scholar] || 'ar.muyassar';
+  const url = `${ALQURAN_BASE}/ayah/${surahNumber}:${ayahNumberInSurah}/${edition}`;
 
   try {
     const res = await fetch(url);
@@ -177,35 +208,61 @@ export async function getAyahTafsir(surahNumber, ayahNumberInSurah) {
 
     logApiCall('GET', url, res.status, duration, JSON.stringify(json).length, json);
 
-    if (json.code === 200 && json.data) {
+    if (json.code === 200 && json.data && json.data.text) {
       const text = json.data.text;
       memoryCache.set(cacheKey, text);
       return text;
     }
-    return 'التفسير غير متوفر حالياً.';
+    return 'التفسير غير متوفر حالياً لهذه الآية.';
   } catch (err) {
     logApiCall('GET', url, 500, performance.now() - startTime, '0 KB', { error: err.message });
-    console.error('Error fetching Tafsir:', err);
+    console.error(`Error fetching Tafsir (${scholar}):`, err);
     return 'تعذر تحميل التفسير. يرجى التحقق من اتصال الإنترنت.';
   }
 }
 
-/**
- * Search across Surahs list by Arabic name, English name, or number
- */
+export const getAyahTafsir = (surahNumber, ayahNumberInSurah) =>
+  getAyahComparativeTafsir(surahNumber, ayahNumberInSurah, 'muyassar');
+
+
+
+export function normalizeArabic(s) {
+  if (!s) return '';
+  return s
+    .replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g, '')
+    .replace(/[أإآٱ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/[ىي]/g, 'ي')
+    .toLowerCase()
+    .trim();
+}
+
 export function searchSurahs(query, surahsList) {
   if (!query || !query.trim()) return surahsList;
-  const q = query.trim().toLowerCase();
-  
-  const normAr = (s) => s ? s.replace(/[\u064B-\u065F\u0670\u0640]/g, '').replace(/[أإآ]/g, 'ا').toLowerCase() : '';
-  const qNorm = normAr(q);
+  const qRaw = query.trim().toLowerCase();
+  const qNorm = normalizeArabic(qRaw);
+  const qWithoutSurah = qNorm.replace(/^سوره\s*/, '').trim();
+  const qCore = qWithoutSurah.replace(/^ال/, '').trim();
 
   return surahsList.filter((s) => {
-    return (
-      s.number.toString() === q ||
-      s.englishName.toLowerCase().includes(q) ||
-      s.englishNameTranslation.toLowerCase().includes(q) ||
-      normAr(s.name).includes(qNorm)
-    );
+    const sNum = s.number.toString();
+    if (sNum === qRaw) return true;
+
+    const qCleanEn = qRaw.replace(/[^a-z0-9]/g, '');
+    if (qCleanEn.length >= 2) {
+      const enName = s.englishName.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (enName.includes(qCleanEn)) return true;
+      if (s.englishNameTranslation && s.englishNameTranslation.toLowerCase().includes(qRaw)) return true;
+    }
+
+    const sArNorm = normalizeArabic(s.name);
+    const sArWithoutSurah = sArNorm.replace(/^سوره\s*/, '').trim();
+    const sArCore = sArWithoutSurah.replace(/^ال/, '').trim();
+
+    if (qNorm && sArNorm.includes(qNorm)) return true;
+    if (qWithoutSurah && sArWithoutSurah.includes(qWithoutSurah)) return true;
+    if (qCore && sArCore.includes(qCore)) return true;
+
+    return false;
   });
 }

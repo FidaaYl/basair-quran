@@ -7,6 +7,12 @@ import {
   RosetteSpinner 
 } from './common/IconSystem';
 import { getSurahWordByWord } from '../services/quranApi';
+import MihrabFocusMode from './MihrabFocusMode';
+import ContinuousMushafView from './ContinuousMushafView';
+import ComparativeTafsirView from './ComparativeTafsirView';
+import WordMorphologyModal from './WordMorphologyModal';
+import { analyzeWordMorphology } from '../services/arabicMorphology';
+import AIVoiceReciterModal from './AIVoiceReciterModal';
 
 export default function ReaderView({
   surahData,
@@ -25,12 +31,20 @@ export default function ReaderView({
   theme,
   setTheme,
   onOpenSurahSearch,
+  selectedReciter,
+  onTogglePlay,
 }) {
+  const [readerMode, setReaderMode] = useState('stream');
   const [fontSize, setFontSize] = useState(28);
   const [activeLangMode, setActiveLangMode] = useState('ar-en');
   const [copiedAyahNum, setCopiedAyahNum] = useState(null);
   const [isWbwActive, setIsWbwActive] = useState(false);
   const [wbwData, setWbwData] = useState({});
+  const [isMihrabOpen, setIsMihrabOpen] = useState(false);
+  const [maskingLevel, setMaskingLevel] = useState(0);
+  const [revealedAyahs, setRevealedAyahs] = useState(new Set());
+  const [selectedWordMorphology, setSelectedWordMorphology] = useState(null);
+  const [isAIReciterOpen, setIsAIReciterOpen] = useState(false);
 
   const [bookmarks, setBookmarks] = useState(() => {
     try {
@@ -86,6 +100,35 @@ export default function ReaderView({
     a.play().catch(console.error);
   };
 
+  const handleWordClick = (word) => {
+    const analysis = analyzeWordMorphology(word);
+    setSelectedWordMorphology(analysis);
+    if (word.audioUrl) {
+      handlePlayWordAudio(word.audioUrl);
+    }
+  };
+
+  const toggleRevealAyah = (ayahNum) => {
+    setRevealedAyahs((prev) => {
+      const next = new Set(prev);
+      if (next.has(ayahNum)) {
+        next.delete(ayahNum);
+      } else {
+        next.add(ayahNum);
+      }
+      return next;
+    });
+  };
+
+  const handleToggleRevealAll = () => {
+    if (!surahData?.ayahs) return;
+    if (revealedAyahs.size === surahData.ayahs.length) {
+      setRevealedAyahs(new Set());
+    } else {
+      setRevealedAyahs(new Set(surahData.ayahs.map((a) => a.numberInSurah)));
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="reader-loading-state" role="status" aria-live="polite">
@@ -109,7 +152,6 @@ export default function ReaderView({
   const isAtTawbah = surahData.number === 9;
   const isAlFatihah = surahData.number === 1;
 
-  // Icon declarations
   const ChevronRightIcon = ICONS.chevronRight;
   const ChevronLeftIcon = ICONS.chevronLeft;
   const SearchIcon = ICONS.search;
@@ -128,11 +170,165 @@ export default function ReaderView({
   const BrainIcon = ICONS.memorize;
   const LightbulbIcon = ICONS.tadabbur;
   const GitCompareIcon = ICONS.mutashabihat;
+  const EyeIcon = ICONS.eye;
+  const EyeOffIcon = ICONS.eyeOff;
+  const SparklesIcon = ICONS.sparkles;
+
+  const renderMaskedAyahContent = (ayah) => {
+    const isRevealed = revealedAyahs.has(ayah.numberInSurah);
+    const words = ayah.textAr ? ayah.textAr.trim().split(/\s+/) : [];
+
+    if (maskingLevel === 1) {
+      if (isRevealed) {
+        return (
+          <div className="masked-ayah-revealed animate-fade-in" onClick={() => toggleRevealAyah(ayah.numberInSurah)}>
+            <span className="masked-success-badge">✓ مكشوفة (انقر لإعادة الحجب)</span>
+            <p className="ayah-arabic-text-flow font-quran">{ayah.textAr}</p>
+          </div>
+        );
+      }
+      const promptWords = words.slice(0, 2).join(' ');
+      return (
+        <div 
+          className="masked-first-words-wrap" 
+          onClick={() => toggleRevealAyah(ayah.numberInSurah)}
+          title="انقر لإظهار بقية الآية والتأكد من حفظك"
+        >
+          <span className="first-words-prompt font-quran">{promptWords}</span>
+          <span className="masked-dots-stream font-quran">
+            {' ····· '.repeat(Math.max(2, Math.min(6, words.length - 2)))}
+          </span>
+          <span className="masked-click-hint font-sans">
+            <EyeIcon size={13} /> اكشف البقية ({Math.max(0, words.length - 2)} كلمات)
+          </span>
+        </div>
+      );
+    }
+
+    if (maskingLevel === 2) {
+      if (isRevealed) {
+        return (
+          <div className="masked-ayah-revealed animate-fade-in" onClick={() => toggleRevealAyah(ayah.numberInSurah)}>
+            <span className="masked-success-badge">✓ تم استذكارها (انقر لإعادة الحجب)</span>
+            <p className="ayah-arabic-text-flow font-quran">{ayah.textAr}</p>
+          </div>
+        );
+      }
+      return (
+        <div 
+          className="masked-tap-card" 
+          onClick={() => toggleRevealAyah(ayah.numberInSurah)}
+          role="button"
+          tabIndex={0}
+          title="انقر لكشف الآية واختبار حفظك"
+        >
+          <div className="masked-tap-ornament">
+            <IslamicRosette size={24} className="text-gold" />
+          </div>
+          <div className="masked-tap-content">
+            <span className="masked-tap-title font-quran">۞ انقر هنا للكشف عن الآية واختبار حفظك ۞</span>
+            <span className="masked-tap-desc">({words.length} كلمات — استذكرها في سرّك ثم اكشفها)</span>
+          </div>
+          <div className="masked-tap-action">
+            <EyeIcon size={16} />
+            <span>كشف</span>
+          </div>
+        </div>
+      );
+    }
+
+    if (maskingLevel === 3) {
+      if (isRevealed) {
+        return (
+          <div className="masked-ayah-revealed animate-fade-in" onClick={() => toggleRevealAyah(ayah.numberInSurah)}>
+            <span className="masked-success-badge">✓ مكشوفة</span>
+            <p className="ayah-arabic-text-flow font-quran">{ayah.textAr}</p>
+          </div>
+        );
+      }
+      return (
+        <div 
+          className="masked-blind-card" 
+          onClick={() => toggleRevealAyah(ayah.numberInSurah)}
+          title="تسميع غيبي — اضغط للاختبار والتحقق"
+        >
+          <div className="masked-blind-silhouette font-quran">
+            {ayah.textAr}
+          </div>
+          <div className="masked-blind-overlay">
+            <EyeOffIcon size={18} />
+            <span>تسميع غيبي • اضغط للكشف والتحقق</span>
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <div className="reader-container-modern">
-      {/* 1. Surah Header Banner Card */}
-      <div className="surah-header-card-screenshot">
+      {/* Feature 3: One Bar • Three Modes Segmented Control (Mushaf Eqraa paradigm) */}
+      <div className="reader-mode-segmented-bar" role="tablist" aria-label="أنماط عرض المصحف">
+        <button
+          role="tab"
+          aria-selected={readerMode === 'stream'}
+          onClick={() => setReaderMode('stream')}
+          className={`reader-mode-btn ${readerMode === 'stream' ? 'active' : ''}`}
+        >
+          <BookOpenIcon size={16} />
+          <span>بطاقات الآيات</span>
+        </button>
+
+        <button
+          role="tab"
+          aria-selected={readerMode === 'mushaf'}
+          onClick={() => setReaderMode('mushaf')}
+          className={`reader-mode-btn ${readerMode === 'mushaf' ? 'active' : ''}`}
+        >
+          <SparklesIcon size={16} />
+          <span>صفحة المصحف</span>
+        </button>
+
+        <button
+          role="tab"
+          aria-selected={readerMode === 'tafsir'}
+          onClick={() => setReaderMode('tafsir')}
+          className={`reader-mode-btn ${readerMode === 'tafsir' ? 'active' : ''}`}
+        >
+          <TafsirIcon size={16} />
+          <span>التفسير المقارن</span>
+        </button>
+      </div>
+
+      {/* Mode 2: Continuous Medina Mushaf Page */}
+      {readerMode === 'mushaf' && (
+        <ContinuousMushafView
+          surahData={surahData}
+          currentAyahIndex={currentAyahIndex}
+          isPlaying={isPlaying}
+          onPlayAyah={onPlayAyah}
+          onOpenTafsir={onOpenTafsir}
+          onOpenCardModal={onOpenCardModal}
+          fontSize={fontSize}
+        />
+      )}
+
+      {/* Mode 3: Split Comparative Classical Tafsir */}
+      {readerMode === 'tafsir' && (
+        <ComparativeTafsirView
+          surahData={surahData}
+          currentAyahIndex={currentAyahIndex}
+          onPlayAyah={onPlayAyah}
+          isPlaying={isPlaying}
+        />
+      )}
+
+      {/* Mode 1: Verses Cards Stream with Toolbar, Active Recall Masking, and WBW */}
+      {readerMode === 'stream' && (
+        <>
+          {/* 1. Surah Header Banner Card */}
+          <div className="surah-header-card-screenshot">
         {/* Header with Navigation and Authentic Islamic Rosette */}
         <div className="header-diamond-row">
           <button
@@ -254,6 +450,75 @@ export default function ReaderView({
             <BookOpenIcon size={16} strokeWidth={1.8} />
             <span>كلمة بكلمة</span>
           </button>
+
+          {/* Mihrab Focus & Zen Mode Button (Feature 1) */}
+          <button
+            onClick={() => setIsMihrabOpen(true)}
+            className="tb-tool-btn mihrab-focus-trigger"
+            title="تفعيل نمط الخلوة والمحراب للخشوع والتركيز بدون مشتتات"
+            aria-label="نمط الخلوة والمحراب"
+          >
+            <SparklesIcon size={14} strokeWidth={1.8} />
+            <span>خلوة المحراب</span>
+          </button>
+
+          {/* Feature 5: AI Voice Reciter Trigger Button */}
+          <button
+            onClick={() => setIsAIReciterOpen(true)}
+            className="tb-tool-btn ai-reciter-trigger"
+            title="تفعيل مُعِين التسميع الذكي بالصوت والذكاء الاصطناعي (مثل Tarteel.ai)"
+            aria-label="تسميع ذكي بالصوت"
+          >
+            <SparklesIcon size={14} strokeWidth={2} />
+            <span>تسميع ذكي بالصوت</span>
+          </button>
+
+          {/* Dynamic Verse Masking & Active Recall Segmented Pill (Feature 2) */}
+          <div className="tb-masking-control" role="group" aria-label="مستوى حجب الآيات للتسميع">
+            <span className="tb-masking-label">
+              <EyeOffIcon size={13} /> حجب الحفظ:
+            </span>
+            <button 
+              className={`tb-mask-btn ${maskingLevel === 0 ? 'active' : ''}`}
+              onClick={() => setMaskingLevel(0)}
+              title="قراءة عادية بدون حجب"
+            >
+              عادي
+            </button>
+            <button 
+              className={`tb-mask-btn ${maskingLevel === 1 ? 'active' : ''}`}
+              onClick={() => setMaskingLevel(1)}
+              title="إظهار أول كلمتين فقط من كل آية"
+            >
+              أوائل
+            </button>
+            <button 
+              className={`tb-mask-btn ${maskingLevel === 2 ? 'active' : ''}`}
+              onClick={() => setMaskingLevel(2)}
+              title="حجب الآيات مع إمكانية النقر للكشف التدريجي"
+            >
+              نقر للكشف
+            </button>
+            <button 
+              className={`tb-mask-btn ${maskingLevel === 3 ? 'active' : ''}`}
+              onClick={() => setMaskingLevel(3)}
+              title="تسميع غيبي كامل"
+            >
+              غيبي
+            </button>
+          </div>
+
+          {/* Quick Reveal / Hide All toggle when masking is active */}
+          {maskingLevel > 0 && (
+            <button
+              onClick={handleToggleRevealAll}
+              className="tb-reveal-all-btn"
+              title={revealedAyahs.size === surahData?.ayahs?.length ? 'حجب جميع الآيات مجدداً' : 'كشف جميع الآيات للمراجعة'}
+            >
+              {revealedAyahs.size === surahData?.ayahs?.length ? <EyeOffIcon size={13} /> : <EyeIcon size={13} />}
+              <span>{revealedAyahs.size === surahData?.ayahs?.length ? 'حجب الكل' : 'كشف الكل'}</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -280,12 +545,8 @@ export default function ReaderView({
               id={`ayah-${ayah.numberInSurah}`}
               aria-current={isCurrentActive ? 'true' : undefined}
             >
-              {/* Header: Ayah Index (Left) & Actions (Right) */}
+              {/* Header: Actions (Right) & Ayah Index (Left) matching reference screenshot */}
               <div className="ayah-card-top-header">
-                <span className="ayah-count-caption">
-                  الآية {ayah.numberInSurah} من {surahData.numberOfAyahs}
-                </span>
-
                 <div className="ayah-action-icons-row" role="group" aria-label={`إجراءات الآية ${ayah.numberInSurah}`}>
                   <button
                     onClick={() => toggleBookmark(ayah)}
@@ -343,21 +604,27 @@ export default function ReaderView({
                     <span>مشاركة</span>
                   </button>
                 </div>
+
+                <span className="ayah-count-caption">
+                  الآية {ayah.numberInSurah} من {surahData.numberOfAyahs}
+                </span>
               </div>
 
-              {/* Arabic Quranic Text with Authentic Verse Medallion */}
+              {/* Arabic Quranic Text with Authentic Verse Medallion or Masked State */}
               <div className="ayah-body-arabic" style={{ fontSize: `${fontSize}px` }}>
-                {isWbwActive && ayahWords ? (
+                {maskingLevel > 0 ? (
+                  renderMaskedAyahContent(ayah)
+                ) : isWbwActive && ayahWords ? (
                   <div className="wbw-words-container font-quran">
                     {ayahWords.map((word) => (
                       <span
                         key={word.id}
-                        onClick={() => handlePlayWordAudio(word.audioUrl)}
+                        onClick={() => handleWordClick(word)}
                         className="wbw-word-interactive-unit"
-                        title={`${word.translationEn} (${word.transliteration}) — اضغط للاستماع`}
+                        title={`${word.translationEn} (${word.transliteration}) — اضغط للاستماع والمعجم الصرفي`}
                         role="button"
                         tabIndex={0}
-                        onKeyDown={(e) => { if (e.key === 'Enter') handlePlayWordAudio(word.audioUrl); }}
+                        onKeyDown={(e) => { if (e.key === 'Enter') handleWordClick(word); }}
                       >
                         <span className="wbw-word-arabic">{word.textUthmani}</span>
                         <span className="wbw-word-subtext">{word.translationEn}</span>
@@ -373,15 +640,15 @@ export default function ReaderView({
                 )}
               </div>
 
-              {/* Translation */}
-              {(activeLangMode === 'ar-en' || activeLangMode === 'all') && ayah.textEn && (
+              {/* Translation (Only shown when not in masking mode to prevent memorization spoilers) */}
+              {maskingLevel === 0 && (activeLangMode === 'ar-en' || activeLangMode === 'all') && ayah.textEn && (
                 <div className="ayah-translation-row-screenshot">
                   <span className="trans-tag">ENGLISH (SAHIH)</span>
                   <p className="trans-text">{ayah.textEn}</p>
                 </div>
               )}
 
-              {(activeLangMode === 'ar-fr' || activeLangMode === 'all') && ayah.textFr && (
+              {maskingLevel === 0 && (activeLangMode === 'ar-fr' || activeLangMode === 'all') && ayah.textFr && (
                 <div className="ayah-translation-row-screenshot fr">
                   <span className="trans-tag">FRANÇAIS (HAMIDULLAH)</span>
                   <p className="trans-text">{ayah.textFr}</p>
@@ -428,7 +695,7 @@ export default function ReaderView({
                       <div 
                         className="ayah-mini-progress-fill" 
                         style={{ width: `${(ayah.numberInSurah / surahData.numberOfAyahs) * 100}%` }} 
-                      />
+                        />
                     </div>
                   </div>
                 </div>
@@ -437,6 +704,35 @@ export default function ReaderView({
           );
         })}
       </div>
+      </>
+      )}
+
+      {/* Feature 1: Mihrab Focus & Zen Mode Overlay */}
+      <MihrabFocusMode
+        isOpen={isMihrabOpen}
+        onClose={() => setIsMihrabOpen(false)}
+        surahData={surahData}
+        currentAyahIndex={currentAyahIndex}
+        onSelectAyah={onPlayAyah}
+        isPlaying={isPlaying}
+        onTogglePlay={onTogglePlay}
+        selectedReciter={selectedReciter}
+      />
+
+      {/* Feature 4: Word Morphology & Root Explorer Modal */}
+      <WordMorphologyModal
+        isOpen={Boolean(selectedWordMorphology)}
+        onClose={() => setSelectedWordMorphology(null)}
+        morphologyData={selectedWordMorphology}
+      />
+
+      {/* Feature 5: AI Voice Reciter Modal (Tarteel-inspired Companion) */}
+      <AIVoiceReciterModal
+        isOpen={isAIReciterOpen}
+        onClose={() => setIsAIReciterOpen(false)}
+        surahData={surahData}
+        initialAyahIndex={currentAyahIndex}
+      />
     </div>
   );
 }

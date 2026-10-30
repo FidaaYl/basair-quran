@@ -1,4 +1,3 @@
-// Curated Mutashabihat (Similar Verses) with phonetic and semantic difference guides for Huffaz
 export const MUTASHABIHAT_DATA = [
   {
     id: 'm1',

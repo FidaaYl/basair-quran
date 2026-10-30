@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ICONS } from './common/IconSystem';
 import { RECITERS } from '../data/reciters';
-import reciterAvatar from '../assets/reciter-avatar.jpg';
+import reciterAvatarFallback from '../assets/reciter-avatar.jpg';
 
 export default function AudioPlayerBar({
   isPlaying,
@@ -17,27 +17,42 @@ export default function AudioPlayerBar({
   isRepeatAyah,
   onToggleRepeatAyah,
   totalAyahs,
+  currentTime = 0,
+  duration = 0,
+  onSeek,
+  volume = 0.85,
+  isMuted = false,
+  onChangeVolume,
+  onToggleMute,
+  surahAyahs = [],
+  onPlayAyah,
 }) {
-  const [isMuted, setIsMuted] = useState(false);
   const [showRecitersList, setShowRecitersList] = useState(false);
+  const [showAyahsQueue, setShowAyahsQueue] = useState(false);
 
   const activeReciterObj = RECITERS.find((r) => r.id === selectedReciter) || RECITERS[0];
   const ayahNum = currentAyahIndex + 1;
-  const rates = [0.75, 1, 1.25, 1.5];
 
-  const handleNextRate = () => {
-    const curIdx = rates.indexOf(playbackRate);
-    const nextIdx = (curIdx + 1) % rates.length;
-    onChangePlaybackRate(rates[nextIdx]);
+  const handleToggleRate = () => {
+    const nextRate = playbackRate === 1 ? 0.75 : 1;
+    onChangePlaybackRate(nextRate);
   };
 
-  // Standardized Lucide icons from centralized system
+  const formatTime = (secs) => {
+    if (isNaN(secs) || secs < 0) return '00:00';
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60);
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  };
+
+  const progressPercent = duration > 0 ? Math.min(100, Math.max(0, (currentTime / duration) * 100)) : 0;
+  const currentVolumePercent = isMuted ? 0 : Math.round(volume * 100);
+
   const PlayIcon = ICONS.play;
   const PauseIcon = ICONS.pause;
   const SkipBackIcon = ICONS.skipBack;
   const SkipForwardIcon = ICONS.skipForward;
   const RepeatIcon = ICONS.repeat;
-  const ShuffleIcon = ICONS.shuffle;
   const SpeedIcon = ICONS.speed;
   const VolumeOnIcon = ICONS.volumeOn;
   const VolumeMuteIcon = ICONS.volumeMute;
@@ -45,14 +60,18 @@ export default function AudioPlayerBar({
   const ChevronUpIcon = ICONS.chevronUp;
   const ChevronDownIcon = ICONS.chevronDown;
   const CloseIcon = ICONS.close;
+  const CheckIcon = ICONS.check;
 
   return (
     <footer className="audio-player-dock-modern" role="region" aria-label="مشغل التلاوة الصوتي">
       <div className="player-inner-modern">
-        {/* 1. Left Section: Reciter Avatar & Track Info */}
+        {/* 1. Left Section: Real Reciter Photo & Track Info */}
         <div className="player-left-section">
           <button 
-            onClick={() => setShowRecitersList(!showRecitersList)}
+            onClick={() => {
+              setShowRecitersList(!showRecitersList);
+              setShowAyahsQueue(false);
+            }}
             className="player-chevron-btn"
             title="اختيار القارئ"
             aria-label="قائمة القراء المتاحين"
@@ -67,29 +86,35 @@ export default function AudioPlayerBar({
 
           <div 
             className="reciter-thumb-circle" 
-            onClick={() => setShowRecitersList(!showRecitersList)}
+            onClick={() => {
+              setShowRecitersList(!showRecitersList);
+              setShowAyahsQueue(false);
+            }}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => { if (e.key === 'Enter') setShowRecitersList(!showRecitersList); }}
             aria-label={`تغيير القارئ، القارئ الحالي: ${activeReciterObj.nameAr}`}
           >
             <img 
-              src={reciterAvatar} 
+              src={activeReciterObj.photo || reciterAvatarFallback} 
               alt={activeReciterObj.nameAr}
               className="reciter-thumb-img"
+              onError={(e) => { e.currentTarget.src = reciterAvatarFallback; }}
             />
           </div>
 
           <div className="reciter-text-block">
             <span className="reciter-name-bold font-calligraphy">{activeReciterObj.nameAr}</span>
-            <span className="reciter-surah-caption">سورة {currentSurah?.name || 'الفاتحة'} — الآية {ayahNum}</span>
+            <span className="reciter-surah-caption">
+              سورة {currentSurah?.name || 'الفاتحة'} — الآية {ayahNum}
+            </span>
           </div>
 
           {/* Reciters Selection Popup */}
           {showRecitersList && (
             <div className="reciters-dock-popover animate-fade-in" role="dialog" aria-label="اختر القارئ المفضل">
               <div className="popover-title-row">
-                <span>اختر القارئ المفضل</span>
+                <span className="font-calligraphy">اختر القارئ المفضل</span>
                 <button 
                   onClick={() => setShowRecitersList(false)} 
                   className="popover-close-btn" 
@@ -110,8 +135,21 @@ export default function AudioPlayerBar({
                     role="option"
                     aria-selected={selectedReciter === r.id}
                   >
-                    <span className="choice-name font-calligraphy">{r.nameAr}</span>
-                    <span className="choice-style">{r.subtext}</span>
+                    <div className="reciter-choice-thumb">
+                      <img 
+                        src={r.photo || reciterAvatarFallback} 
+                        alt={r.nameAr} 
+                        className="choice-thumb-img"
+                        onError={(e) => { e.currentTarget.src = reciterAvatarFallback; }}
+                      />
+                    </div>
+                    <div className="choice-info-col">
+                      <span className="choice-name font-calligraphy">{r.nameAr}</span>
+                      <span className="choice-style">{r.subtext}</span>
+                    </div>
+                    {selectedReciter === r.id && (
+                      <CheckIcon size={16} strokeWidth={2} className="choice-check-icon text-emerald" />
+                    )}
                   </button>
                 ))}
               </div>
@@ -119,24 +157,16 @@ export default function AudioPlayerBar({
           )}
         </div>
 
-        {/* 2. Left-Center Tools: Shuffle, Speed, Repeat Ayah (Subdued quiet controls) */}
+        {/* 2. Left-Center Tools: Speed & Repeat Ayah (Shuffle removed as requested) */}
         <div className="player-subtools-row" role="group" aria-label="خيارات التلاوة">
           <button 
-            className="subtool-icon-btn" 
-            title="تبديل عشوائي (Shuffle)"
-            aria-label="تشغيل عشوائي"
-          >
-            <ShuffleIcon size={18} strokeWidth={1.8} />
-          </button>
-
-          <button 
-            onClick={handleNextRate} 
-            className="speed-badge-btn" 
-            title="سرعة التلاوة"
+            onClick={handleToggleRate} 
+            className={`speed-badge-btn ${playbackRate === 0.75 ? 'slow-active' : ''}`}
+            title={playbackRate === 1 ? 'التبديل إلى ترتيل متأنٍ (0.75x)' : 'التبديل إلى سرعة عادية (1.0x)'}
             aria-label={`سرعة التلاوة الحالية ${playbackRate}x، اضغط للتبديل`}
           >
             <SpeedIcon size={14} strokeWidth={1.8} className="speed-pill-icon" />
-            <span>{playbackRate}x</span>
+            <span>{playbackRate === 0.75 ? '0.75x متأنٍ' : '1.0x'}</span>
           </button>
 
           <button 
@@ -154,26 +184,41 @@ export default function AudioPlayerBar({
           </button>
         </div>
 
-        {/* 3. Center: Timeline & Core Playback Controls (Prominent Emerald Play Button) */}
+        {/* 3. Center: Interactive Timeline Scrubber & Core Playback Controls */}
         <div className="player-center-section">
-          {/* Timeline Scrubber */}
+          {/* Interactive Timeline Scrubber */}
           <div className="timeline-scrubber-row">
-            <span className="time-digit">01:24</span>
-            <div 
-              className="timeline-track"
-              role="progressbar"
-              aria-valuenow={totalAyahs > 0 ? Math.round((ayahNum / totalAyahs) * 100) : 25}
-              aria-valuemin={0}
-              aria-valuemax={100}
-            >
-              <div className="timeline-progress" style={{ width: `${totalAyahs > 0 ? (ayahNum / totalAyahs) * 100 : 25}%` }}>
-                <span className="timeline-thumb" />
+            <span className="time-digit">{formatTime(currentTime)}</span>
+            <div className="timeline-interactive-wrapper" dir="ltr">
+              <input
+                type="range"
+                dir="ltr"
+                min={0}
+                max={duration > 0 ? duration : 100}
+                step="0.1"
+                value={duration > 0 ? currentTime : 0}
+                onChange={(e) => onSeek && onSeek(Number(e.target.value))}
+                className="timeline-range-input"
+                aria-label="شريط سحب وتمرير التلاوة"
+              />
+              <div 
+                className="timeline-track-visual" 
+                dir="ltr"
+                style={{ '--progress-pct': `${progressPercent}%` }}
+              >
+                <div 
+                  className="timeline-progress-fill" 
+                  dir="ltr"
+                  style={{ width: `${progressPercent}%` }}
+                >
+                  <span className="timeline-thumb-dot" />
+                </div>
               </div>
             </div>
-            <span className="time-digit">05:32</span>
+            <span className="time-digit">{formatTime(duration)}</span>
           </div>
 
-          {/* Controls: Prev, Play/Pause (22px main), Next */}
+          {/* Controls: Prev Ayah, Play/Pause, Next Ayah */}
           <div className="playback-btns-row" role="group" aria-label="أزرار التحكم بالصوت">
             <button 
               onClick={onPrevAyah} 
@@ -210,10 +255,10 @@ export default function AudioPlayerBar({
           </div>
         </div>
 
-        {/* 4. Right Controls: Volume & Queue (Subdued) */}
+        {/* 4. Right Controls: Interactive Volume Slider & Ayahs Queue */}
         <div className="player-right-section">
           <button 
-            onClick={() => setIsMuted(!isMuted)} 
+            onClick={onToggleMute} 
             className="volume-icon-btn"
             title={isMuted ? 'إلغاء الكتم' : 'كتم الصوت'}
             aria-label={isMuted ? 'إلغاء كتم الصوت' : 'كتم الصوت'}
@@ -225,24 +270,83 @@ export default function AudioPlayerBar({
             )}
           </button>
 
-          <div 
-            className="volume-slider-track"
-            role="progressbar"
-            aria-valuenow={isMuted ? 0 : 75}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label="مستوى الصوت"
-          >
-            <div className="volume-slider-fill" style={{ width: isMuted ? '0%' : '75%' }} />
+          {/* Interactive Volume Slider */}
+          <div className="volume-slider-wrapper" title={`مستوى الصوت: ${currentVolumePercent}%`}>
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step="0.01"
+              value={isMuted ? 0 : volume}
+              onChange={(e) => onChangeVolume && onChangeVolume(Number(e.target.value))}
+              className="volume-range-input"
+              aria-label="التحكم بمستوى الصوت"
+            />
+            <div className="volume-track-visual">
+              <div 
+                className="volume-slider-fill" 
+                style={{ width: `${currentVolumePercent}%` }} 
+              />
+            </div>
           </div>
 
+          {/* Functional Ayahs Queue / Jumper Button */}
           <button 
-            className="queue-list-btn" 
-            title="قائمة التلاوات المتتالية"
-            aria-label="قائمة التلاوات"
+            onClick={() => {
+              setShowAyahsQueue(!showAyahsQueue);
+              setShowRecitersList(false);
+            }}
+            className={`queue-list-btn ${showAyahsQueue ? 'active' : ''}`} 
+            title="فهرس آيات السورة والتنقل السريع"
+            aria-label="فهرس آيات السورة"
+            aria-expanded={showAyahsQueue}
           >
             <QueueIcon size={18} strokeWidth={1.8} />
           </button>
+
+          {/* Surah Ayahs Queue Dropdown / Drawer */}
+          {showAyahsQueue && (
+            <div className="ayahs-queue-popover animate-fade-in" role="dialog" aria-label="فهرس آيات السورة">
+              <div className="popover-title-row">
+                <div className="queue-header-info">
+                  <span className="queue-title font-calligraphy">آيات سورة {currentSurah?.name || ''}</span>
+                  <span className="queue-count">({totalAyahs} آية)</span>
+                </div>
+                <button 
+                  onClick={() => setShowAyahsQueue(false)} 
+                  className="popover-close-btn" 
+                  aria-label="إغلاق الفهرس"
+                >
+                  <CloseIcon size={16} strokeWidth={1.8} />
+                </button>
+              </div>
+
+              <div className="ayahs-queue-list" role="list">
+                {surahAyahs.map((ayah, idx) => {
+                  const isCurrent = idx === currentAyahIndex;
+                  return (
+                    <button
+                      key={ayah.number || idx}
+                      onClick={() => {
+                        onPlayAyah && onPlayAyah(idx);
+                        setShowAyahsQueue(false);
+                      }}
+                      className={`ayah-queue-row ${isCurrent ? 'active' : ''}`}
+                      role="listitem"
+                    >
+                      <span className="ayah-queue-number font-calligraphy">{ayah.numberInSurah}</span>
+                      <span className="ayah-queue-text font-quran">{ayah.textAr}</span>
+                      {isCurrent && (
+                        <span className="ayah-queue-playing-tag">
+                          {isPlaying ? 'جارٍ الاستماع' : 'محدد'}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </footer>

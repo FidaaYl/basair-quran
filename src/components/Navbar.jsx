@@ -7,15 +7,18 @@ export default function Navbar({
   theme, 
   setTheme, 
   onOpenSurahModal, 
+  onOpenCommandPalette,
   onOpenRestModal,
+  onOpenProfile,
   currentSurah 
 }) {
   const navItems = [
-    { id: 'reader', label: 'المصحف والتلاوة', icon: ICONS.mushaf },
-    { id: 'memorize', label: 'معمل الحفظ', icon: ICONS.memorize },
+    { id: 'reader', label: 'المصحف', icon: ICONS.mushaf },
+    { id: 'memorize', label: 'الحفظ', icon: ICONS.memorize },
     { id: 'mutashabihat', label: 'المتشابهات', icon: ICONS.mutashabihat },
-    { id: 'tadabbur', label: 'بصائر وتدبر', icon: ICONS.tadabbur },
+    { id: 'tadabbur', label: 'تدبر', icon: ICONS.tadabbur },
     { id: 'scholars', label: 'كتب العلماء', icon: ICONS.scholars },
+    { id: 'khatmah', label: 'الختمات', icon: ICONS.streak },
   ];
 
   const SearchIcon = ICONS.search;
@@ -30,24 +33,24 @@ export default function Navbar({
         {/* Search Bar matching screenshot */}
         <div 
           className="navbar-search-wrapper" 
-          onClick={onOpenSurahModal}
+          onClick={() => onOpenCommandPalette ? onOpenCommandPalette() : onOpenSurahModal()}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onOpenSurahModal?.(); }}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { if (onOpenCommandPalette) onOpenCommandPalette(); else onOpenSurahModal?.(); } }}
           aria-label="ابحث في القرآن الكريم أو تصفح السور"
         >
-          <SearchIcon size={18} strokeWidth={1.8} className="search-bar-icon" />
+          <SearchIcon size={16} strokeWidth={1.8} className="search-bar-icon" />
           <input
             type="text"
             readOnly
-            placeholder="ابحث في القرآن الكريم..."
+            placeholder="ابحث في القرآن..."
             className="navbar-search-input"
             aria-label="حقل البحث في القرآن الكريم"
           />
-          <kbd className="search-kbd-shortcut">Ctrl + K</kbd>
+          <kbd className="search-kbd-shortcut">Ctrl+K</kbd>
         </div>
 
-        {/* Center Navigation Tabs (Standardized 20px icons, 1.8px stroke) */}
+        {/* Center Navigation Tabs (Standardized 18px icons, 1.8px stroke) */}
         <nav className="navbar-nav-pills" aria-label="أقسام المنصة الرئيسية">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -60,7 +63,7 @@ export default function Navbar({
                 aria-current={isActive ? 'page' : undefined}
                 aria-label={item.label}
               >
-                <Icon size={20} strokeWidth={1.8} className="nav-pill-icon" />
+                <Icon size={16} strokeWidth={1.8} className="nav-pill-icon" />
                 <span className="nav-pill-label">{item.label}</span>
               </button>
             );
@@ -76,7 +79,7 @@ export default function Navbar({
             title="مستكشف واجهات برمجة التطبيقات (TryHackMe REST APIs)"
             aria-label="مستكشف واجهات برمجة التطبيقات REST API Explorer"
           >
-            <TerminalIcon size={16} strokeWidth={1.8} className="text-emerald" />
+            <TerminalIcon size={15} strokeWidth={1.8} className="text-emerald" />
             <span className="rest-text">REST</span>
           </button>
 
@@ -90,7 +93,7 @@ export default function Navbar({
               aria-checked={theme === 'light'}
               role="radio"
             >
-              <SunIcon size={16} strokeWidth={1.8} />
+              <SunIcon size={15} strokeWidth={1.8} />
             </button>
             <button
               onClick={() => setTheme('dark')}
@@ -100,20 +103,22 @@ export default function Navbar({
               aria-checked={theme === 'dark'}
               role="radio"
             >
-              <MoonIcon size={16} strokeWidth={1.8} />
+              <MoonIcon size={15} strokeWidth={1.8} />
             </button>
           </div>
 
           {/* User Profile Badge */}
           <div 
             className="user-profile-badge" 
-            title="فداء يعلاوي — عمل فردي (جامعة البليدة 2)"
+            title="الملف الشخصي: فداء يعلاوي"
             tabIndex={0}
             role="button"
+            onClick={onOpenProfile}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onOpenProfile?.(); }}
             aria-label="الملف الشخصي: فداء يعلاوي"
           >
             <div className="profile-avatar-circle">
-              <UserIcon size={16} strokeWidth={1.8} />
+              <UserIcon size={15} strokeWidth={1.8} />
             </div>
           </div>
         </div>

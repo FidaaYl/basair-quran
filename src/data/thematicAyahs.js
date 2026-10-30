@@ -1,4 +1,3 @@
-// Curated Thematic Insights & Emotional Tadabbur Verses
 export const EMOTIONAL_STATES = [
   {
     id: 'anxiety',

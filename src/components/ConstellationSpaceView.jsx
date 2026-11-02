@@ -1089,6 +1089,30 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
                 />
               </div>
 
+              <div className="chronicle-era-toggles">
+                <button
+                  type="button"
+                  className={`era-toggle-btn ${timelineEraFilter === 'all' ? 'active' : ''}`}
+                  onClick={() => setTimelineEraFilter('all')}
+                >
+                  الكل (١١٤)
+                </button>
+                <button
+                  type="button"
+                  className={`era-toggle-btn meccan ${timelineEraFilter === 'meccan' ? 'active' : ''}`}
+                  onClick={() => setTimelineEraFilter('meccan')}
+                >
+                  مكية 🕋
+                </button>
+                <button
+                  type="button"
+                  className={`era-toggle-btn medinan ${timelineEraFilter === 'medinan' ? 'active' : ''}`}
+                  onClick={() => setTimelineEraFilter('medinan')}
+                >
+                  مدنية 🕌
+                </button>
+              </div>
+
               <div className="chronicle-layout-toggles">
                 <button
                   type="button"

@@ -148,7 +148,7 @@ const AMBIENT_3D_DUST = Array.from({ length: 120 }, (_, i) => ({
   pulseSpeed: 0.3 + Math.random() * 0.7
 }));
 
-export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab }) {
+export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, theme, setTheme }) {
   const [activeVisualMode, setActiveVisualMode] = useState('constellation');
   const [geometryMode, setGeometryMode] = useState('sphere');
   const [autoRotate, setAutoRotate] = useState(true);
@@ -160,6 +160,33 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
   const [selectedStar, setSelectedStar] = useState(null);
   const [hoveredStar, setHoveredStar] = useState(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const [viewTheme, setViewTheme] = useState(() => {
+    if (theme) return theme;
+    if (typeof document !== 'undefined') {
+      const docTheme = document.documentElement.getAttribute('data-theme');
+      if (docTheme) return docTheme;
+    }
+    return 'dark';
+  });
+
+  useEffect(() => {
+    if (theme) {
+      setViewTheme(theme);
+    }
+  }, [theme]);
+
+  const handleToggleTheme = () => {
+    const nextTheme = viewTheme === 'light' ? 'dark' : 'light';
+    setViewTheme(nextTheme);
+    if (setTheme) {
+      setTheme(nextTheme);
+    } else if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', nextTheme);
+    }
+  };
+
+  const isLight = viewTheme === 'light';
 
   const [timelineEraFilter, setTimelineEraFilter] = useState('all');
   const [timelineSearch, setTimelineSearch] = useState('');
@@ -363,9 +390,15 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
         height / 2,
         Math.max(width, height) * 0.75
       );
-      bgGrad.addColorStop(0, '#06161b');
-      bgGrad.addColorStop(0.5, '#020b0e');
-      bgGrad.addColorStop(1, '#010405');
+      if (isLight) {
+        bgGrad.addColorStop(0, '#fcfaf5');
+        bgGrad.addColorStop(0.5, '#f4eee3');
+        bgGrad.addColorStop(1, '#ebe3d3');
+      } else {
+        bgGrad.addColorStop(0, '#06161b');
+        bgGrad.addColorStop(0.5, '#020b0e');
+        bgGrad.addColorStop(1, '#010405');
+      }
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
@@ -384,7 +417,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
         s.projDepth = proj.depth;
       }
 
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = isLight ? '#d4af37' : '#ffffff';
       for (let i = 0; i < AMBIENT_3D_DUST.length; i++) {
         const d = AMBIENT_3D_DUST[i];
         const proj = project3D(d.x, d.y, d.z);
@@ -577,9 +610,15 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
           const fontSize = Math.max(10, Math.min(15, Math.round(11.5 * s.projScale)));
           ctx.font = `600 ${isHover ? fontSize + 2 : fontSize}px "Amiri", "Traditional Arabic", serif`;
           ctx.textAlign = 'center';
-          ctx.fillStyle = isHover ? '#fbbf24' : isSelected ? '#fbbf24' : (s.group === 'tiwal' ? '#fbbf24' : '#e2e8f0');
-          ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
-          ctx.shadowBlur = 5;
+          if (isLight) {
+            ctx.fillStyle = isHover ? '#b45309' : isSelected ? '#b45309' : (s.group === 'tiwal' ? '#92400e' : '#0f172a');
+            ctx.shadowColor = 'rgba(255, 255, 255, 0.95)';
+            ctx.shadowBlur = 4;
+          } else {
+            ctx.fillStyle = isHover ? '#fbbf24' : isSelected ? '#fbbf24' : (s.group === 'tiwal' ? '#fbbf24' : '#e2e8f0');
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
+            ctx.shadowBlur = 5;
+          }
           ctx.fillText(`${s.number}. ${s.name}`, s.projX, s.projY + starR + 13);
           ctx.shadowBlur = 0;
         }
@@ -773,7 +812,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
 
   return (
     <div
-      className={`constellation-space-root ${isFullscreen ? 'is-fullscreen' : ''}`}
+      className={`constellation-space-root ${isFullscreen ? 'is-fullscreen' : ''} ${isLight ? 'is-light-theme' : 'is-dark-theme'}`}
       ref={containerRef}
       role="region"
       aria-label="استكشف بصائر — الفضاء الكوني والمعرفي للقرآن الكريم"
@@ -912,15 +951,27 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
           </div>
         )}
 
-        <button
-          type="button"
-          className={`hud-immersion-btn ${isFullscreen ? 'is-active' : ''}`}
-          onClick={toggleFullscreen}
-          title={isFullscreen ? 'تصغير الشاشة (Esc)' : 'توسيع المشهد لكامل الصفحة والشاشة ⛶'}
-        >
-          <span className="immersion-icon">{isFullscreen ? '🗗' : '⛶'}</span>
-          <span className="immersion-txt">{isFullscreen ? 'تصغير الشاشة' : 'ملء الصفحة بالكامل'}</span>
-        </button>
+        <div className="hud-global-controls">
+          <button
+            type="button"
+            className={`hud-theme-toggle-btn ${isLight ? 'is-light-active' : ''}`}
+            onClick={handleToggleTheme}
+            title={isLight ? 'التحويل إلى المظهر الليلي الفلكي (Dark)' : 'التحويل إلى النسخة البيضاء العاجية المذهبة (White / Ivory)'}
+          >
+            <span className="theme-toggle-icon">{isLight ? '🌙' : '☀️'}</span>
+            <span className="theme-toggle-txt">{isLight ? 'النسخة الليلية' : 'النسخة البيضاء'}</span>
+          </button>
+
+          <button
+            type="button"
+            className={`hud-immersion-btn ${isFullscreen ? 'is-active' : ''}`}
+            onClick={toggleFullscreen}
+            title={isFullscreen ? 'تصغير الشاشة (Esc)' : 'توسيع المشهد لكامل الصفحة والشاشة ⛶'}
+          >
+            <span className="immersion-icon">{isFullscreen ? '🗗' : '⛶'}</span>
+            <span className="immersion-txt">{isFullscreen ? 'تصغير الشاشة' : 'ملء الصفحة بالكامل'}</span>
+          </button>
+        </div>
       </div>
 
       {activeVisualMode === 'constellation' && (
@@ -1523,15 +1574,35 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
                   </radialGradient>
 
                   <linearGradient id="parchmentLandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#092027" />
-                    <stop offset="50%" stopColor="#0c2932" />
-                    <stop offset="100%" stopColor="#07191f" />
+                    {isLight ? (
+                      <>
+                        <stop offset="0%" stopColor="#f8f4e9" />
+                        <stop offset="50%" stopColor="#ede3cc" />
+                        <stop offset="100%" stopColor="#e3d6bc" />
+                      </>
+                    ) : (
+                      <>
+                        <stop offset="0%" stopColor="#092027" />
+                        <stop offset="50%" stopColor="#0c2932" />
+                        <stop offset="100%" stopColor="#07191f" />
+                      </>
+                    )}
                   </linearGradient>
 
                   <linearGradient id="seaWaterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#03161c" />
-                    <stop offset="50%" stopColor="#05242d" />
-                    <stop offset="100%" stopColor="#020f14" />
+                    {isLight ? (
+                      <>
+                        <stop offset="0%" stopColor="#e0f2fe" />
+                        <stop offset="50%" stopColor="#bae6fd" />
+                        <stop offset="100%" stopColor="#7dd3fc" />
+                      </>
+                    ) : (
+                      <>
+                        <stop offset="0%" stopColor="#03161c" />
+                        <stop offset="50%" stopColor="#05242d" />
+                        <stop offset="100%" stopColor="#020f14" />
+                      </>
+                    )}
                   </linearGradient>
 
                   <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
@@ -1540,14 +1611,14 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
                   </filter>
 
                   <pattern id="islamicLattice" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M 0 20 L 20 0 L 40 20 L 20 40 Z" fill="none" stroke="rgba(210, 170, 96, 0.04)" strokeWidth="0.8" />
-                    <circle cx="20" cy="20" r="3" fill="none" stroke="rgba(210, 170, 96, 0.06)" strokeWidth="0.8" />
+                    <path d="M 0 20 L 20 0 L 40 20 L 20 40 Z" fill="none" stroke={isLight ? "rgba(180, 140, 60, 0.08)" : "rgba(210, 170, 96, 0.04)"} strokeWidth="0.8" />
+                    <circle cx="20" cy="20" r="3" fill="none" stroke={isLight ? "rgba(180, 140, 60, 0.1)" : "rgba(210, 170, 96, 0.06)"} strokeWidth="0.8" />
                   </pattern>
                 </defs>
 
-                <rect width="1000" height="650" fill="#030c10" />
+                <rect width="1000" height="650" fill={isLight ? "#ede6da" : "#030c10"} />
                 <rect x="50" y="50" width="900" height="550" rx="14" fill="url(#parchmentLandGrad)" />
-                <rect x="50" y="50" width="900" height="550" rx="14" fill="url(#islamicLattice)" opacity="0.65" />
+                <rect x="50" y="50" width="900" height="550" rx="14" fill="url(#islamicLattice)" opacity={isLight ? 0.45 : 0.65} />
 
                 <g className="cartographic-rhumb-lines" opacity="0.12" stroke="#d4af37" strokeWidth="0.8">
                   <line x1="100" y1="100" x2="950" y2="100" />
@@ -1610,88 +1681,88 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
 
                 <path
                   d="M 300 600 Q 320 520 325 450 Q 315 360 320 250 Q 320 220 310 200 L 330 190 Q 340 220 330 250 Q 325 360 335 450 Q 330 520 310 600 Z"
-                  fill="rgba(56, 189, 248, 0.35)"
-                  stroke="#38bdf8"
+                  fill={isLight ? "rgba(2, 132, 199, 0.25)" : "rgba(56, 189, 248, 0.35)"}
+                  stroke={isLight ? "#0284c7" : "#38bdf8"}
                   strokeWidth="1.8"
                 />
-                <path d="M 320 210 Q 300 190 290 185" fill="none" stroke="#38bdf8" strokeWidth="1.5" />
-                <path d="M 320 210 Q 340 190 350 185" fill="none" stroke="#38bdf8" strokeWidth="1.5" />
+                <path d="M 320 210 Q 300 190 290 185" fill="none" stroke={isLight ? "#0284c7" : "#38bdf8"} strokeWidth="1.5" />
+                <path d="M 320 210 Q 340 190 350 185" fill="none" stroke={isLight ? "#0284c7" : "#38bdf8"} strokeWidth="1.5" />
 
                 <path
                   d="M 510 120 Q 520 170 550 210 Q 580 230 635 245"
                   fill="none"
-                  stroke="#38bdf8"
+                  stroke={isLight ? "#0284c7" : "#38bdf8"}
                   strokeWidth="1.8"
-                  strokeOpacity="0.75"
+                  strokeOpacity={isLight ? 0.9 : 0.75}
                 />
                 <path
                   d="M 550 135 Q 565 170 590 200 Q 615 220 635 245"
                   fill="none"
-                  stroke="#38bdf8"
+                  stroke={isLight ? "#0284c7" : "#38bdf8"}
                   strokeWidth="1.8"
-                  strokeOpacity="0.75"
+                  strokeOpacity={isLight ? 0.9 : 0.75}
                 />
 
-                <g className="mountains-group" opacity="0.6">
+                <g className="mountains-group" opacity={isLight ? 0.75 : 0.6}>
                   {[[385, 260], [395, 265], [445, 330], [455, 370], [470, 420], [545, 135], [555, 130]].map(([mx, my], idx) => (
                     <polygon
                       key={`mtn-${idx}`}
                       points={`${mx},${my - 12} ${mx - 10},${my + 6} ${mx + 10},${my + 6}`}
-                      fill="rgba(210, 170, 96, 0.2)"
-                      stroke="#fbbf24"
+                      fill={isLight ? "rgba(217, 119, 6, 0.2)" : "rgba(210, 170, 96, 0.2)"}
+                      stroke={isLight ? "#d97706" : "#fbbf24"}
                       strokeWidth="1"
                     />
                   ))}
                 </g>
 
-                <g className="sea-calligraphy-labels" opacity="0.5">
-                  <text x="210" y="120" fill="#38bdf8" fontSize="15" fontFamily="'Amiri', serif" textAnchor="middle">
+                <g className="sea-calligraphy-labels" opacity={isLight ? 0.85 : 0.5}>
+                  <text x="210" y="120" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="15" fontFamily="'Amiri', serif" textAnchor="middle">
                     بَحْرُ الرُّومِ (المتوسط)
                   </text>
-                  <text x="440" y="440" fill="#38bdf8" fontSize="15" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(-52 440 440)">
+                  <text x="440" y="440" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="15" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(-52 440 440)">
                     بَحْرُ القُلْزُمِ (البحر الأحمر)
                   </text>
-                  <text x="720" y="290" fill="#38bdf8" fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(30 720 290)">
+                  <text x="720" y="290" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(30 720 290)">
                     بَحْرُ فَارِسَ (الخليج العربي)
                   </text>
-                  <text x="720" y="550" fill="#38bdf8" fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                  <text x="720" y="550" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
                     بَحْرُ العَرَبِ وَالمُحِيطُ
                   </text>
                 </g>
 
-                <g className="region-calligraphy-labels" opacity="0.65">
-                  <text x="475" y="360" fill="#fbbf24" fontSize="16" fontWeight="700" fontFamily="'Amiri', serif" textAnchor="middle">
+                <g className="region-calligraphy-labels" opacity={isLight ? 0.9 : 0.65}>
+                  <text x="475" y="360" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="16" fontWeight="700" fontFamily="'Amiri', serif" textAnchor="middle">
                     بِلَادُ الحِجَازِ المُبَارَكَة
                   </text>
-                  <text x="440" y="160" fill="#fbbf24" fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                  <text x="440" y="160" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
                     بِلَادُ الشَّامِ وَفِلَسْطِين
                   </text>
-                  <text x="260" y="270" fill="#fbbf24" fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                  <text x="260" y="270" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
                     أَرْضُ الكِنَانَةِ (مِصْر)
                   </text>
-                  <text x="630" y="170" fill="#fbbf24" fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                  <text x="630" y="170" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
                     بِلَادُ الرَّافِدَيْنِ (العِرَاق)
                   </text>
-                  <text x="590" y="525" fill="#fbbf24" fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                  <text x="590" y="525" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
                     اليَمَنُ السَّعِيد
                   </text>
-                  <text x="660" y="440" fill="#94a3b8" fontSize="12" fontFamily="'Amiri', serif" textAnchor="middle">
+                  <text x="660" y="440" fill={isLight ? "#92400e" : "#94a3b8"} fontSize="12" fontFamily="'Amiri', serif" textAnchor="middle">
                     رِمَالُ الأَحْقَافِ (الرُّبْعُ الخَالِي)
                   </text>
                 </g>
 
                 <g className="astrolabe-compass-rose" transform="translate(100, 100)">
-                  <circle cx="0" cy="0" r="42" fill="rgba(4, 14, 18, 0.85)" stroke="#fbbf24" strokeWidth="1.5" />
-                  <circle cx="0" cy="0" r="38" fill="none" stroke="rgba(210, 170, 96, 0.3)" strokeWidth="1" strokeDasharray="2, 4" />
-                  <polygon points="0,-40 6,-8 0,0 -6,-8" fill="#fbbf24" />
-                  <polygon points="0,40 6,8 0,0 -6,8" fill="rgba(251, 191, 36, 0.4)" />
-                  <polygon points="40,0 8,6 0,0 8,-6" fill="rgba(251, 191, 36, 0.6)" />
-                  <polygon points="-40,0 -8,6 0,0 -8,-6" fill="rgba(251, 191, 36, 0.6)" />
-                  <circle cx="0" cy="0" r="5" fill="#ffffff" stroke="#fbbf24" strokeWidth="1.5" />
-                  <text x="0" y="-46" fill="#fbbf24" fontSize="11" fontWeight="700" textAnchor="middle" fontFamily="'Amiri', serif">شَمَال</text>
-                  <text x="0" y="54" fill="#94a3b8" fontSize="10" textAnchor="middle" fontFamily="'Amiri', serif">جَنُوب</text>
-                  <text x="48" y="4" fill="#94a3b8" fontSize="10" textAnchor="start" fontFamily="'Amiri', serif">مَشْرِق</text>
-                  <text x="-48" y="4" fill="#94a3b8" fontSize="10" textAnchor="end" fontFamily="'Amiri', serif">مَغْرِب</text>
+                  <circle cx="0" cy="0" r="42" fill={isLight ? "rgba(255, 255, 255, 0.95)" : "rgba(4, 14, 18, 0.85)"} stroke={isLight ? "#d4af37" : "#fbbf24"} strokeWidth="1.5" />
+                  <circle cx="0" cy="0" r="38" fill="none" stroke="rgba(210, 170, 96, 0.4)" strokeWidth="1" strokeDasharray="2, 4" />
+                  <polygon points="0,-40 6,-8 0,0 -6,-8" fill={isLight ? "#d4af37" : "#fbbf24"} />
+                  <polygon points="0,40 6,8 0,0 -6,8" fill={isLight ? "#94a3b8" : "rgba(251, 191, 36, 0.4)"} />
+                  <polygon points="40,0 8,6 0,0 8,-6" fill={isLight ? "#b45309" : "rgba(251, 191, 36, 0.6)"} />
+                  <polygon points="-40,0 -8,6 0,0 -8,-6" fill={isLight ? "#b45309" : "rgba(251, 191, 36, 0.6)"} />
+                  <circle cx="0" cy="0" r="5" fill="#ffffff" stroke={isLight ? "#d4af37" : "#fbbf24"} strokeWidth="1.5" />
+                  <text x="0" y="-46" fill={isLight ? "#92400e" : "#fbbf24"} fontSize="11" fontWeight="700" textAnchor="middle" fontFamily="'Amiri', serif">شَمَال</text>
+                  <text x="0" y="54" fill={isLight ? "#64748b" : "#94a3b8"} fontSize="10" textAnchor="middle" fontFamily="'Amiri', serif">جَنُوب</text>
+                  <text x="48" y="4" fill={isLight ? "#64748b" : "#94a3b8"} fontSize="10" textAnchor="start" fontFamily="'Amiri', serif">مَشْرِق</text>
+                  <text x="-48" y="4" fill={isLight ? "#64748b" : "#94a3b8"} fontSize="10" textAnchor="end" fontFamily="'Amiri', serif">مَغْرِب</text>
                 </g>
 
                 {showPropheticRoutes && PROPHETIC_ROUTES.filter((r) => selectedRouteId === 'all' || r.id === selectedRouteId).map((route) => (
@@ -1743,13 +1814,13 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
 
                       <polygon
                         points="0,-12 3,-4 11,-4 5,2 7,10 0,5 -7,10 -5,2 -11,-4 -3,-4"
-                        fill={isSelected ? '#fbbf24' : 'rgba(11, 43, 38, 0.95)'}
-                        stroke="#fbbf24"
+                        fill={isSelected ? '#d4af37' : (isLight ? '#ffffff' : 'rgba(11, 43, 38, 0.95)')}
+                        stroke={isLight ? '#d4af37' : '#fbbf24'}
                         strokeWidth="1.5"
                       />
 
-                      <circle cx="0" cy="0" r="9" fill={isSelected ? '#0b2b26' : '#041318'} stroke="#fbbf24" strokeWidth="1.2" />
-                      <text x="0" y="3.5" fill="#ffffff" fontSize="9" textAnchor="middle">
+                      <circle cx="0" cy="0" r="9" fill={isSelected ? (isLight ? '#fef3c7' : '#0b2b26') : (isLight ? '#ffffff' : '#041318')} stroke={isLight ? '#d4af37' : '#fbbf24'} strokeWidth="1.2" />
+                      <text x="0" y="3.5" fill={isLight ? '#0f172a' : '#ffffff'} fontSize="9" textAnchor="middle">
                         {loc.iconSymbol}
                       </text>
 
@@ -1760,14 +1831,14 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
                           width="76"
                           height="18"
                           rx="9"
-                          fill={isSelected ? 'rgba(7, 24, 30, 0.98)' : 'rgba(3, 11, 14, 0.85)'}
-                          stroke={isSelected ? '#fbbf24' : 'rgba(210, 170, 96, 0.35)'}
+                          fill={isSelected ? (isLight ? '#ffffff' : 'rgba(7, 24, 30, 0.98)') : (isLight ? '#ffffff' : 'rgba(3, 11, 14, 0.85)')}
+                          stroke={isSelected ? '#d4af37' : (isLight ? 'rgba(180, 140, 60, 0.5)' : 'rgba(210, 170, 96, 0.35)')}
                           strokeWidth="1"
                         />
                         <text
                           x="0"
                           y="3"
-                          fill={isSelected ? '#fbbf24' : '#e2e8f0'}
+                          fill={isSelected ? '#b45309' : (isLight ? '#0f172a' : '#e2e8f0')}
                           fontSize="10"
                           fontWeight="700"
                           textAnchor="middle"

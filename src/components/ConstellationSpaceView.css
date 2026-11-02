@@ -1898,3 +1898,676 @@
   line-height: 1.65;
   margin: 0;
 }
+
+
+.hud-global-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
+  color: #fbbf24;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+}
+
+.hud-theme-toggle-btn:hover {
+  background: rgba(212, 175, 55, 0.22);
+  border-color: #fbbf24;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.constellation-space-root.is-light-theme,
+[data-theme='light'] .constellation-space-root {
+  background-color: #faf7f2;
+}
+
+.is-light-theme .space-hud-topbar,
+[data-theme='light'] .space-hud-topbar {
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid rgba(210, 170, 96, 0.32);
+  box-shadow: 0 2px 12px rgba(180, 140, 60, 0.08);
+}
+
+.is-light-theme .hud-brand-tag,
+[data-theme='light'] .hud-brand-tag {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: rgba(212, 175, 55, 0.45);
+  color: #92400e;
+}
+
+.is-light-theme .visual-mode-tabs,
+[data-theme='light'] .visual-mode-tabs {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.is-light-theme .mode-tab-btn,
+[data-theme='light'] .mode-tab-btn {
+  color: #475569;
+}
+
+.is-light-theme .mode-tab-btn:hover,
+[data-theme='light'] .mode-tab-btn:hover {
+  color: #0f172a;
+}
+
+.is-light-theme .mode-tab-btn.active,
+[data-theme='light'] .mode-tab-btn.active {
+  background: #d4af37;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.35);
+}
+
+.is-light-theme .geo-pill-btn,
+[data-theme='light'] .geo-pill-btn {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+.is-light-theme .geo-pill-btn:hover,
+[data-theme='light'] .geo-pill-btn:hover {
+  border-color: #d4af37;
+  color: #0f172a;
+}
+
+.is-light-theme .geo-pill-btn.active,
+[data-theme='light'] .geo-pill-btn.active {
+  background: #d4af37;
+  color: #ffffff;
+  border-color: #d4af37;
+}
+
+.is-light-theme .hud-icon-btn,
+[data-theme='light'] .hud-icon-btn {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+.is-light-theme .hud-icon-btn:hover,
+[data-theme='light'] .hud-icon-btn:hover {
+  border-color: #d4af37;
+  color: #0f172a;
+}
+
+.is-light-theme .hud-icon-btn.active,
+[data-theme='light'] .hud-icon-btn.active {
+  background: #d4af37;
+  color: #ffffff;
+  border-color: #d4af37;
+}
+
+.is-light-theme .hud-immersion-btn,
+[data-theme='light'] .hud-immersion-btn {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.05) 100%);
+  border-color: rgba(212, 175, 55, 0.6);
+  color: #92400e;
+}
+
+.is-light-theme .hud-immersion-btn:hover,
+[data-theme='light'] .hud-immersion-btn:hover {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(212, 175, 55, 0.15) 100%);
+  border-color: #d4af37;
+  color: #78350f;
+}
+
+.is-light-theme .hud-theme-toggle-btn,
+[data-theme='light'] .hud-theme-toggle-btn {
+  background: rgba(254, 243, 199, 0.7);
+  border-color: rgba(212, 175, 55, 0.6);
+  color: #92400e;
+}
+
+.is-light-theme .hud-theme-toggle-btn:hover,
+[data-theme='light'] .hud-theme-toggle-btn:hover {
+  background: #fef3c7;
+  color: #78350f;
+}
+
+.is-light-theme .floating-search-box,
+[data-theme='light'] .floating-search-box {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: #d4af37;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.is-light-theme .floating-search-input,
+[data-theme='light'] .floating-search-input {
+  color: #0f172a;
+}
+
+.is-light-theme .floating-search-input::placeholder,
+[data-theme='light'] .floating-search-input::placeholder {
+  color: #94a3b8;
+}
+
+.is-light-theme .filter-pill-btn,
+[data-theme='light'] .filter-pill-btn {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.is-light-theme .filter-pill-btn:hover,
+[data-theme='light'] .filter-pill-btn:hover {
+  border-color: #d4af37;
+  color: #0f172a;
+}
+
+.is-light-theme .filter-pill-btn.active,
+[data-theme='light'] .filter-pill-btn.active {
+  background: #d4af37;
+  color: #ffffff;
+  border-color: #d4af37;
+}
+
+.is-light-theme .selected-star-drawer-3d,
+[data-theme='light'] .selected-star-drawer-3d {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1.5px solid #d4af37;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 0 25px rgba(212, 175, 55, 0.2);
+}
+
+.is-light-theme .drawer-title,
+[data-theme='light'] .drawer-title {
+  color: #0f172a;
+}
+
+.is-light-theme .drawer-subtitle,
+[data-theme='light'] .drawer-subtitle {
+  color: #64748b;
+}
+
+.is-light-theme .drawer-metric,
+[data-theme='light'] .drawer-metric {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.is-light-theme .metric-number,
+[data-theme='light'] .metric-number {
+  color: #92400e;
+}
+
+.is-light-theme .chronicle-stage-wrapper,
+[data-theme='light'] .chronicle-stage-wrapper {
+  background: radial-gradient(ellipse at 50% 15%, #fbf9f4 0%, #f3eee3 100%);
+}
+
+.is-light-theme .chronicle-editorial-masthead,
+[data-theme='light'] .chronicle-editorial-masthead {
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid rgba(210, 170, 96, 0.32);
+  box-shadow: 0 2px 10px rgba(180, 140, 60, 0.06);
+}
+
+.is-light-theme .masthead-pretitle,
+[data-theme='light'] .masthead-pretitle {
+  color: #92400e;
+}
+
+.is-light-theme .masthead-title,
+[data-theme='light'] .masthead-title {
+  color: #0f172a;
+  text-shadow: none;
+}
+
+.is-light-theme .masthead-caption,
+[data-theme='light'] .masthead-caption {
+  color: #475569;
+}
+
+.is-light-theme .chronicle-search-box,
+[data-theme='light'] .chronicle-search-box {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+.is-light-theme .chronicle-search-input,
+[data-theme='light'] .chronicle-search-input {
+  color: #0f172a;
+}
+
+.is-light-theme .era-toggle-btn,
+[data-theme='light'] .era-toggle-btn {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.is-light-theme .era-toggle-btn:hover,
+[data-theme='light'] .era-toggle-btn:hover {
+  border-color: #d4af37;
+  color: #0f172a;
+}
+
+.is-light-theme .era-toggle-btn.active,
+[data-theme='light'] .era-toggle-btn.active {
+  background: #d4af37;
+  color: #ffffff;
+  border-color: #d4af37;
+}
+
+.is-light-theme .era-toggle-btn.meccan.active,
+[data-theme='light'] .era-toggle-btn.meccan.active {
+  background: #0f4c81;
+  color: #ffffff;
+  border-color: #0f4c81;
+}
+
+.is-light-theme .era-toggle-btn.medinan.active,
+[data-theme='light'] .era-toggle-btn.medinan.active {
+  background: #065f46;
+  color: #ffffff;
+  border-color: #065f46;
+}
+
+.is-light-theme .layout-toggle-btn,
+[data-theme='light'] .layout-toggle-btn {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.is-light-theme .layout-toggle-btn.active,
+[data-theme='light'] .layout-toggle-btn.active {
+  background: #d4af37;
+  color: #ffffff;
+  border-color: #d4af37;
+}
+
+.is-light-theme .horizon-arrow-btn,
+[data-theme='light'] .horizon-arrow-btn {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+.is-light-theme .horizon-arrow-btn:hover,
+[data-theme='light'] .horizon-arrow-btn:hover {
+  border-color: #d4af37;
+  color: #0f172a;
+}
+
+.is-light-theme .chronicle-epochs-ribbon,
+[data-theme='light'] .chronicle-epochs-ribbon {
+  background: rgba(255, 255, 255, 0.88);
+  border-bottom: 1px solid rgba(210, 170, 96, 0.25);
+}
+
+.is-light-theme .epoch-tab-btn,
+[data-theme='light'] .epoch-tab-btn {
+  color: #475569;
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+.is-light-theme .epoch-tab-btn:hover,
+[data-theme='light'] .epoch-tab-btn:hover {
+  color: #0f172a;
+  border-color: #d4af37;
+}
+
+.is-light-theme .epoch-tab-btn.active,
+[data-theme='light'] .epoch-tab-btn.active {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #d4af37;
+}
+
+.is-light-theme .islamic-manuscript-card,
+[data-theme='light'] .islamic-manuscript-card {
+  background: linear-gradient(180deg, #ffffff 0%, #faf8f5 100%);
+  border: 1.5px solid #d4af37;
+  outline: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 10px 30px rgba(180, 140, 80, 0.15), 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.is-light-theme .islamic-manuscript-card:hover,
+[data-theme='light'] .islamic-manuscript-card:hover {
+  border-color: #b45309;
+  outline-color: rgba(180, 83, 9, 0.5);
+  box-shadow: 0 16px 40px rgba(180, 140, 80, 0.22), 0 0 20px rgba(212, 175, 55, 0.2);
+}
+
+.is-light-theme .islamic-manuscript-card.active,
+[data-theme='light'] .islamic-manuscript-card.active {
+  border-color: #b45309;
+  outline-color: #d4af37;
+  box-shadow: 0 18px 45px rgba(180, 140, 80, 0.28);
+}
+
+.is-light-theme .islamic-manuscript-card.is-meccan,
+[data-theme='light'] .islamic-manuscript-card.is-meccan {
+  background: linear-gradient(180deg, #ffffff 0%, #f6f9fc 100%);
+}
+
+.is-light-theme .islamic-manuscript-card.is-medinan,
+[data-theme='light'] .islamic-manuscript-card.is-medinan {
+  background: linear-gradient(180deg, #ffffff 0%, #f4fbf7 100%);
+}
+
+.is-light-theme .is-meccan .arch-finial,
+[data-theme='light'] .is-meccan .arch-finial {
+  color: #0f4c81;
+}
+
+.is-light-theme .is-medinan .arch-finial,
+[data-theme='light'] .is-medinan .arch-finial {
+  color: #065f46;
+}
+
+.is-light-theme .is-meccan .unwan-surah-heading,
+[data-theme='light'] .is-meccan .unwan-surah-heading {
+  color: #0f2942;
+  text-shadow: none;
+}
+
+.is-light-theme .is-medinan .unwan-surah-heading,
+[data-theme='light'] .is-medinan .unwan-surah-heading {
+  color: #064e3b;
+  text-shadow: none;
+}
+
+.is-light-theme .is-meccan .unwan-year-ribbon,
+[data-theme='light'] .is-meccan .unwan-year-ribbon {
+  color: #0f4c81;
+}
+
+.is-light-theme .is-medinan .unwan-year-ribbon,
+[data-theme='light'] .is-medinan .unwan-year-ribbon {
+  color: #065f46;
+}
+
+.is-light-theme .is-meccan .star-seal-digit,
+[data-theme='light'] .is-meccan .star-seal-digit {
+  color: #0f4c81;
+}
+
+.is-light-theme .is-medinan .star-seal-digit,
+[data-theme='light'] .is-medinan .star-seal-digit {
+  color: #065f46;
+}
+
+.is-light-theme .is-meccan .manuscript-commentary-frame,
+[data-theme='light'] .is-meccan .manuscript-commentary-frame {
+  border-right: 2.5px solid #0f4c81;
+  background: rgba(15, 76, 129, 0.04);
+}
+
+.is-light-theme .is-medinan .manuscript-commentary-frame,
+[data-theme='light'] .is-medinan .manuscript-commentary-frame {
+  border-right: 2.5px solid #065f46;
+  background: rgba(6, 95, 70, 0.04);
+}
+
+.is-light-theme .manuscript-narrative-text,
+[data-theme='light'] .manuscript-narrative-text {
+  color: #1e293b;
+}
+
+.is-light-theme .is-meccan .ayah-count-medallion,
+[data-theme='light'] .is-meccan .ayah-count-medallion {
+  color: #0f4c81;
+}
+
+.is-light-theme .is-medinan .ayah-count-medallion,
+[data-theme='light'] .is-medinan .ayah-count-medallion {
+  color: #065f46;
+}
+
+.is-light-theme .is-meccan .islamic-read-action-btn,
+[data-theme='light'] .is-meccan .islamic-read-action-btn {
+  background: linear-gradient(135deg, #0f4c81 0%, #0a3356 100%);
+  border: 1px solid #d4af37;
+  color: #ffffff;
+}
+
+.is-light-theme .is-medinan .islamic-read-action-btn,
+[data-theme='light'] .is-medinan .islamic-read-action-btn {
+  background: linear-gradient(135deg, #065f46 0%, #044331 100%);
+  border: 1px solid #d4af37;
+  color: #ffffff;
+}
+
+.is-light-theme .is-meccan .islamic-read-action-btn:hover,
+[data-theme='light'] .is-meccan .islamic-read-action-btn:hover {
+  background: #0f4c81;
+  border-color: #fde047;
+}
+
+.is-light-theme .is-medinan .islamic-read-action-btn:hover,
+[data-theme='light'] .is-medinan .islamic-read-action-btn:hover {
+  background: #065f46;
+  border-color: #fde047;
+}
+
+.is-light-theme .horizon-epoch-monument,
+[data-theme='light'] .horizon-epoch-monument {
+  background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
+  border: 2px solid #059669;
+  outline: 1px solid rgba(210, 170, 96, 0.45);
+  box-shadow: 0 16px 40px rgba(5, 150, 105, 0.15);
+}
+
+.is-light-theme .monument-title,
+[data-theme='light'] .monument-title {
+  color: #064e3b;
+}
+
+.is-light-theme .monument-desc,
+[data-theme='light'] .monument-desc {
+  color: #334155;
+}
+
+.is-light-theme .monument-badge,
+[data-theme='light'] .monument-badge {
+  color: #059669;
+}
+
+.is-light-theme .monument-rosette,
+[data-theme='light'] .monument-rosette {
+  color: #059669;
+}
+
+.is-light-theme .chronicle-footer-rail,
+[data-theme='light'] .chronicle-footer-rail {
+  background: rgba(255, 255, 255, 0.96);
+  border-top: 1px solid rgba(210, 170, 96, 0.32);
+}
+
+.is-light-theme .footer-rail-bar,
+[data-theme='light'] .footer-rail-bar {
+  background: #e2e8f0;
+}
+
+.is-light-theme .rail-legend-item,
+[data-theme='light'] .rail-legend-item {
+  color: #334155;
+}
+
+.is-light-theme .quran-atlas-stage,
+[data-theme='light'] .quran-atlas-stage {
+  background: #f8f6f0;
+}
+
+.is-light-theme .atlas-locations-sidebar,
+[data-theme='light'] .atlas-locations-sidebar {
+  background: rgba(255, 255, 255, 0.98);
+  border-left: 1.5px solid rgba(210, 170, 96, 0.35);
+}
+
+.is-light-theme .sidebar-title,
+[data-theme='light'] .sidebar-title {
+  color: #0f172a;
+}
+
+.is-light-theme .sidebar-sub,
+[data-theme='light'] .sidebar-sub {
+  color: #64748b;
+}
+
+.is-light-theme .cat-pill-btn,
+[data-theme='light'] .cat-pill-btn {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+.is-light-theme .cat-pill-btn:hover,
+[data-theme='light'] .cat-pill-btn:hover {
+  border-color: #d4af37;
+  color: #0f172a;
+}
+
+.is-light-theme .cat-pill-btn.active,
+[data-theme='light'] .cat-pill-btn.active {
+  background: #d4af37;
+  color: #ffffff;
+  border-color: #d4af37;
+}
+
+.is-light-theme .location-list-item,
+[data-theme='light'] .location-list-item {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.is-light-theme .location-list-item:hover,
+[data-theme='light'] .location-list-item:hover {
+  border-color: #d4af37;
+  background: #fefce8;
+  transform: translateX(-3px);
+}
+
+.is-light-theme .location-list-item.active,
+[data-theme='light'] .location-list-item.active {
+  background: linear-gradient(135deg, #fefce8 0%, #ffffff 100%);
+  border: 1.5px solid #d4af37;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.2);
+}
+
+.is-light-theme .location-list-item .loc-name,
+[data-theme='light'] .location-list-item .loc-name {
+  color: #0f172a;
+}
+
+.is-light-theme .location-list-item .loc-region,
+[data-theme='light'] .location-list-item .loc-region {
+  color: #64748b;
+}
+
+.is-light-theme .location-list-item .loc-era-hint,
+[data-theme='light'] .location-list-item .loc-era-hint {
+  color: #92400e;
+}
+
+.is-light-theme .map-toolbar-ribbon,
+[data-theme='light'] .map-toolbar-ribbon {
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid rgba(210, 170, 96, 0.3);
+}
+
+.is-light-theme .map-route-toggle-btn,
+[data-theme='light'] .map-route-toggle-btn {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+.is-light-theme .map-route-toggle-btn.active,
+[data-theme='light'] .map-route-toggle-btn.active {
+  background: #d4af37;
+  color: #ffffff;
+  border-color: #d4af37;
+}
+
+.is-light-theme .route-pill-btn,
+[data-theme='light'] .route-pill-btn {
+  background: #ffffff;
+  color: #334155;
+}
+
+.is-light-theme .route-pill-btn.active,
+[data-theme='light'] .route-pill-btn.active {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.is-light-theme .map-legend-tags .legend-tag,
+[data-theme='light'] .map-legend-tags .legend-tag {
+  color: #475569;
+}
+
+.is-light-theme .interactive-map-board,
+[data-theme='light'] .interactive-map-board {
+  background: radial-gradient(circle at 50% 50%, #fcfbf8 0%, #ede6d8 100%);
+}
+
+.is-light-theme .atlas-selected-spotlight,
+[data-theme='light'] .atlas-selected-spotlight {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1.5px solid #d4af37;
+  outline: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 0 25px rgba(212, 175, 55, 0.2);
+}
+
+.is-light-theme .spotlight-name,
+[data-theme='light'] .spotlight-name {
+  color: #0f172a;
+}
+
+.is-light-theme .spotlight-en,
+[data-theme='light'] .spotlight-en {
+  color: #64748b;
+}
+
+.is-light-theme .spotlight-verse-banner,
+[data-theme='light'] .spotlight-verse-banner {
+  background: #fefce8;
+  border-right: 3px solid #d4af37;
+}
+
+.is-light-theme .spotlight-verse-banner .verse-text,
+[data-theme='light'] .spotlight-verse-banner .verse-text {
+  color: #78350f;
+}
+
+.is-light-theme .spotlight-verse-banner .verse-source,
+[data-theme='light'] .spotlight-verse-banner .verse-source {
+  color: #92400e;
+}
+
+.is-light-theme .spotlight-story,
+[data-theme='light'] .spotlight-story {
+  color: #334155;
+}
+
+.is-light-theme .spotlight-reader-btn,
+[data-theme='light'] .spotlight-reader-btn {
+  background: linear-gradient(135deg, #065f46 0%, #044331 100%);
+  border: 1.5px solid #d4af37;
+  color: #ffffff;
+}
+
+.is-light-theme .spotlight-reader-btn:hover,
+[data-theme='light'] .spotlight-reader-btn:hover {
+  background: #065f46;
+  border-color: #fde047;
+}

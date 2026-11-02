@@ -467,6 +467,8 @@ export default function App() {
                 onNavigateTab={(tab) => {
                   setActiveTab(tab);
                 }}
+                theme={theme}
+                setTheme={setTheme}
               />
             )}
           </main>

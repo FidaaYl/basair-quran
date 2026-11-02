@@ -528,7 +528,7 @@
   padding: 16px 28px;
   background: rgba(4, 14, 18, 0.96);
   backdrop-filter: blur(18px);
-  border-bottom: 1px solid rgba(210, 170, 96, 0.35);
+  border-bottom: 1.5px solid rgba(210, 170, 96, 0.35);
   gap: 18px;
   flex-wrap: wrap;
   z-index: 25;
@@ -862,12 +862,14 @@
 }
 
 .horizon-epoch-monument {
-  width: 340px;
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(6, 44, 38, 0.96) 100%);
+  width: 350px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(6, 44, 38, 0.98) 100%);
   border: 2px solid #34d399;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 30px rgba(52, 211, 153, 0.25);
-  border-radius: 18px;
-  padding: 22px;
+  outline: 1px solid rgba(210, 170, 96, 0.45);
+  outline-offset: -6px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.8), 0 0 35px rgba(52, 211, 153, 0.3);
+  border-radius: 28px 28px 16px 16px;
+  padding: 24px;
   display: flex;
   gap: 16px;
   z-index: 3;
@@ -909,7 +911,7 @@
 }
 
 .monument-title {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: #ffffff;
   margin: 0;
@@ -923,12 +925,10 @@
   margin: 0;
 }
 
-.chronicle-station-card {
-  width: 310px;
-  background: rgba(8, 24, 30, 0.95);
-  border: 1px solid rgba(210, 170, 96, 0.28);
-  border-radius: 16px;
-  padding: 20px;
+.islamic-manuscript-card {
+  width: 320px;
+  border-radius: 32px 32px 16px 16px;
+  padding: 22px 20px 18px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -936,172 +936,208 @@
   z-index: 3;
   flex-shrink: 0;
   backdrop-filter: blur(16px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7);
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
+  border: 1.5px solid #d4af37;
+  outline: 1px solid rgba(212, 175, 55, 0.35);
+  outline-offset: -5px;
 }
 
-.chronicle-station-card:hover {
-  transform: translateY(-5px);
+.islamic-manuscript-card.is-meccan {
+  background: linear-gradient(180deg, #071926 0%, #030e16 100%);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(56, 189, 248, 0.3);
+}
+
+.islamic-manuscript-card.is-medinan {
+  background: linear-gradient(180deg, #052119 0%, #03120d 100%);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(52, 211, 153, 0.3);
+}
+
+.islamic-manuscript-card:hover {
+  transform: translateY(-6px);
   border-color: #fbbf24;
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.8), 0 0 24px rgba(251, 191, 36, 0.2);
-  background: rgba(10, 30, 38, 0.98);
+  outline-color: rgba(251, 191, 36, 0.6);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.85), 0 0 28px rgba(212, 175, 55, 0.25);
 }
 
-.chronicle-station-card.is-meccan {
-  border-right: 4px solid #38bdf8;
+.islamic-manuscript-card.active {
+  border-color: #fde047;
+  outline-color: #fbbf24;
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.9), 0 0 35px rgba(251, 191, 36, 0.35);
 }
 
-.chronicle-station-card.is-medinan {
-  border-right: 4px solid #34d399;
+.mihrab-arch-crest {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: -6px;
+  gap: 2px;
 }
 
-.station-milestone-marker {
+.arch-finial {
+  font-size: 20px;
+  color: #fbbf24;
+  line-height: 1;
+}
+
+.arch-flourish {
+  font-size: 10px;
+  color: rgba(210, 170, 96, 0.6);
+  letter-spacing: 2px;
+}
+
+.islamic-milestone-ribbon {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(251, 191, 36, 0.15);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.25) 0%, rgba(210, 170, 96, 0.1) 100%);
   border: 1px solid #fbbf24;
   border-radius: var(--radius-sm);
   padding: 4px 10px;
   color: #fbbf24;
   font-weight: 700;
-  font-size: 11.5px;
-  margin-bottom: 2px;
+  font-size: 12px;
 }
 
-.marker-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #fbbf24;
-  box-shadow: 0 0 6px #fbbf24;
-}
-
-.marker-title {
-  font-weight: 700;
-}
-
-.station-card-inner {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  height: 100%;
-}
-
-.station-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.station-order-stamps {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.station-rank {
-  font-size: 11px;
-  font-weight: 700;
+.milestone-rosette {
+  font-size: 13px;
   color: #fbbf24;
-  background: rgba(251, 191, 36, 0.12);
-  border: 1px solid rgba(251, 191, 36, 0.35);
-  padding: 3px 8px;
-  border-radius: var(--radius-full);
 }
 
-.station-mushaf {
-  font-size: 11px;
-  color: #cbd5e1;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 3px 8px;
-  border-radius: var(--radius-full);
-}
-
-.station-era-label {
-  font-size: 11px;
+.milestone-txt {
   font-weight: 700;
-  padding: 3px 10px;
-  border-radius: var(--radius-full);
 }
 
-.station-era-label.meccan {
-  color: #38bdf8;
-  background: rgba(56, 189, 248, 0.14);
-  border: 1px solid rgba(56, 189, 248, 0.35);
-}
-
-.station-era-label.medinan {
-  color: #34d399;
-  background: rgba(52, 211, 153, 0.14);
-  border: 1px solid rgba(52, 211, 153, 0.35);
-}
-
-.station-card-body {
+.unwan-cartouche-header {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 12px;
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  text-align: center;
+  position: relative;
 }
 
-.station-name-line {
+.unwan-meta-line {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 6px;
+  margin-bottom: 4px;
 }
 
-.station-surah-title {
-  font-size: 24px;
+.islamic-star-seal {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}
+
+.star-seal-icon {
+  position: absolute;
+  font-size: 26px;
+  color: #fbbf24;
+  line-height: 1;
+}
+
+.star-seal-digit {
+  position: relative;
+  font-size: 11px;
+  font-weight: 700;
+  color: #041217;
+  z-index: 2;
+}
+
+.era-illumination-tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.era-illumination-tag.meccan {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.era-illumination-tag.medinan {
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+}
+
+.mushaf-bracket-badge {
+  font-size: 10.5px;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+.unwan-surah-heading {
+  font-size: 26px;
   font-weight: 700;
   color: #ffffff;
-  margin: 0;
+  margin: 2px 0 0;
   letter-spacing: -0.2px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 12px rgba(251, 191, 36, 0.2);
 }
 
-.station-year-label {
+.unwan-year-ribbon {
   font-size: 11.5px;
   color: #fbbf24;
   font-weight: 600;
-  white-space: nowrap;
+  letter-spacing: 0.3px;
 }
 
-.station-historical-narrative {
+.manuscript-commentary-frame {
+  background: rgba(255, 255, 255, 0.02);
+  border-right: 2px solid #d4af37;
+  padding: 8px 12px;
+  margin: 2px 0;
+}
+
+.manuscript-narrative-text {
   font-size: 13px;
-  color: #e2e8f0;
-  line-height: 1.6;
-  margin: 4px 0 0;
+  color: #f1f5f9;
+  line-height: 1.65;
+  margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.station-card-actions {
+.manuscript-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 10px;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
   margin-top: auto;
 }
 
-.station-ayah-total {
+.ayah-count-medallion {
   font-size: 11.5px;
-  color: #94a3b8;
-  font-weight: 500;
+  color: #fbbf24;
+  font-weight: 600;
 }
 
-.station-read-btn {
-  background: linear-gradient(135deg, #0b2b26 0%, #061c18 100%);
-  border: 1px solid #fbbf24;
+.islamic-read-action-btn {
+  background: linear-gradient(135deg, #0b2b26 0%, #051a16 100%);
+  border: 1.5px solid #d4af37;
   color: #ffffff;
   padding: 6px 14px;
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
   font-size: 12px;
   font-weight: 700;
   display: inline-flex;
@@ -1111,11 +1147,11 @@
   transition: all 0.18s ease;
 }
 
-.station-read-btn:hover {
-  background: #113831;
+.islamic-read-action-btn:hover {
+  background: #113c34;
   border-color: #fde047;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(11, 43, 38, 0.5);
+  box-shadow: 0 4px 14px rgba(11, 43, 38, 0.6);
 }
 
 .chronicle-ledger-viewport {
@@ -1371,58 +1407,105 @@
   pointer-events: none;
 }
 
+/* ==========================================================================
+   Antique Islamic Quranic Cartography (أطلس الخرائط التاريخية القرآنية)
+   ========================================================================== */
+
 .quran-atlas-stage {
   flex: 1;
   display: grid;
-  grid-template-columns: 310px 1fr;
+  grid-template-columns: 340px 1fr;
   overflow: hidden;
   height: 100%;
+  background: #02070a;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
   .quran-atlas-stage {
     grid-template-columns: 1fr;
+    overflow-y: auto;
   }
 }
 
 .atlas-locations-sidebar {
-  background: rgba(5, 15, 18, 0.95);
-  border-left: 1px solid rgba(210, 170, 96, 0.2);
-  padding: 16px;
+  background: rgba(4, 14, 18, 0.98);
+  border-left: 1.5px solid rgba(210, 170, 96, 0.3);
+  padding: 18px;
   display: flex;
   flex-direction: column;
+  gap: 14px;
   overflow-y: auto;
+  z-index: 20;
+}
+
+.sidebar-header-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 12px;
 }
 
 .sidebar-title {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 15px;
-  color: #ffffff;
-  margin: 0 0 4px;
+  font-size: 17px;
+  color: #fbbf24;
+  margin: 0;
   font-weight: 700;
 }
 
 .sidebar-sub {
   font-size: 11.5px;
   color: #94a3b8;
-  margin: 0 0 14px;
-  line-height: 1.4;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.atlas-category-filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.cat-pill-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.cat-pill-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.cat-pill-btn.active {
+  background: rgba(251, 191, 36, 0.22);
+  border-color: #fbbf24;
+  color: #fbbf24;
+  font-weight: 700;
 }
 
 .locations-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .location-list-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: var(--radius-md);
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
   cursor: pointer;
@@ -1432,171 +1515,227 @@
 .location-list-item:hover {
   background: rgba(255, 255, 255, 0.07);
   border-color: rgba(251, 191, 36, 0.4);
+  transform: translateX(-2px);
 }
 
 .location-list-item.active {
-  background: rgba(251, 191, 36, 0.15);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.18) 0%, rgba(11, 43, 38, 0.8) 100%);
   border-color: #fbbf24;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
-.loc-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #fbbf24;
-  box-shadow: 0 0 6px #fbbf24;
+.loc-category-badge {
+  font-size: 18px;
   flex-shrink: 0;
 }
 
 .loc-info {
   display: flex;
   flex-direction: column;
+  gap: 2px;
   flex: 1;
+  min-width: 0;
 }
 
 .loc-name {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14.5px;
+  font-weight: 700;
   color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .loc-region {
+  font-size: 10.5px;
+  color: #fbbf24;
+}
+
+.loc-era-hint {
   font-size: 10px;
   color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .loc-surah-pill {
   font-size: 10.5px;
-  color: #fbbf24;
-  background: rgba(251, 191, 36, 0.1);
-  padding: 2px 6px;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 2px 7px;
   border-radius: var(--radius-full);
+  white-space: nowrap;
 }
 
 .atlas-map-canvas-card {
   position: relative;
   flex: 1;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 50%, #061c20 0%, #02090b 100%);
+  background: #02080b;
   display: flex;
   flex-direction: column;
 }
 
+.map-toolbar-ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+  background: rgba(4, 14, 18, 0.95);
+  border-bottom: 1px solid rgba(210, 170, 96, 0.3);
+  gap: 12px;
+  flex-wrap: wrap;
+  z-index: 15;
+}
+
+.toolbar-left-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.map-route-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  color: #fbbf24;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.map-route-toggle-btn:hover {
+  background: rgba(251, 191, 36, 0.22);
+}
+
+.map-route-toggle-btn.active {
+  background: rgba(251, 191, 36, 0.25);
+  border-color: #fbbf24;
+}
+
+.route-status-pill {
+  font-size: 9.5px;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+}
+
+.prophetic-routes-selector {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.route-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.route-pill-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.route-pill-btn.active {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  font-weight: 700;
+}
+
+.route-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.map-legend-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.legend-tag {
+  color: #94a3b8;
+}
+
+.legend-tag.holy { color: #fbbf24; }
+.legend-tag.mountain { color: #34d399; }
+.legend-tag.river { color: #38bdf8; }
+
 .interactive-map-board {
+  flex: 1;
   width: 100%;
   height: 100%;
   position: relative;
   overflow: hidden;
+  background: radial-gradient(circle at 50% 50%, #061c20 0%, #02090b 100%);
 }
 
-.map-grid-overlay {
-  position: absolute;
-  inset: 0;
-  background-image: 
-    linear-gradient(rgba(210, 170, 96, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(210, 170, 96, 0.05) 1px, transparent 1px);
-  background-size: 50px 50px;
-  pointer-events: none;
-}
-
-.map-compass-rose {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  background: rgba(4, 13, 16, 0.8);
-  border: 1px solid rgba(251, 191, 36, 0.3);
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-  font-size: 11px;
-  color: #fbbf24;
-  pointer-events: none;
-}
-
-.map-location-pin {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 10;
-}
-
-.map-location-pin:hover {
-  transform: translate(-50%, -50%) scale(1.25);
-  z-index: 30;
-}
-
-.map-location-pin.selected {
-  transform: translate(-50%, -50%) scale(1.35);
-  z-index: 40;
-}
-
-.pin-pulse-ring {
-  position: absolute;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1.5px solid #fbbf24;
-  animation: pulsePin 2s infinite ease-in-out;
-}
-
-@keyframes pulsePin {
-  0% { transform: scale(0.6); opacity: 0.8; }
-  100% { transform: scale(1.6); opacity: 0; }
-}
-
-.pin-core {
-  width: 26px;
-  height: 26px;
-  background: #0b2b26;
-  border: 2px solid #fbbf24;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  box-shadow: 0 0 12px rgba(251, 191, 36, 0.7);
-}
-
-.pin-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: #ffffff;
-  background: rgba(4, 14, 16, 0.85);
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  border: 1px solid rgba(251, 191, 36, 0.4);
-  margin-top: 4px;
-  white-space: nowrap;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+.antique-cartography-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .atlas-selected-spotlight {
   position: absolute;
-  bottom: 20px;
+  bottom: 18px;
   left: 20px;
   right: 20px;
-  max-width: 720px;
-  margin: 0 auto;
-  background: rgba(6, 18, 22, 0.95);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(251, 191, 36, 0.45);
-  border-radius: var(--radius-lg);
-  padding: 16px 20px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85), 0 0 30px rgba(251, 191, 36, 0.15);
-  z-index: 50;
+  background: rgba(5, 17, 21, 0.96);
+  border: 1.5px solid #d4af37;
+  outline: 1px solid rgba(212, 175, 55, 0.35);
+  outline-offset: -5px;
+  border-radius: 20px 20px 14px 14px;
+  padding: 18px 24px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85), 0 0 25px rgba(210, 170, 96, 0.2);
+  backdrop-filter: blur(18px);
   display: flex;
   flex-direction: column;
   gap: 10px;
+  z-index: 50;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.spotlight-mihrab-crest {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #fbbf24;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.crest-seal {
+  font-size: 15px;
 }
 
 .spotlight-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
@@ -1606,104 +1745,84 @@
   gap: 2px;
 }
 
+.spotlight-badge-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .spotlight-region-tag {
   font-size: 11px;
+  font-weight: 700;
   color: #fbbf24;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.spotlight-era-tag {
+  font-size: 11px;
+  color: #cbd5e1;
 }
 
 .spotlight-name {
-  font-size: 20px;
+  font-size: 24px;
   color: #ffffff;
-  margin: 0;
+  margin: 2px 0 0;
   font-weight: 700;
 }
 
 .spotlight-en {
-  font-size: 11.5px;
+  font-size: 12px;
   color: #94a3b8;
 }
 
 .spotlight-reader-btn {
-  background: linear-gradient(135deg, #0b2b26 0%, #061c18 100%);
-  border: 1px solid #fbbf24;
+  background: linear-gradient(135deg, #0b2b26 0%, #051a16 100%);
+  border: 1.5px solid #d4af37;
   color: #ffffff;
-  padding: 7px 14px;
-  border-radius: var(--radius-md);
-  font-size: 12px;
-  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   cursor: pointer;
   transition: all 0.18s ease;
 }
 
 .spotlight-reader-btn:hover {
-  background: #114238;
+  background: #113c34;
+  border-color: #fde047;
   transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(11, 43, 38, 0.6);
 }
 
 .spotlight-verse-banner {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.03);
   border-right: 3px solid #fbbf24;
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  padding: 8px 16px;
+  border-radius: 4px;
 }
 
 .verse-text {
-  font-size: 15px;
-  color: #ffffff;
+  font-size: 18px;
+  color: #fbbf24;
+  margin: 0 0 4px;
   line-height: 1.6;
-  margin: 0;
 }
 
 .verse-source {
-  font-size: 11px;
-  color: #fbbf24;
-  text-align: left;
+  font-size: 11.5px;
+  color: #94a3b8;
 }
 
 .spotlight-story {
-  font-size: 12px;
-  color: #cbd5e1;
-  line-height: 1.6;
+  font-size: 13px;
+  color: #e2e8f0;
+  line-height: 1.65;
   margin: 0;
-}
-
-@keyframes slideUpDrawer {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-slide-up {
-  animation: slideUpDrawer 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@media (max-width: 900px) {
-  .space-3d-floating-filterbar {
-    position: relative;
-    top: 0;
-    left: 0;
-    right: 0;
-    border-radius: 0;
-  }
-
-  .selected-star-drawer-3d {
-    left: 12px;
-    right: 12px;
-    width: auto;
-    bottom: 12px;
-  }
-
-  .space-canvas-hint-3d {
-    display: none;
-  }
-
-  .chronicle-station-card {
-    width: 230px;
-    margin: 0 10px;
-  }
 }

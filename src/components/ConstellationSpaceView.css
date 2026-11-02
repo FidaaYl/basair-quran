@@ -28,7 +28,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 18px;
-  background: rgba(4, 13, 16, 0.9);
+  background: rgba(4, 13, 16, 0.92);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(210, 170, 96, 0.2);
   gap: 14px;
@@ -125,17 +125,21 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 20%, #061517 0%, #020708 100%);
+  background: radial-gradient(ellipse at 50% 30%, #06181d 0%, #020708 100%);
+  position: relative;
 }
 
 .timeline-control-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 20px;
+  padding: 12px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
+  z-index: 10;
+  background: rgba(3, 10, 13, 0.7);
+  backdrop-filter: blur(8px);
 }
 
 .timeline-search-box {
@@ -143,8 +147,8 @@
   display: flex;
   align-items: center;
   flex: 1;
-  min-width: 280px;
-  max-width: 440px;
+  min-width: 260px;
+  max-width: 400px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-full);
@@ -153,12 +157,12 @@
 
 .timeline-search-input {
   width: 100%;
-  height: 34px;
+  height: 32px;
   background: transparent;
   border: none;
   outline: none;
   color: #ffffff;
-  font-size: 12.5px;
+  font-size: 12px;
   padding-right: 8px;
 }
 
@@ -166,13 +170,14 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-wrap: wrap;
 }
 
 .era-pill {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #cbd5e1;
-  padding: 5px 12px;
+  padding: 4px 12px;
   border-radius: var(--radius-full);
   font-size: 11.5px;
   cursor: pointer;
@@ -191,15 +196,42 @@
   font-weight: 600;
 }
 
+.timeline-flow-navigation-arrows {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timeline-nav-arrow-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(210, 170, 96, 0.35);
+  color: #cbd5e1;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 11.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.timeline-nav-arrow-btn:hover {
+  background: rgba(251, 191, 36, 0.18);
+  border-color: #fbbf24;
+  color: #fbbf24;
+}
+
 .milestones-ticker-strip {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 8px 20px;
-  background: rgba(11, 43, 38, 0.35);
+  background: rgba(11, 43, 38, 0.4);
   border-bottom: 1px solid rgba(210, 170, 96, 0.15);
   overflow-x: auto;
   white-space: nowrap;
+  z-index: 10;
 }
 
 .ticker-label {
@@ -211,14 +243,27 @@
 .ticker-scroll {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
 }
 
-.milestone-ticker-item {
-  display: flex;
+.milestone-ticker-item-btn {
+  display: inline-flex;
   align-items: center;
   gap: 6px;
   font-size: 11px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  border-radius: var(--radius-full);
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: #ffffff;
+}
+
+.milestone-ticker-item-btn:hover {
+  background: rgba(251, 191, 36, 0.18);
+  border-color: #fbbf24;
+  transform: translateY(-1px);
 }
 
 .ticker-dot {
@@ -231,119 +276,311 @@
 
 .ticker-title {
   color: #ffffff;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .ticker-year {
   color: #94a3b8;
+  font-size: 10px;
 }
 
-.timeline-cards-track {
+.timeline-horizontal-viewport {
   flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 14px;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  cursor: grab;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(251, 191, 36, 0.3) transparent;
 }
 
-.timeline-surah-card {
-  background: rgba(8, 20, 24, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-md);
+.timeline-horizontal-viewport:active {
+  cursor: grabbing;
+}
+
+.timeline-flow-canvas {
+  min-width: max-content;
+  height: 100%;
+  padding: 40px 80px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.flowing-chronology-spine {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 3px;
+  transform: translateY(-50%);
+  background: linear-gradient(90deg, #38bdf8 0%, #0ea5e9 25%, #10b981 70%, #fbbf24 100%);
+  box-shadow: 0 0 16px rgba(251, 191, 36, 0.5), 0 0 30px rgba(56, 189, 248, 0.3);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.flowing-chronology-spine::before {
+  content: '';
+  position: absolute;
+  inset: -2px 0;
+  background: inherit;
+  filter: blur(4px);
+  opacity: 0.6;
+}
+
+.timeline-flow-station {
+  position: relative;
+  width: 270px;
+  margin: 0 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.timeline-flow-station.station-above {
+  margin-bottom: 220px;
+}
+
+.timeline-flow-station.station-below {
+  margin-top: 220px;
+}
+
+.axis-node-beacon {
+  position: absolute;
+  top: 50%;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #061518;
+  border: 2px solid #fbbf24;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 12;
+  box-shadow: 0 0 14px rgba(251, 191, 36, 0.7);
+  transition: all 0.2s ease;
+}
+
+.station-above .axis-node-beacon {
+  bottom: -13px;
+  top: auto;
+}
+
+.station-below .axis-node-beacon {
+  top: -13px;
+}
+
+.beacon-core {
+  font-size: 10px;
+  font-weight: 700;
+  color: #fbbf24;
+  font-family: monospace;
+}
+
+.beacon-outer-pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  animation: pulseBeacon 2.5s infinite ease-in-out;
+}
+
+@keyframes pulseBeacon {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.axis-stem-connector {
+  position: absolute;
+  width: 2px;
+  background: linear-gradient(to bottom, rgba(251, 191, 36, 0.6), rgba(251, 191, 36, 0.1));
+  z-index: 6;
+  pointer-events: none;
+}
+
+.station-above .axis-stem-connector {
+  bottom: 0;
+  height: 38px;
+}
+
+.station-below .axis-stem-connector {
+  top: 0;
+  height: 38px;
+}
+
+.milestone-beacon-flag {
+  position: absolute;
+  top: -46px;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid #fbbf24;
+  border-radius: var(--radius-full);
+  padding: 3px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  box-shadow: 0 0 16px rgba(251, 191, 36, 0.35);
+  z-index: 15;
+}
+
+.station-below .milestone-beacon-flag {
+  bottom: -46px;
+  top: auto;
+}
+
+.flag-pulse-ring {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fbbf24;
+  box-shadow: 0 0 6px #fbbf24;
+}
+
+.flag-epoch-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fbbf24;
+}
+
+.flag-epoch-year {
+  font-size: 9.5px;
+  color: #cbd5e1;
+}
+
+.flowing-surah-card {
+  width: 100%;
+  background: linear-gradient(145deg, rgba(12, 28, 32, 0.9) 0%, rgba(5, 14, 17, 0.96) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--radius-lg);
   padding: 14px 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-style: preserve-3d;
 }
 
-.timeline-surah-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(251, 191, 36, 0.45);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+.timeline-flow-station:hover .flowing-surah-card,
+.timeline-flow-station.is-selected .flowing-surah-card {
+  transform: translateY(-6px) scale(1.02);
+  border-color: #fbbf24;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(251, 191, 36, 0.25);
 }
 
-.timeline-surah-card.is-medinan {
+.timeline-flow-station.is-medinan .flowing-surah-card {
   border-right: 3px solid #34d399;
 }
 
-.timeline-surah-card.is-meccan {
+.timeline-flow-station.is-meccan .flowing-surah-card {
   border-right: 3px solid #38bdf8;
 }
 
-.card-top-header {
+.flow-card-head {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 6px;
-  font-size: 10.5px;
 }
 
-.revelation-rank-badge {
+.flow-badges-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.flow-revelation-rank {
   background: rgba(251, 191, 36, 0.18);
+  border: 1px solid rgba(251, 191, 36, 0.35);
   color: #fbbf24;
   padding: 2px 7px;
   border-radius: var(--radius-full);
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 700;
 }
 
-.mushaf-rank-badge {
-  background: rgba(255, 255, 255, 0.06);
+.flow-mushaf-rank {
+  background: rgba(255, 255, 255, 0.05);
   color: #94a3b8;
   padding: 2px 7px;
   border-radius: var(--radius-full);
+  font-size: 10px;
 }
 
-.era-tag {
-  margin-right: auto;
+.flow-era-tag {
+  font-size: 10.5px;
   font-weight: 600;
 }
 
-.era-tag.medinan { color: #34d399; }
-.era-tag.meccan { color: #38bdf8; }
+.flow-era-tag.medinan { color: #34d399; }
+.flow-era-tag.meccan { color: #38bdf8; }
 
-.card-surah-name {
-  font-size: 18px;
+.flow-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.surah-title-cluster {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.flow-surah-title {
+  font-size: 19px;
   color: #ffffff;
   margin: 0;
   font-weight: 700;
 }
 
-.card-year-stamp {
-  font-size: 11px;
+.flow-year-caption {
+  font-size: 10.5px;
   color: #fbbf24;
+  white-space: nowrap;
 }
 
-.card-historical-note {
+.flow-historical-note {
   font-size: 11.5px;
   color: #cbd5e1;
   line-height: 1.5;
   margin: 0;
-  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.card-footer-action {
+.flow-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-top: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
-.ayah-count-tag {
-  font-size: 11px;
+.flow-ayahs-badge {
+  font-size: 10.5px;
   color: #94a3b8;
 }
 
-.launch-surah-btn {
-  background: rgba(11, 43, 38, 0.8);
+.flow-launch-btn {
+  background: linear-gradient(135deg, #0b2b26 0%, #061c18 100%);
   border: 1px solid #fbbf24;
   color: #ffffff;
   padding: 4px 10px;
   border-radius: var(--radius-sm);
   font-size: 11px;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -351,9 +588,66 @@
   transition: all 0.15s ease;
 }
 
-.launch-surah-btn:hover {
+.flow-launch-btn:hover {
   background: #114238;
+  border-color: #fde047;
   transform: translateY(-1px);
+}
+
+.timeline-bottom-scrubber-bar {
+  padding: 10px 24px;
+  background: rgba(3, 10, 13, 0.85);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 10;
+}
+
+.scrubber-era-labels {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+.scrubber-era-label.meccan { color: #38bdf8; }
+.scrubber-era-label.medinan { color: #34d399; }
+
+.timeline-scrubber-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+}
+
+.scrubber-track-rail-meccan {
+  height: 100%;
+  background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+  opacity: 0.6;
+}
+
+.scrubber-track-rail-medinan {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #fbbf24);
+  opacity: 0.6;
+}
+
+.scrubber-indicator-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%) translateX(50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #fbbf24;
+  box-shadow: 0 0 10px #fbbf24;
+  pointer-events: none;
 }
 
 .quran-atlas-stage {
@@ -929,7 +1223,8 @@
     display: none;
   }
 
-  .timeline-cards-track {
-    grid-template-columns: 1fr;
+  .timeline-flow-station {
+    width: 230px;
+    margin: 0 10px;
   }
 }

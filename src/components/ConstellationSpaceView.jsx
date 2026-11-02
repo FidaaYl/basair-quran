@@ -119,6 +119,12 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
   const [timelineEraFilter, setTimelineEraFilter] = useState('all');
   const [timelineSearch, setTimelineSearch] = useState('');
   const [selectedLocation, setSelectedLocation] = useState(QURAN_LOCATIONS[0]);
+  const [activeTimelineSurah, setActiveTimelineSurah] = useState(null);
+  const [timelineProgress, setTimelineProgress] = useState(0);
+
+  const timelineTrackRef = useRef(null);
+  const isTimelineDraggingRef = useRef(false);
+  const timelineDragStateRef = useRef({ startX: 0, scrollLeft: 0, hasMoved: false });
 
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -172,6 +178,82 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
       return true;
     });
   }, [timelineEraFilter, timelineSearch]);
+
+  const milestonesMap = useMemo(() => {
+    const map = {};
+    TIMELINE_MILESTONES.forEach((m) => {
+      map[m.orderIndex] = m;
+    });
+    return map;
+  }, []);
+
+  const handleTimelineScroll = useCallback(() => {
+    if (!timelineTrackRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = timelineTrackRef.current;
+    const maxScroll = scrollWidth - clientWidth;
+    if (maxScroll > 0) {
+      const prog = Math.abs(scrollLeft) / maxScroll;
+      setTimelineProgress(Math.min(1, Math.max(0, prog)));
+    }
+  }, []);
+
+  const handleTimelineWheel = (e) => {
+    if (!timelineTrackRef.current) return;
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      e.preventDefault();
+      timelineTrackRef.current.scrollLeft += e.deltaY * 1.6;
+    }
+  };
+
+  const handleTimelineMouseDown = (e) => {
+    if (e.button !== 0 || !timelineTrackRef.current) return;
+    isTimelineDraggingRef.current = true;
+    timelineDragStateRef.current = {
+      startX: e.clientX,
+      scrollLeft: timelineTrackRef.current.scrollLeft,
+      hasMoved: false
+    };
+  };
+
+  const handleTimelineMouseMove = (e) => {
+    if (!isTimelineDraggingRef.current || !timelineTrackRef.current) return;
+    const dx = e.clientX - timelineDragStateRef.current.startX;
+    if (Math.abs(dx) > 3) {
+      timelineDragStateRef.current.hasMoved = true;
+    }
+    timelineTrackRef.current.scrollLeft = timelineDragStateRef.current.scrollLeft - dx;
+  };
+
+  const handleTimelineMouseUp = () => {
+    isTimelineDraggingRef.current = false;
+  };
+
+  const scrollTimelineBy = (offset) => {
+    if (!timelineTrackRef.current) return;
+    timelineTrackRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+  };
+
+  const jumpToMilestone = (orderIndex) => {
+    const el = document.getElementById(`timeline-station-${orderIndex}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+  };
+
+  const handleScrubberClick = (e) => {
+    const bar = e.currentTarget;
+    if (!bar || !timelineTrackRef.current) return;
+    const rect = bar.getBoundingClientRect();
+    const clickRatio = (e.clientX - rect.left) / rect.width;
+    const isRtl = document.dir === 'rtl' || true;
+    const effectiveRatio = isRtl ? (1 - clickRatio) : clickRatio;
+    const { scrollWidth, clientWidth } = timelineTrackRef.current;
+    const maxScroll = scrollWidth - clientWidth;
+    timelineTrackRef.current.scrollTo({
+      left: (isRtl ? -1 : 1) * maxScroll * effectiveRatio,
+      behavior: 'smooth'
+    });
+  };
 
   const filteredSurahSet = useMemo(() => {
     const set = new Set();
@@ -584,61 +666,167 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
                 العهد المدني 🕌 (28 سورة)
               </button>
             </div>
+
+            <div className="timeline-flow-navigation-arrows">
+              <button
+                type="button"
+                className="timeline-nav-arrow-btn"
+                onClick={() => scrollTimelineBy(420)}
+                title="التقدم للأمام في الزمن"
+              >
+                <span>التقدم</span>
+                <span>‹</span>
+              </button>
+              <button
+                type="button"
+                className="timeline-nav-arrow-btn"
+                onClick={() => scrollTimelineBy(-420)}
+                title="الرجوع للبداية"
+              >
+                <span>›</span>
+                <span>السابق</span>
+              </button>
+            </div>
           </div>
 
           <div className="milestones-ticker-strip">
-            <span className="ticker-label text-gold">محطات مفصلية في السيرة:</span>
+            <span className="ticker-label text-gold">المنعطفات الكبرى:</span>
             <div className="ticker-scroll">
               {TIMELINE_MILESTONES.map((m) => (
-                <div key={m.id} className="milestone-ticker-item">
+                <button
+                  key={m.id}
+                  type="button"
+                  className="milestone-ticker-item-btn"
+                  onClick={() => jumpToMilestone(m.orderIndex)}
+                  title={`انتقل فوراً إلى محطة: ${m.title}`}
+                >
                   <span className="ticker-dot" />
                   <span className="ticker-title">{m.title}</span>
                   <span className="ticker-year">({m.year})</span>
-                </div>
+                </button>
               ))}
             </div>
           </div>
 
-          <div className="timeline-cards-track">
-            {filteredTimeline.map((item) => {
-              const surahMeta = SURAHS_LIST.find((s) => s.number === item.number);
-              const isMedinan = item.era.startsWith('medinan');
+          <div
+            className="timeline-horizontal-viewport"
+            ref={timelineTrackRef}
+            onScroll={handleTimelineScroll}
+            onWheel={handleTimelineWheel}
+            onMouseDown={handleTimelineMouseDown}
+            onMouseMove={handleTimelineMouseMove}
+            onMouseUp={handleTimelineMouseUp}
+            onMouseLeave={handleTimelineMouseUp}
+          >
+            <div className="timeline-flow-canvas">
+              <div className="flowing-chronology-spine" />
 
-              return (
-                <div
-                  key={`rev-${item.order}`}
-                  className={`timeline-surah-card ${isMedinan ? 'is-medinan' : 'is-meccan'}`}
-                >
-                  <div className="card-top-header">
-                    <span className="revelation-rank-badge">النزول #{item.order}</span>
-                    <span className="mushaf-rank-badge">المصحف #{item.number}</span>
-                    <span className={`era-tag ${isMedinan ? 'medinan' : 'meccan'}`}>
-                      {isMedinan ? 'مدنية 🕌' : 'مكية 🕋'}
-                    </span>
+              {filteredTimeline.map((item, idx) => {
+                const surahMeta = SURAHS_LIST.find((s) => s.number === item.number);
+                const isMedinan = item.era.startsWith('medinan');
+                const isAbove = idx % 2 === 0;
+                const isSelected = activeTimelineSurah && activeTimelineSurah.order === item.order;
+                const milestone = milestonesMap[item.order];
+
+                return (
+                  <div
+                    key={`station-${item.order}`}
+                    id={`timeline-station-${item.order}`}
+                    className={`timeline-flow-station ${isAbove ? 'station-above' : 'station-below'} ${isMedinan ? 'is-medinan' : 'is-meccan'} ${isSelected ? 'is-selected' : ''}`}
+                    onClick={() => setActiveTimelineSurah(item)}
+                  >
+                    {milestone && (
+                      <div className="milestone-beacon-flag animate-fade-in">
+                        <div className="flag-pulse-ring" />
+                        <span className="flag-epoch-title">{milestone.title}</span>
+                        <span className="flag-epoch-year">{milestone.year}</span>
+                      </div>
+                    )}
+
+                    <div className="flowing-surah-card">
+                      <div className="flow-card-glow-edge" />
+                      
+                      <div className="flow-card-head">
+                        <div className="flow-badges-group">
+                          <span className="flow-revelation-rank">النزول #{item.order}</span>
+                          <span className="flow-mushaf-rank">المصحف #{item.number}</span>
+                        </div>
+                        <span className={`flow-era-tag ${isMedinan ? 'medinan' : 'meccan'}`}>
+                          {isMedinan ? 'مدنية 🕌' : 'مكية 🕋'}
+                        </span>
+                      </div>
+
+                      <div className="flow-card-body">
+                        <div className="surah-title-cluster">
+                          <h4 className="flow-surah-title font-calligraphy">سورة {item.name}</h4>
+                          <span className="flow-year-caption">{item.year}</span>
+                        </div>
+
+                        <p className="flow-historical-note">{item.note}</p>
+                      </div>
+
+                      <div className="flow-card-footer">
+                        <span className="flow-ayahs-badge">
+                          {surahMeta ? surahMeta.numberOfAyahs : 0} آية
+                        </span>
+
+                        <button
+                          type="button"
+                          className="flow-launch-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onSelectSurah?.(item.number);
+                            onNavigateTab?.('reader');
+                          }}
+                          title="فتح السورة في المصحف والتلاوة"
+                        >
+                          <BookOpenIcon size={13} />
+                          <span>تلاوة السورة ↵</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="axis-stem-connector" />
+
+                    <div className="axis-node-beacon">
+                      <div className="beacon-outer-pulse" />
+                      <div className="beacon-core">
+                        <span>{item.order}</span>
+                      </div>
+                    </div>
                   </div>
+                );
+              })}
+            </div>
+          </div>
 
-                  <h4 className="card-surah-name font-calligraphy">سورة {item.name}</h4>
-                  <span className="card-year-stamp">{item.year}</span>
+          <div className="timeline-bottom-scrubber-bar">
+            <div className="scrubber-era-labels">
+              <span className="scrubber-era-label meccan">
+                🕋 العهد المكي الشريف (من سورة العلق إلى سورة المطففين)
+              </span>
+              <span className="scrubber-era-label medinan">
+                🕌 العهد المدني المبارك (من سورة البقرة إلى سورة النصر)
+              </span>
+            </div>
 
-                  <p className="card-historical-note">{item.note}</p>
-
-                  <div className="card-footer-action">
-                    <span className="ayah-count-tag">{surahMeta ? surahMeta.numberOfAyahs : 0} آية</span>
-                    <button
-                      type="button"
-                      className="launch-surah-btn"
-                      onClick={() => {
-                        onSelectSurah?.(item.number);
-                        onNavigateTab?.('reader');
-                      }}
-                    >
-                      <BookOpenIcon size={14} />
-                      <span>تلاوة السورة ↵</span>
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+            <div
+              className="timeline-scrubber-track"
+              onClick={handleScrubberClick}
+              role="slider"
+              aria-label="مسار الاستكشاف الزمني"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow={Math.round(timelineProgress * 100)}
+              tabIndex={0}
+            >
+              <div className="scrubber-track-rail-meccan" style={{ width: '75%' }} />
+              <div className="scrubber-track-rail-medinan" style={{ width: '25%' }} />
+              <div
+                className="scrubber-indicator-thumb"
+                style={{ right: `${timelineProgress * 100}%` }}
+              />
+            </div>
           </div>
         </div>
       )}

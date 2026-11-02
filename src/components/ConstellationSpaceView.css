@@ -511,436 +511,473 @@
   color: #ffffff;
 }
 
-.revelation-timeline-stage {
+.chronicle-stage-wrapper {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: radial-gradient(ellipse at 50% 30%, #06181d 0%, #020708 100%);
+  background: radial-gradient(ellipse at 50% 20%, #06191f 0%, #020709 100%);
   position: relative;
 }
 
-.timeline-control-header {
+.chronicle-editorial-masthead {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  gap: 14px;
+  padding: 14px 24px;
+  background: rgba(3, 11, 14, 0.95);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(210, 170, 96, 0.22);
+  gap: 16px;
   flex-wrap: wrap;
-  z-index: 10;
-  background: rgba(3, 10, 13, 0.7);
-  backdrop-filter: blur(8px);
+  z-index: 25;
 }
 
-.timeline-search-box {
-  position: relative;
+.masthead-main-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.masthead-pretitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #fbbf24;
+  letter-spacing: 0.5px;
+}
+
+.gold-ornament {
+  color: #fbbf24;
+  font-size: 12px;
+}
+
+.chronicle-main-heading {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+
+.chronicle-sub-lead {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0;
+  max-width: 520px;
+  line-height: 1.4;
+}
+
+.masthead-controls-cluster {
   display: flex;
   align-items: center;
-  flex: 1;
-  min-width: 260px;
-  max-width: 400px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius-full);
-  padding: 0 12px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.timeline-search-input {
-  width: 100%;
+.chronicle-search-capsule {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(210, 170, 96, 0.25);
+  border-radius: var(--radius-full);
+  padding: 0 12px;
   height: 32px;
+  min-width: 190px;
+}
+
+.chronicle-search-input {
   background: transparent;
   border: none;
   outline: none;
   color: #ffffff;
   font-size: 12px;
-  padding-right: 8px;
+  width: 100%;
 }
 
-.timeline-era-pills {
+.chronicle-search-input::placeholder {
+  color: #64748b;
+}
+
+.chronicle-era-toggles,
+.chronicle-viewmode-toggles {
   display: flex;
   align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
+  gap: 3px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 3px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.era-pill {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #cbd5e1;
+.chronicle-era-toggle-btn,
+.chronicle-viewmode-btn {
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 11.5px;
   padding: 4px 12px;
   border-radius: var(--radius-full);
-  font-size: 11.5px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.16s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
-.era-pill:hover {
-  background: rgba(255, 255, 255, 0.1);
+.chronicle-era-toggle-btn:hover,
+.chronicle-viewmode-btn:hover {
   color: #ffffff;
 }
 
-.era-pill.active {
-  background: rgba(210, 170, 96, 0.2);
-  border-color: #fbbf24;
+.chronicle-era-toggle-btn.active,
+.chronicle-viewmode-btn.active {
+  background: rgba(251, 191, 36, 0.2);
+  border: 1px solid rgba(251, 191, 36, 0.45);
   color: #fbbf24;
   font-weight: 600;
 }
 
-.timeline-flow-navigation-arrows {
+.chronicle-epochs-bar {
   display: flex;
   align-items: center;
-  gap: 6px;
+  padding: 8px 20px;
+  background: rgba(4, 14, 18, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  z-index: 20;
 }
 
-.timeline-nav-arrow-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(210, 170, 96, 0.35);
-  color: #cbd5e1;
-  padding: 4px 12px;
-  border-radius: var(--radius-full);
-  font-size: 11.5px;
+.epochs-scroller {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  width: 100%;
+}
+
+.epochs-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.epoch-chip-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
   cursor: pointer;
   transition: all 0.18s ease;
+  white-space: nowrap;
 }
 
-.timeline-nav-arrow-btn:hover {
-  background: rgba(251, 191, 36, 0.18);
+.epoch-chip-btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  border-color: rgba(210, 170, 96, 0.3);
+}
+
+.epoch-chip-btn.active {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(11, 43, 38, 0.7) 100%);
+  border: 1px solid #fbbf24;
+  color: #fbbf24;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.epoch-name {
+  font-size: 12px;
+}
+
+.epoch-span {
+  font-size: 10px;
+  opacity: 0.75;
+}
+
+.chronicle-milestones-ribbon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 20px;
+  background: rgba(2, 8, 10, 0.65);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  overflow-x: auto;
+  scrollbar-width: none;
+  z-index: 18;
+}
+
+.chronicle-milestones-ribbon::-webkit-scrollbar {
+  display: none;
+}
+
+.milestones-ribbon-label {
+  font-size: 11px;
+  color: #fbbf24;
+  white-space: nowrap;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.milestone-capsule-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  color: #e2e8f0;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.milestone-capsule-btn:hover {
+  background: rgba(251, 191, 36, 0.2);
   border-color: #fbbf24;
   color: #fbbf24;
 }
 
-.milestones-ticker-strip {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 20px;
-  background: rgba(11, 43, 38, 0.4);
-  border-bottom: 1px solid rgba(210, 170, 96, 0.15);
-  overflow-x: auto;
-  white-space: nowrap;
-  z-index: 10;
+.milestone-order-tag {
+  color: #fbbf24;
+  font-size: 9.5px;
+  font-family: monospace;
 }
 
-.ticker-label {
-  font-size: 11.5px;
-  font-weight: 600;
-  flex-shrink: 0;
-}
-
-.ticker-scroll {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.milestone-ticker-item-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(251, 191, 36, 0.25);
-  border-radius: var(--radius-full);
-  padding: 3px 10px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  color: #ffffff;
-}
-
-.milestone-ticker-item-btn:hover {
-  background: rgba(251, 191, 36, 0.18);
-  border-color: #fbbf24;
-  transform: translateY(-1px);
-}
-
-.ticker-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #fbbf24;
-  box-shadow: 0 0 6px #fbbf24;
-}
-
-.ticker-title {
-  color: #ffffff;
-  font-weight: 600;
-}
-
-.ticker-year {
-  color: #94a3b8;
-  font-size: 10px;
-}
-
-.timeline-horizontal-viewport {
+.chronicle-horizon-viewport {
   flex: 1;
-  width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
   cursor: grab;
   position: relative;
   scrollbar-width: thin;
-  scrollbar-color: rgba(251, 191, 36, 0.3) transparent;
+  scrollbar-color: rgba(210, 170, 96, 0.3) transparent;
 }
 
-.timeline-horizontal-viewport:active {
+.chronicle-horizon-viewport:active {
   cursor: grabbing;
 }
 
-.timeline-flow-canvas {
-  min-width: max-content;
-  height: 100%;
-  padding: 40px 80px;
-  position: relative;
-  display: flex;
-  align-items: center;
+.chronicle-horizon-viewport::-webkit-scrollbar {
+  height: 6px;
 }
 
-.flowing-chronology-spine {
+.chronicle-horizon-viewport::-webkit-scrollbar-thumb {
+  background: rgba(210, 170, 96, 0.3);
+  border-radius: 4px;
+}
+
+.chronicle-horizon-tape {
+  display: flex;
+  align-items: center;
+  min-width: max-content;
+  height: 100%;
+  padding: 30px 40px;
+  gap: 20px;
+  position: relative;
+}
+
+.chronicle-horizon-tape::before {
+  content: '';
   position: absolute;
   top: 50%;
   left: 0;
   right: 0;
-  height: 3px;
-  transform: translateY(-50%);
-  background: linear-gradient(90deg, #38bdf8 0%, #0ea5e9 25%, #10b981 70%, #fbbf24 100%);
-  box-shadow: 0 0 16px rgba(251, 191, 36, 0.5), 0 0 30px rgba(56, 189, 248, 0.3);
-  z-index: 5;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    rgba(56, 189, 248, 0.4) 0%, 
+    rgba(251, 191, 36, 0.5) 50%, 
+    rgba(52, 211, 153, 0.5) 100%
+  );
+  z-index: 1;
   pointer-events: none;
 }
 
-.flowing-chronology-spine::before {
-  content: '';
-  position: absolute;
-  inset: -2px 0;
-  background: inherit;
-  filter: blur(4px);
-  opacity: 0.6;
-}
-
-.timeline-flow-station {
-  position: relative;
-  width: 270px;
-  margin: 0 16px;
+.horizon-monument-card {
+  width: 290px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.14) 0%, rgba(6, 44, 38, 0.88) 100%);
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 24px rgba(52, 211, 153, 0.18);
+  border-radius: var(--radius-lg);
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  z-index: 10;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  gap: 10px;
+  z-index: 3;
+  flex-shrink: 0;
+  backdrop-filter: blur(12px);
+  position: relative;
 }
 
-.timeline-flow-station.station-above {
-  margin-bottom: 220px;
-}
-
-.timeline-flow-station.station-below {
-  margin-top: 220px;
-}
-
-.axis-node-beacon {
-  position: absolute;
-  top: 50%;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: #061518;
-  border: 2px solid #fbbf24;
+.monument-seal {
+  font-size: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 12;
-  box-shadow: 0 0 14px rgba(251, 191, 36, 0.7);
-  transition: all 0.2s ease;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid rgba(52, 211, 153, 0.4);
 }
 
-.station-above .axis-node-beacon {
-  bottom: -13px;
-  top: auto;
+.monument-year-tag {
+  font-size: 11px;
+  color: #34d399;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
-.station-below .axis-node-beacon {
-  top: -13px;
+.monument-lead-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.4;
 }
 
-.beacon-core {
-  font-size: 10px;
+.monument-description {
+  font-size: 12px;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.monument-divider {
+  height: 1px;
+  background: rgba(52, 211, 153, 0.25);
+  margin-top: 4px;
+}
+
+.chronicle-station-card {
+  width: 280px;
+  background: rgba(5, 17, 21, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  z-index: 3;
+  flex-shrink: 0;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.chronicle-station-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(251, 191, 36, 0.5);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7), 0 0 20px rgba(251, 191, 36, 0.12);
+}
+
+.chronicle-station-card.active {
+  border-color: #fbbf24;
+  background: rgba(7, 24, 30, 0.96);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8), 0 0 26px rgba(251, 191, 36, 0.22);
+}
+
+.chronicle-station-card.meccan {
+  border-right: 3px solid #38bdf8;
+}
+
+.chronicle-station-card.medinan {
+  border-right: 3px solid #34d399;
+}
+
+.chronicle-station-card.milestone-station {
+  border-color: rgba(251, 191, 36, 0.45);
+}
+
+.station-milestone-banner {
+  background: rgba(251, 191, 36, 0.14);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+.station-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.station-order-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.stamp-num {
+  font-size: 11px;
   font-weight: 700;
   color: #fbbf24;
   font-family: monospace;
 }
 
-.beacon-outer-pulse {
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 1px solid rgba(251, 191, 36, 0.4);
-  animation: pulseBeacon 2.5s infinite ease-in-out;
-}
-
-@keyframes pulseBeacon {
-  0% { transform: scale(0.8); opacity: 0.8; }
-  100% { transform: scale(1.6); opacity: 0; }
-}
-
-.axis-stem-connector {
-  position: absolute;
-  width: 2px;
-  background: linear-gradient(to bottom, rgba(251, 191, 36, 0.6), rgba(251, 191, 36, 0.1));
-  z-index: 6;
-  pointer-events: none;
-}
-
-.station-above .axis-stem-connector {
-  bottom: 0;
-  height: 38px;
-}
-
-.station-below .axis-stem-connector {
-  top: 0;
-  height: 38px;
-}
-
-.milestone-beacon-flag {
-  position: absolute;
-  top: -46px;
-  background: rgba(251, 191, 36, 0.15);
-  border: 1px solid #fbbf24;
-  border-radius: var(--radius-full);
-  padding: 3px 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-  box-shadow: 0 0 16px rgba(251, 191, 36, 0.35);
-  z-index: 15;
-}
-
-.station-below .milestone-beacon-flag {
-  bottom: -46px;
-  top: auto;
-}
-
-.flag-pulse-ring {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #fbbf24;
-  box-shadow: 0 0 6px #fbbf24;
-}
-
-.flag-epoch-title {
-  font-size: 11px;
-  font-weight: 700;
-  color: #fbbf24;
-}
-
-.flag-epoch-year {
+.stamp-label {
   font-size: 9.5px;
-  color: #cbd5e1;
-}
-
-.flowing-surah-card {
-  width: 100%;
-  background: linear-gradient(145deg, rgba(12, 28, 32, 0.9) 0%, rgba(5, 14, 17, 0.96) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: var(--radius-lg);
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  transform-style: preserve-3d;
-}
-
-.timeline-flow-station:hover .flowing-surah-card,
-.timeline-flow-station.is-selected .flowing-surah-card {
-  transform: translateY(-6px) scale(1.02);
-  border-color: #fbbf24;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(251, 191, 36, 0.25);
-}
-
-.timeline-flow-station.is-medinan .flowing-surah-card {
-  border-right: 3px solid #34d399;
-}
-
-.timeline-flow-station.is-meccan .flowing-surah-card {
-  border-right: 3px solid #38bdf8;
-}
-
-.flow-card-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-}
-
-.flow-badges-group {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.flow-revelation-rank {
-  background: rgba(251, 191, 36, 0.18);
-  border: 1px solid rgba(251, 191, 36, 0.35);
-  color: #fbbf24;
-  padding: 2px 7px;
-  border-radius: var(--radius-full);
-  font-size: 10px;
-  font-weight: 700;
-}
-
-.flow-mushaf-rank {
-  background: rgba(255, 255, 255, 0.05);
   color: #94a3b8;
-  padding: 2px 7px;
-  border-radius: var(--radius-full);
-  font-size: 10px;
 }
 
-.flow-era-tag {
+.station-year-label {
   font-size: 10.5px;
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+.station-era-indicator {
+  font-size: 10.5px;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
   font-weight: 600;
 }
 
-.flow-era-tag.medinan { color: #34d399; }
-.flow-era-tag.meccan { color: #38bdf8; }
+.station-era-indicator.meccan {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+}
 
-.flow-card-body {
+.station-era-indicator.medinan {
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.12);
+}
+
+.station-body {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
-.surah-title-cluster {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.flow-surah-title {
-  font-size: 19px;
+.station-surah-title {
+  font-size: 21px;
   color: #ffffff;
   margin: 0;
   font-weight: 700;
 }
 
-.flow-year-caption {
-  font-size: 10.5px;
-  color: #fbbf24;
-  white-space: nowrap;
-}
-
-.flow-historical-note {
-  font-size: 11.5px;
+.station-context-paragraph {
+  font-size: 12px;
   color: #cbd5e1;
   line-height: 1.5;
   margin: 0;
@@ -950,23 +987,27 @@
   overflow: hidden;
 }
 
-.flow-card-footer {
+.station-footer-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 8px;
+  gap: 8px;
+  padding-top: 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
-  margin-top: 2px;
+  margin-top: auto;
 }
 
-.flow-ayahs-badge {
+.station-meta-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 10.5px;
   color: #94a3b8;
 }
 
-.flow-launch-btn {
+.station-open-action-btn {
   background: linear-gradient(135deg, #0b2b26 0%, #061c18 100%);
-  border: 1px solid #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.6);
   color: #ffffff;
   padding: 4px 10px;
   border-radius: var(--radius-sm);
@@ -979,56 +1020,273 @@
   transition: all 0.15s ease;
 }
 
-.flow-launch-btn:hover {
-  background: #114238;
-  border-color: #fde047;
+.station-open-action-btn:hover {
+  border-color: #fbbf24;
+  background: #113831;
   transform: translateY(-1px);
 }
 
-.timeline-bottom-scrubber-bar {
+.chronicle-ledger-viewport {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 30px 60px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(210, 170, 96, 0.3) transparent;
+}
+
+.chronicle-ledger-viewport::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chronicle-ledger-viewport::-webkit-scrollbar-thumb {
+  background: rgba(210, 170, 96, 0.3);
+  border-radius: 4px;
+}
+
+.chronicle-ledger-document {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ledger-monument-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(6, 44, 38, 0.85) 100%);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  margin: 12px 0;
+}
+
+.ledger-monument-seal {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.ledger-monument-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ledger-monument-year {
+  font-size: 11px;
+  color: #34d399;
+  font-weight: 700;
+}
+
+.ledger-monument-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.ledger-monument-desc {
+  font-size: 12px;
+  color: #cbd5e1;
+  margin: 0;
+}
+
+.chronicle-ledger-entry {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  background: rgba(5, 17, 21, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  transition: all 0.18s ease;
+  cursor: pointer;
+}
+
+.chronicle-ledger-entry:hover {
+  background: rgba(8, 25, 31, 0.9);
+  border-color: rgba(251, 191, 36, 0.35);
+  transform: translateX(-2px);
+}
+
+.chronicle-ledger-entry.active {
+  background: rgba(9, 29, 36, 0.95);
+  border-color: #fbbf24;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 16px rgba(251, 191, 36, 0.15);
+}
+
+.chronicle-ledger-entry.milestone-entry {
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+.ledger-entry-order-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 6px;
+  text-align: center;
+}
+
+.ledger-order-number {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fbbf24;
+  font-family: monospace;
+}
+
+.ledger-order-label {
+  font-size: 9.5px;
+  color: #94a3b8;
+}
+
+.ledger-entry-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ledger-entry-meta-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  flex-wrap: wrap;
+}
+
+.ledger-era-tag {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+}
+
+.ledger-era-tag.meccan {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+}
+
+.ledger-era-tag.medinan {
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.12);
+}
+
+.ledger-year-tag {
+  color: #cbd5e1;
+}
+
+.ledger-mushaf-tag {
+  color: #94a3b8;
+}
+
+.ledger-milestone-tag {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.12);
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+}
+
+.ledger-surah-title {
+  font-size: 20px;
+  color: #ffffff;
+  margin: 0;
+  font-weight: 700;
+}
+
+.ledger-narrative-text {
+  font-size: 12px;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.ledger-entry-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.ledger-ayahs-count {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.ledger-read-button {
+  background: linear-gradient(135deg, #0b2b26 0%, #061c18 100%);
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  color: #ffffff;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 11.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  white-space: nowrap;
+}
+
+.ledger-read-button:hover {
+  border-color: #fbbf24;
+  background: #113831;
+  transform: translateY(-1px);
+}
+
+.chronicle-footer-rail {
   padding: 10px 24px;
-  background: rgba(3, 10, 13, 0.85);
+  background: rgba(3, 11, 14, 0.95);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
   gap: 6px;
-  z-index: 10;
+  z-index: 20;
 }
 
-.scrubber-era-labels {
+.footer-rail-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-size: 11px;
 }
 
-.scrubber-era-label.meccan { color: #38bdf8; }
-.scrubber-era-label.medinan { color: #34d399; }
+.rail-legend-item.meccan {
+  color: #38bdf8;
+}
 
-.timeline-scrubber-track {
-  width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.08);
+.rail-legend-item.medinan {
+  color: #34d399;
+}
+
+.footer-rail-bar {
+  height: 8px;
   border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.06);
   position: relative;
   cursor: pointer;
-  overflow: hidden;
   display: flex;
+  overflow: hidden;
 }
 
-.scrubber-track-rail-meccan {
+.rail-fill-meccan {
   height: 100%;
-  background: linear-gradient(90deg, #38bdf8, #0ea5e9);
-  opacity: 0.6;
+  background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
 }
 
-.scrubber-track-rail-medinan {
+.rail-fill-medinan {
   height: 100%;
-  background: linear-gradient(90deg, #10b981, #fbbf24);
-  opacity: 0.6;
+  background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
 }
 
-.scrubber-indicator-thumb {
+.rail-thumb-dot {
   position: absolute;
   top: 50%;
   transform: translateY(-50%) translateX(50%);
@@ -1372,7 +1630,7 @@
     display: none;
   }
 
-  .timeline-flow-station {
+  .chronicle-station-card {
     width: 230px;
     margin: 0 10px;
   }

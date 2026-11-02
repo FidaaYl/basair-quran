@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { ICONS } from './common/IconSystem';
 import { SURAHS_LIST } from '../data/surahsList';
+import { REVELATION_ORDER, TIMELINE_MILESTONES } from '../data/revelationTimelineData';
+import { QURAN_LOCATIONS } from '../data/quranAtlasData';
 import './ConstellationSpaceView.css';
 
 function getSurahClassification(surahNumber) {
@@ -30,9 +32,9 @@ function buildConstellationStars() {
     baseY: 0,
     x: 0,
     y: 0,
-    radius: 6,
+    radius: 7,
     color: '#fbbf24',
-    glowColor: 'rgba(251, 191, 36, 0.4)',
+    glowColor: 'rgba(251, 191, 36, 0.45)',
     group: 'fatihah',
     revelationType: 'Meccan',
     numberOfAyahs: 7,
@@ -71,12 +73,12 @@ function buildConstellationStars() {
 
     const color = isTiwal ? '#fbbf24' : isMeccan ? '#38bdf8' : '#34d399';
     const glowColor = isTiwal
-      ? 'rgba(251, 191, 36, 0.35)'
+      ? 'rgba(251, 191, 36, 0.4)'
       : isMeccan
-      ? 'rgba(56, 189, 248, 0.35)'
-      : 'rgba(52, 211, 153, 0.35)';
+      ? 'rgba(56, 189, 248, 0.4)'
+      : 'rgba(52, 211, 153, 0.4)';
 
-    const starRadius = Math.max(3, Math.min(6, 2.8 + Math.sqrt(meta.numberOfAyahs) * 0.18));
+    const starRadius = Math.max(3.5, Math.min(7, 3 + Math.sqrt(meta.numberOfAyahs) * 0.2));
 
     stars.push({
       number: i,
@@ -104,18 +106,22 @@ function buildConstellationStars() {
 
 const STATIC_STARS = buildConstellationStars();
 
-const AMBIENT_PARTICLES = Array.from({ length: 80 }, (_, i) => ({
+const AMBIENT_PARTICLES = Array.from({ length: 90 }, (_, i) => ({
   x: (Math.random() - 0.5) * 2400,
   y: (Math.random() - 0.5) * 2400,
-  radius: 0.6 + Math.random() * 1.4,
-  alpha: 0.15 + Math.random() * 0.45,
+  radius: 0.6 + Math.random() * 1.5,
+  alpha: 0.15 + Math.random() * 0.5,
   speed: 0.2 + Math.random() * 0.4
 }));
 
 export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab }) {
+  const [activeVisualMode, setActiveVisualMode] = useState('timeline');
+  const [timelineEraFilter, setTimelineEraFilter] = useState('all');
+  const [timelineSearch, setTimelineSearch] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState(QURAN_LOCATIONS[0]);
+
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
-
   const [filterType, setFilterType] = useState('all');
   const [filterClass, setFilterClass] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -128,8 +134,8 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
     y: 0,
     targetX: 0,
     targetY: 0,
-    zoom: 0.52,
-    targetZoom: 0.52
+    zoom: 0.58,
+    targetZoom: 0.58
   });
 
   const mouseRef = useRef({
@@ -147,6 +153,25 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
 
   const animFrameRef = useRef(null);
   const starsRef = useRef(STATIC_STARS);
+
+  const filteredTimeline = useMemo(() => {
+    return REVELATION_ORDER.filter((item) => {
+      if (timelineEraFilter !== 'all') {
+        if (timelineEraFilter === 'meccan' && !item.era.startsWith('meccan')) return false;
+        if (timelineEraFilter === 'medinan' && !item.era.startsWith('medinan')) return false;
+      }
+      if (timelineSearch.trim()) {
+        const q = timelineSearch.trim().toLowerCase();
+        return (
+          item.name.includes(q) ||
+          item.note.includes(q) ||
+          String(item.number) === q ||
+          String(item.order) === q
+        );
+      }
+      return true;
+    });
+  }, [timelineEraFilter, timelineSearch]);
 
   const filteredSurahSet = useMemo(() => {
     const set = new Set();
@@ -175,26 +200,19 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
     if (!star) return;
     cameraRef.current.targetX = star.baseX;
     cameraRef.current.targetY = star.baseY;
-    cameraRef.current.targetZoom = 1.35;
+    cameraRef.current.targetZoom = 1.3;
     setSelectedStar(star);
   }, []);
 
   const handleResetCamera = useCallback(() => {
     cameraRef.current.targetX = 0;
     cameraRef.current.targetY = 0;
-    cameraRef.current.targetZoom = 0.52;
+    cameraRef.current.targetZoom = 0.58;
     setSelectedStar(null);
   }, []);
 
   useEffect(() => {
-    if (!searchQuery.trim()) return;
-    const match = starsRef.current.find((s) => filteredSurahSet.has(s.number));
-    if (match) {
-      focusOnStar(match);
-    }
-  }, [searchQuery, filteredSurahSet, focusOnStar]);
-
-  useEffect(() => {
+    if (activeVisualMode !== 'constellation') return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -274,7 +292,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
         s.y = s.baseY + Math.sin(angle) * 3;
       }
 
-      ctx.lineWidth = 0.75;
+      ctx.lineWidth = 0.85;
       const maxDist = 95;
       for (let i = 0; i < count; i++) {
         const s1 = stars[i];
@@ -286,7 +304,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
           const dy = s1.y - s2.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < maxDist) {
-            const alpha = (1 - dist / maxDist) * (is1Active && is2Active ? 0.22 : 0.04);
+            const alpha = (1 - dist / maxDist) * (is1Active && is2Active ? 0.28 : 0.04);
             ctx.strokeStyle = `rgba(180, 205, 220, ${alpha})`;
             ctx.beginPath();
             ctx.moveTo(s1.x, s1.y);
@@ -298,7 +316,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
 
       const activeHover = hoveredStar || selectedStar;
       if (activeHover) {
-        ctx.lineWidth = 1.4;
+        ctx.lineWidth = 1.5;
         for (let i = 0; i < count; i++) {
           const s = stars[i];
           if (s.number === activeHover.number) continue;
@@ -321,7 +339,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
       m.worldY = (m.screenY - height / 2) / cam.zoom + cam.y;
 
       let currentHover = null;
-      let minHoverDist = 24 / cam.zoom;
+      let minHoverDist = 26 / cam.zoom;
 
       for (let i = 0; i < count; i++) {
         const s = stars[i];
@@ -340,10 +358,10 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
         const isHover = activeHover && activeHover.number === s.number;
         const isSelected = selectedStar && selectedStar.number === s.number;
 
-        ctx.globalAlpha = isFiltered ? 1 : 0.14;
+        ctx.globalAlpha = isFiltered ? 1 : 0.16;
 
-        const auraRadius = s.radius * (isHover ? 3.8 : 2.4);
-        const auraGrad = ctx.createRadialGradient(s.x, s.y, s.radius * 0.4, s.x, s.y, auraRadius);
+        const auraRadius = s.radius * (isHover ? 3.5 : 2.2);
+        const auraGrad = ctx.createRadialGradient(s.x, s.y, s.radius * 0.3, s.x, s.y, auraRadius);
         auraGrad.addColorStop(0, s.glowColor);
         auraGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
         ctx.fillStyle = auraGrad;
@@ -353,7 +371,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
 
         ctx.fillStyle = isHover ? '#ffffff' : s.color;
         ctx.beginPath();
-        ctx.arc(s.x, s.y, s.radius * (isHover ? 1.35 : 1), 0, Math.PI * 2);
+        ctx.arc(s.x, s.y, s.radius * (isHover ? 1.3 : 1), 0, Math.PI * 2);
         ctx.fill();
 
         if (isSelected) {
@@ -371,14 +389,13 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
           ctx.setLineDash([]);
         }
 
-        const shouldShowLabel = cam.zoom > 0.72 || isHover || isSelected;
-        if (shouldShowLabel && isFiltered) {
-          ctx.font = `600 ${isHover ? 13 : 11}px "Amiri", "Traditional Arabic", serif`;
+        if (isFiltered) {
+          ctx.font = `600 ${isHover ? 13 : 10.5}px "Amiri", "Traditional Arabic", serif`;
           ctx.textAlign = 'center';
-          ctx.fillStyle = isHover ? '#fbbf24' : '#e2e8f0';
-          ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+          ctx.fillStyle = isHover ? '#fbbf24' : isSelected ? '#fbbf24' : '#cbd5e1';
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
           ctx.shadowBlur = 4;
-          ctx.fillText(s.name, s.x, s.y + s.radius + 14);
+          ctx.fillText(s.name, s.x, s.y + s.radius + 13);
           ctx.shadowBlur = 0;
         }
       }
@@ -396,7 +413,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
       resizeObserver.disconnect();
     };
-  }, [filteredSurahSet, selectedStar]);
+  }, [activeVisualMode, filteredSurahSet, selectedStar]);
 
   const handleMouseDown = (e) => {
     if (e.button !== 0) return;
@@ -442,18 +459,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
   const handleWheel = (e) => {
     e.preventDefault();
     const factor = e.deltaY < 0 ? 1.15 : 0.87;
-    cameraRef.current.targetZoom = Math.min(2.8, Math.max(0.25, cameraRef.current.targetZoom * factor));
-  };
-
-  const toggleFullscreen = () => {
-    if (!containerRef.current) return;
-    if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen?.().catch(() => {});
-      setIsFullscreen(true);
-    } else {
-      document.exitFullscreen?.().catch(() => {});
-      setIsFullscreen(false);
-    }
+    cameraRef.current.targetZoom = Math.min(2.8, Math.max(0.3, cameraRef.current.targetZoom * factor));
   };
 
   const SparklesIcon = ICONS.sparkles;
@@ -461,210 +467,379 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
   const BookOpenIcon = ICONS.mushaf;
   const MemorizeIcon = ICONS.memorize;
   const RefreshIcon = ICONS.refresh;
+  const CompassIcon = ICONS.compass;
 
   return (
     <div
       className={`constellation-space-root ${isFullscreen ? 'is-fullscreen' : ''}`}
       ref={containerRef}
       role="region"
-      aria-label="كوكبة سور القرآن الكريم التفاعلية"
+      aria-label="استكشف بصائر — التجارب البصرية القرآنية"
     >
       <div className="space-hud-topbar">
         <div className="hud-title-cluster">
           <div className="hud-brand-tag">
             <SparklesIcon size={14} className="text-gold" />
-            <span>كوكبة سور القرآن (Quran Constellation)</span>
-          </div>
-          <span className="hud-counter-pill">{filteredSurahSet.size} / ١١٤ سورة</span>
-        </div>
-
-        <div className="hud-filters-cluster">
-          <div className="hud-search-field">
-            <SearchIcon size={14} className="hud-search-icon text-gold" />
-            <input
-              type="text"
-              placeholder="ابحث عن سورة..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="hud-search-input"
-            />
+            <span>استكشف بصائر (Visual Experiences)</span>
           </div>
 
-          <div className="hud-pills-row">
-            {[
-              { id: 'all', label: 'الكل' },
-              { id: 'Meccan', label: 'مكية 🕋' },
-              { id: 'Medinan', label: 'مدنية 🕌' },
-            ].map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                className={`hud-pill ${filterType === p.id ? 'active' : ''}`}
-                onClick={() => setFilterType(p.id)}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="hud-pills-row">
-            {Object.entries(CLASSIFICATION_LABELS).map(([key, label]) => (
-              <button
-                key={key}
-                type="button"
-                className={`hud-pill ${filterClass === key ? 'active' : ''}`}
-                onClick={() => setFilterClass(key)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="hud-tools-cluster">
-          <button
-            type="button"
-            className="hud-icon-btn"
-            onClick={() => {
-              cameraRef.current.targetZoom = Math.min(2.8, cameraRef.current.targetZoom * 1.25);
-            }}
-            title="تكبير"
-          >
-            +
-          </button>
-          <button
-            type="button"
-            className="hud-icon-btn"
-            onClick={() => {
-              cameraRef.current.targetZoom = Math.max(0.25, cameraRef.current.targetZoom * 0.8);
-            }}
-            title="تصغير"
-          >
-            -
-          </button>
-          <button
-            type="button"
-            className="hud-icon-btn"
-            onClick={handleResetCamera}
-            title="إعادة ضبط المشهد"
-          >
-            <RefreshIcon size={13} />
-          </button>
-          <button
-            type="button"
-            className="hud-icon-btn"
-            onClick={toggleFullscreen}
-            title="ملء الشاشة"
-          >
-            ⛶
-          </button>
-        </div>
-      </div>
-
-      <div className="canvas-viewport-wrapper">
-        <canvas
-          ref={canvasRef}
-          className="constellation-canvas"
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onWheel={handleWheel}
-        />
-
-        <div className="space-canvas-hint">
-          <span>انقر واسحب للتجول في الفضاء • استخدم عجلة الفأرة للتكبير • انقر على أي سورة لاستكشافها</span>
-        </div>
-
-        {hoveredStar && !selectedStar && (
-          <div
-            className="star-floating-tooltip animate-fade-in"
-            style={{
-              left: `${mouseRef.current.screenX + 16}px`,
-              top: `${mouseRef.current.screenY - 12}px`
-            }}
-          >
-            <div className="tooltip-head">
-              <span className="tooltip-num">#{hoveredStar.number}</span>
-              <span className="tooltip-name font-calligraphy">سورة {hoveredStar.name}</span>
-            </div>
-            <div className="tooltip-meta">
-              <span>{hoveredStar.numberOfAyahs} آية</span>
-              <span>•</span>
-              <span>{hoveredStar.revelationType === 'Meccan' ? 'مكية 🕋' : 'مدنية 🕌'}</span>
-              <span>•</span>
-              <span className="text-gold">{CLASSIFICATION_LABELS[hoveredStar.group]}</span>
-            </div>
-          </div>
-        )}
-
-        {selectedStar && (
-          <div className="selected-star-drawer animate-slide-up">
+          <div className="visual-mode-tabs" role="tablist">
             <button
               type="button"
-              className="drawer-close-btn"
-              onClick={() => setSelectedStar(null)}
-              title="إغلاق"
+              className={`mode-tab-btn ${activeVisualMode === 'timeline' ? 'active' : ''}`}
+              onClick={() => setActiveVisualMode('timeline')}
             >
-              ×
+              <CompassIcon size={14} />
+              <span>الخط الزمني للوحي (Timeline)</span>
             </button>
 
-            <div className="drawer-header-row">
-              <div className="drawer-badge-line">
-                <span className="drawer-number-badge">سورة رقم {selectedStar.number}</span>
-                <span className={`drawer-rev-badge ${selectedStar.revelationType.toLowerCase()}`}>
-                  {selectedStar.revelationType === 'Meccan' ? 'تنزيل مكي 🕋' : 'تنزيل مدني 🕌'}
-                </span>
-                <span className="drawer-class-badge">{CLASSIFICATION_LABELS[selectedStar.group]}</span>
-              </div>
+            <button
+              type="button"
+              className={`mode-tab-btn ${activeVisualMode === 'atlas' ? 'active' : ''}`}
+              onClick={() => setActiveVisualMode('atlas')}
+            >
+              <BookOpenIcon size={14} />
+              <span>أطلس المواقع القرآنية (Atlas)</span>
+            </button>
 
-              <h3 className="drawer-title font-calligraphy">{selectedStar.fullName}</h3>
-              <p className="drawer-subtitle">
-                {selectedStar.englishName} • {selectedStar.englishNameTranslation}
-              </p>
-            </div>
+            <button
+              type="button"
+              className={`mode-tab-btn ${activeVisualMode === 'constellation' ? 'active' : ''}`}
+              onClick={() => setActiveVisualMode('constellation')}
+            >
+              <SparklesIcon size={14} />
+              <span>كوكبة ومدار السور (Constellation)</span>
+            </button>
+          </div>
+        </div>
 
-            <div className="drawer-metrics-row">
-              <div className="drawer-metric">
-                <span className="metric-tag">الآيات</span>
-                <span className="metric-number font-calligraphy">{selectedStar.numberOfAyahs}</span>
-              </div>
-              <div className="drawer-metric">
-                <span className="metric-tag">المقدار</span>
-                <span className="metric-number font-calligraphy">
-                  {Math.max(1, Math.round(selectedStar.numberOfAyahs / 20))} حزب
-                </span>
-              </div>
-            </div>
-
-            <div className="drawer-actions-row">
-              <button
-                type="button"
-                className="drawer-action-btn primary"
-                onClick={() => {
-                  onSelectSurah?.(selectedStar.number);
-                  onNavigateTab?.('reader');
-                }}
-              >
-                <BookOpenIcon size={17} />
-                <span>فتح {selectedStar.name} في المصحف والتلاوة ↵</span>
-              </button>
-
-              <button
-                type="button"
-                className="drawer-action-btn secondary"
-                onClick={() => {
-                  onSelectSurah?.(selectedStar.number);
-                  onNavigateTab?.('memorize');
-                }}
-              >
-                <MemorizeIcon size={17} />
-                <span>تسميع وحفظ</span>
-              </button>
-            </div>
+        {activeVisualMode === 'constellation' && (
+          <div className="hud-tools-cluster">
+            <button
+              type="button"
+              className="hud-icon-btn"
+              onClick={() => {
+                cameraRef.current.targetZoom = Math.min(2.8, cameraRef.current.targetZoom * 1.25);
+              }}
+              title="تكبير"
+            >
+              +
+            </button>
+            <button
+              type="button"
+              className="hud-icon-btn"
+              onClick={() => {
+                cameraRef.current.targetZoom = Math.max(0.3, cameraRef.current.targetZoom * 0.8);
+              }}
+              title="تصغير"
+            >
+              -
+            </button>
+            <button
+              type="button"
+              className="hud-icon-btn"
+              onClick={handleResetCamera}
+              title="إعادة ضبط المشهد"
+            >
+              <RefreshIcon size={13} />
+            </button>
           </div>
         )}
       </div>
+
+      {activeVisualMode === 'timeline' && (
+        <div className="revelation-timeline-stage animate-fade-in">
+          <div className="timeline-control-header">
+            <div className="timeline-search-box">
+              <SearchIcon size={14} className="text-gold" />
+              <input
+                type="text"
+                placeholder="ابحث في السور حسب ترتيب النزول أو الأحداث التاريخية..."
+                value={timelineSearch}
+                onChange={(e) => setTimelineSearch(e.target.value)}
+                className="timeline-search-input"
+              />
+            </div>
+
+            <div className="timeline-era-pills">
+              <button
+                type="button"
+                className={`era-pill ${timelineEraFilter === 'all' ? 'active' : ''}`}
+                onClick={() => setTimelineEraFilter('all')}
+              >
+                جميع السور (١١٤)
+              </button>
+              <button
+                type="button"
+                className={`era-pill ${timelineEraFilter === 'meccan' ? 'active' : ''}`}
+                onClick={() => setTimelineEraFilter('meccan')}
+              >
+                العهد المكي 🕋 (86 سورة)
+              </button>
+              <button
+                type="button"
+                className={`era-pill ${timelineEraFilter === 'medinan' ? 'active' : ''}`}
+                onClick={() => setTimelineEraFilter('medinan')}
+              >
+                العهد المدني 🕌 (28 سورة)
+              </button>
+            </div>
+          </div>
+
+          <div className="milestones-ticker-strip">
+            <span className="ticker-label text-gold">محطات مفصلية في السيرة:</span>
+            <div className="ticker-scroll">
+              {TIMELINE_MILESTONES.map((m) => (
+                <div key={m.id} className="milestone-ticker-item">
+                  <span className="ticker-dot" />
+                  <span className="ticker-title">{m.title}</span>
+                  <span className="ticker-year">({m.year})</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="timeline-cards-track">
+            {filteredTimeline.map((item) => {
+              const surahMeta = SURAHS_LIST.find((s) => s.number === item.number);
+              const isMedinan = item.era.startsWith('medinan');
+
+              return (
+                <div
+                  key={`rev-${item.order}`}
+                  className={`timeline-surah-card ${isMedinan ? 'is-medinan' : 'is-meccan'}`}
+                >
+                  <div className="card-top-header">
+                    <span className="revelation-rank-badge">النزول #{item.order}</span>
+                    <span className="mushaf-rank-badge">المصحف #{item.number}</span>
+                    <span className={`era-tag ${isMedinan ? 'medinan' : 'meccan'}`}>
+                      {isMedinan ? 'مدنية 🕌' : 'مكية 🕋'}
+                    </span>
+                  </div>
+
+                  <h4 className="card-surah-name font-calligraphy">سورة {item.name}</h4>
+                  <span className="card-year-stamp">{item.year}</span>
+
+                  <p className="card-historical-note">{item.note}</p>
+
+                  <div className="card-footer-action">
+                    <span className="ayah-count-tag">{surahMeta ? surahMeta.numberOfAyahs : 0} آية</span>
+                    <button
+                      type="button"
+                      className="launch-surah-btn"
+                      onClick={() => {
+                        onSelectSurah?.(item.number);
+                        onNavigateTab?.('reader');
+                      }}
+                    >
+                      <BookOpenIcon size={14} />
+                      <span>تلاوة السورة ↵</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {activeVisualMode === 'atlas' && (
+        <div className="quran-atlas-stage animate-fade-in">
+          <div className="atlas-locations-sidebar">
+            <h3 className="sidebar-title">
+              <CompassIcon size={16} className="text-gold" />
+              <span>معالم وأطلس المواقع القرآنية</span>
+            </h3>
+            <p className="sidebar-sub">اختر موقعاً لاستكشاف آياته وقصصه الشريفة في كتاب الله:</p>
+
+            <div className="locations-list">
+              {QURAN_LOCATIONS.map((loc) => (
+                <div
+                  key={loc.id}
+                  className={`location-list-item ${selectedLocation.id === loc.id ? 'active' : ''}`}
+                  onClick={() => setSelectedLocation(loc)}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <span className="loc-dot" />
+                  <div className="loc-info">
+                    <span className="loc-name">{loc.name.split(' ')[0]} {loc.name.split(' ')[1] || ''}</span>
+                    <span className="loc-region">{loc.region}</span>
+                  </div>
+                  <span className="loc-surah-pill">{loc.surahRef.split(':')[0]}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="atlas-map-canvas-card">
+            <div className="interactive-map-board">
+              <div className="map-grid-overlay" />
+
+              <div className="map-compass-rose">
+                <span>شمال ⬆</span>
+              </div>
+
+              {QURAN_LOCATIONS.map((loc) => {
+                const isSelected = selectedLocation.id === loc.id;
+                return (
+                  <div
+                    key={`pin-${loc.id}`}
+                    className={`map-location-pin ${isSelected ? 'selected' : ''}`}
+                    style={{ left: `${loc.coordinates.x}%`, top: `${loc.coordinates.y}%` }}
+                    onClick={() => setSelectedLocation(loc)}
+                    role="button"
+                    tabIndex={0}
+                    title={loc.name}
+                  >
+                    <div className="pin-pulse-ring" />
+                    <div className="pin-core">
+                      <span className="pin-icon">📍</span>
+                    </div>
+                    <span className="pin-label font-calligraphy">{loc.name.split(' ')[0]}</span>
+                  </div>
+                );
+              })}
+
+              <div className="atlas-selected-spotlight animate-slide-up">
+                <div className="spotlight-header">
+                  <div className="spotlight-title-group">
+                    <span className="spotlight-region-tag">{selectedLocation.region}</span>
+                    <h3 className="spotlight-name font-calligraphy">{selectedLocation.name}</h3>
+                    <span className="spotlight-en">{selectedLocation.englishName}</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="spotlight-reader-btn"
+                    onClick={() => {
+                      onSelectSurah?.(selectedLocation.surahNumber);
+                      onNavigateTab?.('reader');
+                    }}
+                  >
+                    <BookOpenIcon size={16} />
+                    <span>فتح {selectedLocation.surahRef} في المصحف ↵</span>
+                  </button>
+                </div>
+
+                <div className="spotlight-verse-banner">
+                  <p className="verse-text font-calligraphy">"{selectedLocation.verse}"</p>
+                  <span className="verse-source">— {selectedLocation.surahRef}</span>
+                </div>
+
+                <p className="spotlight-story">{selectedLocation.story}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeVisualMode === 'constellation' && (
+        <div className="canvas-viewport-wrapper">
+          <canvas
+            ref={canvasRef}
+            className="constellation-canvas"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onWheel={handleWheel}
+          />
+
+          <div className="space-canvas-hint">
+            <span>انقر واسحب للتجول في الفضاء • استخدم عجلة الفأرة للتكبير • انقر على أي سورة لاستكشافها</span>
+          </div>
+
+          {hoveredStar && !selectedStar && (
+            <div
+              className="star-floating-tooltip animate-fade-in"
+              style={{
+                left: `${mouseRef.current.screenX + 16}px`,
+                top: `${mouseRef.current.screenY - 12}px`
+              }}
+            >
+              <div className="tooltip-head">
+                <span className="tooltip-num">#{hoveredStar.number}</span>
+                <span className="tooltip-name font-calligraphy">سورة {hoveredStar.name}</span>
+              </div>
+              <div className="tooltip-meta">
+                <span>{hoveredStar.numberOfAyahs} آية</span>
+                <span>•</span>
+                <span>{hoveredStar.revelationType === 'Meccan' ? 'مكية 🕋' : 'مدنية 🕌'}</span>
+                <span>•</span>
+                <span className="text-gold">{CLASSIFICATION_LABELS[hoveredStar.group]}</span>
+              </div>
+            </div>
+          )}
+
+          {selectedStar && (
+            <div className="selected-star-drawer animate-slide-up">
+              <button
+                type="button"
+                className="drawer-close-btn"
+                onClick={() => setSelectedStar(null)}
+                title="إغلاق"
+              >
+                ×
+              </button>
+
+              <div className="drawer-header-row">
+                <div className="drawer-badge-line">
+                  <span className="drawer-number-badge">سورة رقم {selectedStar.number}</span>
+                  <span className={`drawer-rev-badge ${selectedStar.revelationType.toLowerCase()}`}>
+                    {selectedStar.revelationType === 'Meccan' ? 'تنزيل مكي 🕋' : 'تنزيل مدني 🕌'}
+                  </span>
+                  <span className="drawer-class-badge">{CLASSIFICATION_LABELS[selectedStar.group]}</span>
+                </div>
+
+                <h3 className="drawer-title font-calligraphy">{selectedStar.fullName}</h3>
+                <p className="drawer-subtitle">
+                  {selectedStar.englishName} • {selectedStar.englishNameTranslation}
+                </p>
+              </div>
+
+              <div className="drawer-metrics-row">
+                <div className="drawer-metric">
+                  <span className="metric-tag">الآيات</span>
+                  <span className="metric-number font-calligraphy">{selectedStar.numberOfAyahs}</span>
+                </div>
+                <div className="drawer-metric">
+                  <span className="metric-tag">المقدار</span>
+                  <span className="metric-number font-calligraphy">
+                    {Math.max(1, Math.round(selectedStar.numberOfAyahs / 20))} حزب
+                  </span>
+                </div>
+              </div>
+
+              <div className="drawer-actions-row">
+                <button
+                  type="button"
+                  className="drawer-action-btn primary"
+                  onClick={() => {
+                    onSelectSurah?.(selectedStar.number);
+                    onNavigateTab?.('reader');
+                  }}
+                >
+                  <BookOpenIcon size={17} />
+                  <span>فتح {selectedStar.name} في المصحف والتلاوة ↵</span>
+                </button>
+
+                <button
+                  type="button"
+                  className="drawer-action-btn secondary"
+                  onClick={() => {
+                    onSelectSurah?.(selectedStar.number);
+                    onNavigateTab?.('memorize');
+                  }}
+                >
+                  <MemorizeIcon size={17} />
+                  <span>تسميع وحفظ</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

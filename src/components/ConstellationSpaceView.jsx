@@ -187,6 +187,10 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
   };
 
   const isLight = viewTheme === 'light';
+  const isLightRef = useRef(isLight);
+  useEffect(() => {
+    isLightRef.current = isLight;
+  }, [isLight]);
 
   const [timelineEraFilter, setTimelineEraFilter] = useState('all');
   const [timelineSearch, setTimelineSearch] = useState('');
@@ -382,6 +386,8 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
 
       ctx.clearRect(0, 0, width, height);
 
+      const currentIsLight = isLightRef.current;
+
       const bgGrad = ctx.createRadialGradient(
         width / 2,
         height / 2,
@@ -390,10 +396,10 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
         height / 2,
         Math.max(width, height) * 0.75
       );
-      if (isLight) {
-        bgGrad.addColorStop(0, '#fcfaf5');
-        bgGrad.addColorStop(0.5, '#f4eee3');
-        bgGrad.addColorStop(1, '#ebe3d3');
+      if (currentIsLight) {
+        bgGrad.addColorStop(0, '#fdfbf7');
+        bgGrad.addColorStop(0.5, '#f7f2e8');
+        bgGrad.addColorStop(1, '#ece3d2');
       } else {
         bgGrad.addColorStop(0, '#06161b');
         bgGrad.addColorStop(0.5, '#020b0e');
@@ -417,14 +423,14 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
         s.projDepth = proj.depth;
       }
 
-      ctx.fillStyle = isLight ? '#d4af37' : '#ffffff';
+      ctx.fillStyle = currentIsLight ? 'rgba(180, 130, 50, 0.65)' : '#ffffff';
       for (let i = 0; i < AMBIENT_3D_DUST.length; i++) {
         const d = AMBIENT_3D_DUST[i];
         const proj = project3D(d.x, d.y, d.z);
         if (proj.depth > -cam.cameraDist + 50) {
           const depthAlpha = Math.max(0.08, Math.min(0.75, (450 - proj.depth) / 900));
           const pulse = 0.7 + Math.sin(time * 0.001 * d.pulseSpeed + i) * 0.3;
-          ctx.globalAlpha = d.alpha * depthAlpha * pulse;
+          ctx.globalAlpha = d.alpha * depthAlpha * pulse * (currentIsLight ? 0.7 : 1);
           ctx.beginPath();
           ctx.arc(proj.screenX, proj.screenY, Math.max(0.4, d.radius * proj.scale), 0, Math.PI * 2);
           ctx.fill();
@@ -433,8 +439,8 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
       ctx.globalAlpha = 1;
 
       if (showAstrolabeRings) {
-        ctx.strokeStyle = 'rgba(210, 170, 96, 0.16)';
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = currentIsLight ? 'rgba(160, 115, 45, 0.42)' : 'rgba(210, 170, 96, 0.16)';
+        ctx.lineWidth = currentIsLight ? 1.2 : 1;
         ctx.setLineDash([4, 10]);
 
         const draw3DCircle = (radius, plane = 'xz') => {
@@ -468,7 +474,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
       }
 
       if (showConstellationLines) {
-        ctx.lineWidth = 0.9;
+        ctx.lineWidth = currentIsLight ? 1.2 : 0.9;
         const starsMap = {};
         for (let i = 0; i < N_SURAHS; i++) {
           starsMap[stars[i].number] = stars[i];
@@ -490,15 +496,19 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
           const depthFade = Math.max(0.2, Math.min(1.0, (400 - avgDepth) / 750));
 
           if (isHighlighted) {
-            ctx.strokeStyle = `rgba(251, 191, 36, ${0.85 * depthFade})`;
-            ctx.lineWidth = 2.2;
+            ctx.strokeStyle = currentIsLight
+              ? `rgba(180, 83, 9, ${0.92 * depthFade})`
+              : `rgba(251, 191, 36, ${0.85 * depthFade})`;
+            ctx.lineWidth = 2.4;
             ctx.beginPath();
             ctx.moveTo(s1.projX, s1.projY);
             ctx.lineTo(s2.projX, s2.projY);
             ctx.stroke();
-            ctx.lineWidth = 0.9;
+            ctx.lineWidth = currentIsLight ? 1.2 : 0.9;
           } else if (is1Active && is2Active) {
-            ctx.strokeStyle = `rgba(180, 215, 230, ${0.22 * depthFade})`;
+            ctx.strokeStyle = currentIsLight
+              ? `rgba(150, 105, 40, ${0.45 * depthFade})`
+              : `rgba(180, 215, 230, ${0.22 * depthFade})`;
             ctx.beginPath();
             ctx.moveTo(s1.projX, s1.projY);
             ctx.lineTo(s2.projX, s2.projY);
@@ -520,7 +530,9 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
           const dist3D = Math.sqrt(dx * dx + dy * dy + dz * dz);
           if (dist3D < 190) {
             const alpha = (1 - dist3D / 190) * 0.7;
-            ctx.strokeStyle = `rgba(251, 191, 36, ${alpha})`;
+            ctx.strokeStyle = currentIsLight
+              ? `rgba(180, 83, 9, ${alpha})`
+              : `rgba(251, 191, 36, ${alpha})`;
             ctx.beginPath();
             ctx.moveTo(activeHoverOrSelected.projX, activeHoverOrSelected.projY);
             ctx.lineTo(s.projX, s.projY);
@@ -553,7 +565,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
         const isSelected = selectedStar && selectedStar.number === s.number;
 
         const depthFade = Math.max(0.35, Math.min(1.0, (400 - s.projDepth) / 700));
-        const finalAlpha = isFiltered ? (isHover || isSelected ? 1 : depthFade) : 0.05;
+        const finalAlpha = isFiltered ? (isHover || isSelected ? 1 : depthFade) : (currentIsLight ? 0.18 : 0.05);
 
         ctx.globalAlpha = finalAlpha;
 
@@ -561,17 +573,35 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
 
         const auraR = starR * (isHover ? 4.5 : 2.6);
         const auraGrad = ctx.createRadialGradient(s.projX, s.projY, starR * 0.2, s.projX, s.projY, auraR);
-        auraGrad.addColorStop(0, s.glowColor);
+        const auraColor = currentIsLight
+          ? (s.group === 'tiwal'
+              ? 'rgba(217, 119, 6, 0.4)'
+              : s.revelationType === 'Meccan'
+              ? 'rgba(2, 132, 199, 0.35)'
+              : 'rgba(5, 150, 105, 0.35)')
+          : s.glowColor;
+        auraGrad.addColorStop(0, auraColor);
         auraGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
         ctx.fillStyle = auraGrad;
         ctx.beginPath();
         ctx.arc(s.projX, s.projY, auraR, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = isHover ? '#ffffff' : s.color;
+        const baseStarColor = currentIsLight
+          ? (s.group === 'tiwal' ? '#d97706' : s.revelationType === 'Meccan' ? '#0284c7' : '#059669')
+          : s.color;
+        ctx.fillStyle = isHover ? (currentIsLight ? '#b45309' : '#ffffff') : baseStarColor;
         ctx.beginPath();
         ctx.arc(s.projX, s.projY, starR, 0, Math.PI * 2);
         ctx.fill();
+
+        if (currentIsLight) {
+          ctx.strokeStyle = 'rgba(0, 0, 0, 0.16)';
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.arc(s.projX, s.projY, starR, 0, Math.PI * 2);
+          ctx.stroke();
+        }
 
         ctx.fillStyle = '#ffffff';
         ctx.beginPath();
@@ -579,7 +609,9 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
         ctx.fill();
 
         if (isHover || isSelected || s.group === 'tiwal') {
-          ctx.strokeStyle = isHover || isSelected ? '#fbbf24' : 'rgba(251, 191, 36, 0.45)';
+          ctx.strokeStyle = isHover || isSelected
+            ? (currentIsLight ? '#b45309' : '#fbbf24')
+            : (currentIsLight ? 'rgba(180, 83, 9, 0.5)' : 'rgba(251, 191, 36, 0.45)');
           ctx.lineWidth = isHover || isSelected ? 1.5 : 1;
           const glint = starR * (isHover || isSelected ? 2.4 : 1.8);
           ctx.beginPath();
@@ -591,14 +623,14 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
         }
 
         if (isSelected) {
-          ctx.strokeStyle = '#fbbf24';
+          ctx.strokeStyle = currentIsLight ? '#b45309' : '#fbbf24';
           ctx.lineWidth = 1.8;
           ctx.beginPath();
           ctx.arc(s.projX, s.projY, starR + 7, 0, Math.PI * 2);
           ctx.stroke();
 
           ctx.setLineDash([3, 4]);
-          ctx.strokeStyle = 'rgba(251, 191, 36, 0.7)';
+          ctx.strokeStyle = currentIsLight ? 'rgba(180, 83, 9, 0.7)' : 'rgba(251, 191, 36, 0.7)';
           ctx.beginPath();
           ctx.arc(s.projX, s.projY, starR + 13, 0, Math.PI * 2);
           ctx.stroke();
@@ -610,7 +642,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
           const fontSize = Math.max(10, Math.min(15, Math.round(11.5 * s.projScale)));
           ctx.font = `600 ${isHover ? fontSize + 2 : fontSize}px "Amiri", "Traditional Arabic", serif`;
           ctx.textAlign = 'center';
-          if (isLight) {
+          if (currentIsLight) {
             ctx.fillStyle = isHover ? '#b45309' : isSelected ? '#b45309' : (s.group === 'tiwal' ? '#92400e' : '#0f172a');
             ctx.shadowColor = 'rgba(255, 255, 255, 0.95)';
             ctx.shadowBlur = 4;
@@ -635,7 +667,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
       resizeObserver.disconnect();
     };
-  }, [activeVisualMode, autoRotate, showConstellationLines, showAstrolabeRings, filteredSurahSet, selectedStar, hoveredStar]);
+  }, [activeVisualMode, autoRotate, showConstellationLines, showAstrolabeRings, filteredSurahSet, selectedStar, hoveredStar, isLight]);
 
   const handleCanvasMouseDown = (e) => {
     if (e.button !== 0) return;
@@ -832,7 +864,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
         <div className="hud-title-cluster">
           <div className="hud-brand-tag">
             <SparklesIcon size={14} className="text-gold" />
-            <span>كوكبة القرآن التفاعلية (Basa'ir Universe)</span>
+            <span>كوكبة القرآن</span>
           </div>
 
           <div className="visual-mode-tabs" role="tablist">
@@ -842,7 +874,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
               onClick={() => setActiveVisualMode('constellation')}
             >
               <SparklesIcon size={14} />
-              <span>كوكبة ومدار السور (3D Universe)</span>
+              <span>فضاء السور (3D)</span>
             </button>
 
             <button
@@ -851,7 +883,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
               onClick={() => setActiveVisualMode('timeline')}
             >
               <CompassIcon size={14} />
-              <span>سِفْر التنزيل النبوي (Timeline)</span>
+              <span>سِفْر التنزيل (Timeline)</span>
             </button>
 
             <button
@@ -860,7 +892,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
               onClick={() => setActiveVisualMode('atlas')}
             >
               <BookOpenIcon size={14} />
-              <span>أطلس المواقع القرآنية (Atlas)</span>
+              <span>أطلس المواقع (Atlas)</span>
             </button>
           </div>
         </div>
@@ -874,7 +906,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                 onClick={() => set3DGeometry('sphere')}
                 title="عرض الكرة السماوية الإسطرلابية"
               >
-                <span>الكرة الفلكية 🌐</span>
+                <span>الكرة 🌐</span>
               </button>
               <button
                 type="button"
@@ -882,7 +914,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                 onClick={() => set3DGeometry('galaxy')}
                 title="عرض المجرة الحلزونية الدوارة"
               >
-                <span>المجرة الحلزونية 🌀</span>
+                <span>المجرة 🌀</span>
               </button>
               <button
                 type="button"
@@ -890,7 +922,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                 onClick={() => set3DGeometry('orbits')}
                 title="عرض المدارات الكوكبية متحدة المركز"
               >
-                <span>المدارات القرآنية 🪐</span>
+                <span>المدارات 🪐</span>
               </button>
             </div>
 
@@ -959,7 +991,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
             title={isLight ? 'التحويل إلى المظهر الليلي الفلكي (Dark)' : 'التحويل إلى النسخة البيضاء العاجية المذهبة (White / Ivory)'}
           >
             <span className="theme-toggle-icon">{isLight ? '🌙' : '☀️'}</span>
-            <span className="theme-toggle-txt">{isLight ? 'النسخة الليلية' : 'النسخة البيضاء'}</span>
+            <span className="theme-toggle-txt">{isLight ? 'ليلية' : 'بيضاء'}</span>
           </button>
 
           <button
@@ -969,7 +1001,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
             title={isFullscreen ? 'تصغير الشاشة (Esc)' : 'توسيع المشهد لكامل الصفحة والشاشة ⛶'}
           >
             <span className="immersion-icon">{isFullscreen ? '🗗' : '⛶'}</span>
-            <span className="immersion-txt">{isFullscreen ? 'تصغير الشاشة' : 'ملء الصفحة بالكامل'}</span>
+            <span className="immersion-txt">{isFullscreen ? 'تصغير' : 'ملء الشاشة'}</span>
           </button>
         </div>
       </div>

@@ -1,33 +1,35 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './App.css';
-import SidebarLeft from './components/SidebarLeft';
-import SidebarRight from './components/SidebarRight';
-import Navbar from './components/Navbar';
-import ReaderView from './components/ReaderView';
-import MemorizationStudio from './components/MemorizationStudio';
-import MutashabihatView from './components/MutashabihatView';
-import TadabburView from './components/TadabburView';
-import ScholarsLibraryView from './components/ScholarsLibraryView';
-import KhatmahPlannerView from './components/KhatmahPlannerView';
-import ConstellationSpaceView from './components/ConstellationSpaceView';
-import AudioPlayerBar from './components/AudioPlayerBar';
-import SurahListModal from './components/SurahListModal';
-import TafsirModal from './components/TafsirModal';
-import AyahCardModal from './components/AyahCardModal';
-import RestApiExplorerModal from './components/RestApiExplorerModal';
-import SettingsView from './components/SettingsView';
-import UserProfileModal from './components/UserProfileModal';
-import CommandPalette from './components/CommandPalette';
-import KeyboardShortcutsHelpModal from './components/KeyboardShortcutsHelpModal';
-import MihrabFocusMode from './components/MihrabFocusMode';
+import { useEffect, useRef, useState } from "react";
+import "./App.css";
+import AudioPlayerBar from "./components/AudioPlayerBar";
+import AyahCardModal from "./components/AyahCardModal";
+import CommandPalette from "./components/CommandPalette";
+import ConstellationSpaceView from "./components/ConstellationSpaceView";
+import KeyboardShortcutsHelpModal from "./components/KeyboardShortcutsHelpModal";
+import KhatmahPlannerView from "./components/KhatmahPlannerView";
+import MemorizationStudio from "./components/MemorizationStudio";
+import MihrabFocusMode from "./components/MihrabFocusMode";
+import MutashabihatView from "./components/MutashabihatView";
+import Navbar from "./components/Navbar";
+import ReaderView from "./components/ReaderView";
+import RestApiExplorerModal from "./components/RestApiExplorerModal";
+import ScholarsLibraryView from "./components/ScholarsLibraryView";
+import SettingsView from "./components/SettingsView";
+import SidebarLeft from "./components/SidebarLeft";
+import SidebarRight from "./components/SidebarRight";
+import SurahListModal from "./components/SurahListModal";
+import TadabburView from "./components/TadabburView";
+import TafsirModal from "./components/TafsirModal";
+import UserProfileModal from "./components/UserProfileModal";
 
-import { getSurahDetails } from './services/quranApi';
-import { getAyahAudioUrl } from './data/reciters';
-import { SURAHS_LIST } from './data/surahsList';
+import { getAyahAudioUrl } from "./data/reciters";
+import { SURAHS_LIST } from "./data/surahsList";
+import { getSurahDetails } from "./services/quranApi";
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('reader');
-  const [theme, setTheme] = useState(() => localStorage.getItem('basair_theme') || 'dark');
+  const [activeTab, setActiveTab] = useState("reader");
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("basair_theme") || "dark",
+  );
 
   const [currentSurahNumber, setCurrentSurahNumber] = useState(1);
   const [surahData, setSurahData] = useState(null);
@@ -37,13 +39,15 @@ export default function App() {
   const audioRef = useRef(new Audio());
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentAyahIndex, setCurrentAyahIndex] = useState(0);
-  const [selectedReciter, setSelectedReciter] = useState(() => localStorage.getItem('basair_reciter') || 'ar.alafasy');
+  const [selectedReciter, setSelectedReciter] = useState(
+    () => localStorage.getItem("basair_reciter") || "ar.alafasy",
+  );
   const [playbackRate, setPlaybackRate] = useState(1);
   const [isRepeatAyah, setIsRepeatAyah] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(() => {
-    const saved = localStorage.getItem('basair_volume');
+    const saved = localStorage.getItem("basair_volume");
     return saved !== null ? Number(saved) : 0.85;
   });
   const [isMuted, setIsMuted] = useState(false);
@@ -54,20 +58,31 @@ export default function App() {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isShortcutsModalOpen, setIsShortcutsModalOpen] = useState(false);
   const [isMihrabModeOpen, setIsMihrabModeOpen] = useState(false);
-  const [tafsirModal, setTafsirModal] = useState({ isOpen: false, surahNumber: 1, ayahNumber: 1, surahName: '', ayahText: '' });
-  const [cardModal, setCardModal] = useState({ isOpen: false, ayah: null, surah: null });
+  const [tafsirModal, setTafsirModal] = useState({
+    isOpen: false,
+    surahNumber: 1,
+    ayahNumber: 1,
+    surahName: "",
+    ayahText: "",
+  });
+  const [cardModal, setCardModal] = useState({
+    isOpen: false,
+    ayah: null,
+    surah: null,
+  });
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('basair_theme', theme);
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("basair_theme", theme);
   }, [theme]);
 
   useEffect(() => {
     const handleGlobalKeyDown = (e) => {
       const tag = e.target?.tagName?.toLowerCase();
-      const isInput = tag === 'input' || tag === 'textarea' || e.target?.isContentEditable;
+      const isInput =
+        tag === "input" || tag === "textarea" || e.target?.isContentEditable;
 
-      if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+      if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) {
         e.preventDefault();
         setIsCommandPaletteOpen((prev) => !prev);
         return;
@@ -75,42 +90,42 @@ export default function App() {
 
       if (isInput) return;
 
-      if (e.key === ' ') {
+      if (e.key === " ") {
         e.preventDefault();
         handleTogglePlay();
-      }
-      else if (e.key === 'ArrowLeft') {
+      } else if (e.key === "ArrowLeft") {
         e.preventDefault();
         handleNextAyah();
-      } else if (e.key === 'ArrowRight') {
+      } else if (e.key === "ArrowRight") {
         e.preventDefault();
         handlePrevAyah();
-      }
-      else if (e.key === 'f' || e.key === 'F') {
+      } else if (e.key === "f" || e.key === "F") {
         e.preventDefault();
         setIsMihrabModeOpen((prev) => !prev);
-      }
-      else if (e.key === 't' || e.key === 'T') {
+      } else if (e.key === "t" || e.key === "T") {
         e.preventDefault();
         if (surahData && surahData.ayahs && surahData.ayahs[currentAyahIndex]) {
           const ayah = surahData.ayahs[currentAyahIndex];
-          handleOpenTafsir(currentSurahNumber, ayah.numberInSurah, surahData.name, ayah.textAr);
+          handleOpenTafsir(
+            currentSurahNumber,
+            ayah.numberInSurah,
+            surahData.name,
+            ayah.textAr,
+          );
         }
-      }
-      else if (e.key === 's' || e.key === 'S') {
+      } else if (e.key === "s" || e.key === "S") {
         e.preventDefault();
         if (surahData && surahData.ayahs && surahData.ayahs[currentAyahIndex]) {
           handleOpenCardModal(surahData.ayahs[currentAyahIndex], surahData);
         }
-      }
-      else if (e.key === '?') {
+      } else if (e.key === "?") {
         e.preventDefault();
         setIsShortcutsModalOpen((prev) => !prev);
       }
     };
 
-    window.addEventListener('keydown', handleGlobalKeyDown);
-    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => window.removeEventListener("keydown", handleGlobalKeyDown);
   }, [surahData, currentAyahIndex, currentSurahNumber, isPlaying]);
 
   useEffect(() => {
@@ -135,7 +150,7 @@ export default function App() {
       })
       .catch((err) => {
         if (isSubscribed) {
-          setSurahError(err.message || 'Error loading Surah');
+          setSurahError(err.message || "Error loading Surah");
           setIsLoadingSurah(false);
         }
       });
@@ -177,20 +192,20 @@ export default function App() {
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
 
-    audio.addEventListener('timeupdate', handleTimeUpdate);
-    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-    audio.addEventListener('durationchange', handleDurationChange);
-    audio.addEventListener('ended', handleEnded);
-    audio.addEventListener('play', handlePlay);
-    audio.addEventListener('pause', handlePause);
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.addEventListener("durationchange", handleDurationChange);
+    audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("play", handlePlay);
+    audio.addEventListener("pause", handlePause);
 
     return () => {
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
-      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      audio.removeEventListener('durationchange', handleDurationChange);
-      audio.removeEventListener('ended', handleEnded);
-      audio.removeEventListener('play', handlePlay);
-      audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("durationchange", handleDurationChange);
+      audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("play", handlePlay);
+      audio.removeEventListener("pause", handlePause);
     };
   }, [isRepeatAyah, surahData, currentAyahIndex, volume, isMuted]);
 
@@ -203,7 +218,7 @@ export default function App() {
       selectedReciter,
       currentAyah.number,
       currentSurahNumber,
-      currentAyah.numberInSurah
+      currentAyah.numberInSurah,
     );
     const audio = audioRef.current;
 
@@ -213,7 +228,7 @@ export default function App() {
       audio.playbackRate = playbackRate;
       if (wasPlaying) {
         audio.play().catch((e) => {
-          console.warn('Audio play interrupted:', e);
+          console.warn("Audio play interrupted:", e);
           setIsPlaying(false);
         });
       }
@@ -238,14 +253,14 @@ export default function App() {
         selectedReciter,
         currentAyah.number,
         currentSurahNumber,
-        currentAyah.numberInSurah
+        currentAyah.numberInSurah,
       );
       if (audio.src !== audioUrl) {
         audio.src = audioUrl;
       }
       audio.playbackRate = playbackRate;
       audio.play().catch((e) => {
-        console.error('Audio play error:', e);
+        console.error("Audio play error:", e);
         setIsPlaying(false);
       });
     }
@@ -260,15 +275,16 @@ export default function App() {
       selectedReciter,
       ayah.number,
       currentSurahNumber,
-      ayah.numberInSurah
+      ayah.numberInSurah,
     );
 
     audio.src = audioUrl;
     audio.playbackRate = playbackRate;
-    audio.play()
+    audio
+      .play()
       .then(() => setIsPlaying(true))
       .catch((e) => {
-        console.error('Play specific ayah error:', e);
+        console.error("Play specific ayah error:", e);
         setIsPlaying(false);
       });
   };
@@ -285,7 +301,7 @@ export default function App() {
     const clamped = Math.max(0, Math.min(1, newVol));
     setVolume(clamped);
     if (isMuted && clamped > 0) setIsMuted(false);
-    localStorage.setItem('basair_volume', String(clamped));
+    localStorage.setItem("basair_volume", String(clamped));
     if (audioRef.current) {
       audioRef.current.volume = clamped;
     }
@@ -315,7 +331,7 @@ export default function App() {
 
   const handleSelectReciter = (reciterId) => {
     setSelectedReciter(reciterId);
-    localStorage.setItem('basair_reciter', reciterId);
+    localStorage.setItem("basair_reciter", reciterId);
   };
 
   const handleSelectSurah = (surahNumber) => {
@@ -336,19 +352,19 @@ export default function App() {
 
   const handleOpenTafsir = (surahNum, ayahNum, ayahTxt) => {
     const sNum = surahNum || currentSurahNumber;
-    const aNum = ayahNum || (currentAyahIndex + 1);
-    const text = ayahTxt || (surahData?.ayahs[currentAyahIndex]?.textAr || '');
+    const aNum = ayahNum || currentAyahIndex + 1;
+    const text = ayahTxt || surahData?.ayahs[currentAyahIndex]?.textAr || "";
     setTafsirModal({
       isOpen: true,
       surahNumber: sNum,
       ayahNumber: aNum,
-      surahName: surahData ? surahData.name : '',
+      surahName: surahData ? surahData.name : "",
       ayahText: text,
     });
   };
 
   const handleOpenCardModal = (ayah, surah) => {
-    const a = ayah || (surahData?.ayahs[currentAyahIndex]);
+    const a = ayah || surahData?.ayahs[currentAyahIndex];
     const s = surah || surahData;
     setCardModal({
       isOpen: true,
@@ -357,12 +373,16 @@ export default function App() {
     });
   };
 
-  const currentSurahMeta = SURAHS_LIST.find((s) => s.number === currentSurahNumber);
+  const currentSurahMeta = SURAHS_LIST.find(
+    (s) => s.number === currentSurahNumber,
+  );
 
   return (
     <div className="basair-master-app-container">
       {/* 3-Column Master Application Grid */}
-      <div className={`app-layout-3col ${activeTab === 'constellation' ? 'layout-constellation-full' : ''}`}>
+      <div
+        className={`app-layout-3col ${activeTab === "constellation" ? "layout-constellation-full" : ""}`}
+      >
         {/* Left Navigation Sidebar with Logo & Spiritual Quote */}
         <SidebarLeft
           activeTab={activeTab}
@@ -374,7 +394,9 @@ export default function App() {
         />
 
         {/* Center Main Stage (Header + Content Views) */}
-        <div className={`center-stage-column ${activeTab === 'constellation' ? 'stage-constellation-full' : ''}`}>
+        <div
+          className={`center-stage-column ${activeTab === "constellation" ? "stage-constellation-full" : ""}`}
+        >
           {/* Top Bar matching screenshot */}
           <Navbar
             activeTab={activeTab}
@@ -388,8 +410,10 @@ export default function App() {
           />
 
           {/* Active View Router */}
-          <main className={`center-main-scrollable ${activeTab === 'constellation' ? 'main-constellation-full' : ''}`}>
-            {activeTab === 'reader' && (
+          <main
+            className={`center-main-scrollable ${activeTab === "constellation" ? "main-constellation-full" : ""}`}
+          >
+            {activeTab === "reader" && (
               <ReaderView
                 surahData={surahData}
                 isLoading={isLoadingSurah}
@@ -401,9 +425,9 @@ export default function App() {
                 onOpenCardModal={handleOpenCardModal}
                 onSelectPrevSurah={handleSelectPrevSurah}
                 onSelectNextSurah={handleSelectNextSurah}
-                onTriggerMemorize={() => setActiveTab('memorize')}
-                onTriggerTadabbur={() => setActiveTab('tadabbur')}
-                onTriggerMutashabihat={() => setActiveTab('mutashabihat')}
+                onTriggerMemorize={() => setActiveTab("memorize")}
+                onTriggerTadabbur={() => setActiveTab("tadabbur")}
+                onTriggerMutashabihat={() => setActiveTab("mutashabihat")}
                 theme={theme}
                 setTheme={setTheme}
                 onOpenSurahSearch={() => setIsSurahModalOpen(true)}
@@ -412,46 +436,44 @@ export default function App() {
               />
             )}
 
-            {activeTab === 'memorize' && (
+            {activeTab === "memorize" && (
               <MemorizationStudio
                 surahData={surahData}
                 onSelectSurah={handleSelectSurah}
               />
             )}
 
-            {activeTab === 'mutashabihat' && (
+            {activeTab === "mutashabihat" && (
               <MutashabihatView
                 onSelectSurah={(surahNum) => {
                   handleSelectSurah(surahNum);
-                  setActiveTab('reader');
+                  setActiveTab("reader");
                 }}
               />
             )}
 
-            {activeTab === 'tadabbur' && (
+            {activeTab === "tadabbur" && (
               <TadabburView
                 onSelectSurah={(surahNum) => {
                   handleSelectSurah(surahNum);
-                  setActiveTab('reader');
+                  setActiveTab("reader");
                 }}
                 onOpenCardModal={handleOpenCardModal}
               />
             )}
 
-            {activeTab === 'scholars' && (
-              <ScholarsLibraryView />
-            )}
+            {activeTab === "scholars" && <ScholarsLibraryView />}
 
-            {activeTab === 'khatmah' && (
+            {activeTab === "khatmah" && (
               <KhatmahPlannerView
                 onNavigateToSurah={(surahNum) => {
                   handleSelectSurah(surahNum);
-                  setActiveTab('reader');
+                  setActiveTab("reader");
                 }}
               />
             )}
 
-            {activeTab === 'settings' && (
+            {activeTab === "settings" && (
               <SettingsView
                 theme={theme}
                 setTheme={setTheme}
@@ -459,7 +481,7 @@ export default function App() {
                 onSelectReciter={handleSelectReciter}
               />
             )}
-          {activeTab === 'constellation' && (
+            {activeTab === "constellation" && (
               <ConstellationSpaceView
                 onSelectSurah={(surahNum) => {
                   handleSelectSurah(surahNum);
@@ -475,24 +497,24 @@ export default function App() {
         </div>
 
         {/* Right Sidebar (Daily Wird, Quick Tools, Favorite Reciters) */}
-        {activeTab !== 'constellation' && (
+        {activeTab !== "constellation" && (
           <SidebarRight
             currentSurah={currentSurahMeta}
-          currentAyahIndex={currentAyahIndex}
-          totalAyahs={surahData ? surahData.numberOfAyahs : 7}
-          selectedReciter={selectedReciter}
-          onSelectReciter={handleSelectReciter}
-          setActiveTab={setActiveTab}
-          onOpenCardModal={() => handleOpenCardModal()}
-          onOpenTafsir={() => handleOpenTafsir()}
-          isPlaying={isPlaying}
-          onTogglePlay={handleTogglePlay}
+            currentAyahIndex={currentAyahIndex}
+            totalAyahs={surahData ? surahData.numberOfAyahs : 7}
+            selectedReciter={selectedReciter}
+            onSelectReciter={handleSelectReciter}
+            setActiveTab={setActiveTab}
+            onOpenCardModal={() => handleOpenCardModal()}
+            onOpenTafsir={() => handleOpenTafsir()}
+            isPlaying={isPlaying}
+            onTogglePlay={handleTogglePlay}
           />
         )}
       </div>
 
       {/* Modern Bottom Audio Dock matching screenshot (Only when not in Scholars Library to avoid dock overlap) */}
-      {activeTab !== 'scholars' && (
+      {activeTab !== "scholars" && (
         <AudioPlayerBar
           isPlaying={isPlaying}
           onTogglePlay={handleTogglePlay}
@@ -583,7 +605,7 @@ export default function App() {
       <UserProfileModal
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
-        onNavigateSettings={() => setActiveTab('settings')}
+        onNavigateSettings={() => setActiveTab("settings")}
         theme={theme}
         setTheme={setTheme}
       />

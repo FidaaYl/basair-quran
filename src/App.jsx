@@ -9,6 +9,7 @@ import MutashabihatView from './components/MutashabihatView';
 import TadabburView from './components/TadabburView';
 import ScholarsLibraryView from './components/ScholarsLibraryView';
 import KhatmahPlannerView from './components/KhatmahPlannerView';
+import ConstellationSpaceView from './components/ConstellationSpaceView';
 import AudioPlayerBar from './components/AudioPlayerBar';
 import SurahListModal from './components/SurahListModal';
 import TafsirModal from './components/TafsirModal';
@@ -456,6 +457,16 @@ export default function App() {
                 setTheme={setTheme}
                 selectedReciter={selectedReciter}
                 onSelectReciter={handleSelectReciter}
+              />
+            )}
+          {activeTab === 'constellation' && (
+              <ConstellationSpaceView
+                onSelectSurah={(surahNum) => {
+                  handleSelectSurah(surahNum);
+                }}
+                onNavigateTab={(tab) => {
+                  setActiveTab(tab);
+                }}
               />
             )}
           </main>

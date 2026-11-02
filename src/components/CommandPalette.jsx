@@ -40,6 +40,15 @@ export default function CommandPalette({
         run: () => onNavigateTab('reader')
       },
       {
+        id: 'action-constellation',
+        type: 'action',
+        title: 'كوكبة القرآن التفاعلية',
+        subtitle: 'الفضاء المداري وجزيئات النجوم لسور القرآن الـ ١١٤',
+        badge: 'تجربة بصرية',
+        icon: ICONS.sparkles,
+        run: () => onNavigateTab('constellation')
+      },
+      {
         id: 'action-memorize',
         type: 'action',
         title: 'معمل الحفظ الذكي',

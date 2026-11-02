@@ -25,6 +25,7 @@ export default function SidebarLeft({ activeTab, setActiveTab, onOpenBookmarks, 
 
   const menuItems = [
     { id: 'reader', label: 'المصحف الشريف', icon: ICONS.mushaf },
+    { id: 'constellation', label: 'كوكبة القرآن', icon: ICONS.sparkles },
     { id: 'bookmarks', label: 'الإشارات المرجعية', icon: ICONS.bookmarks },
     { id: 'memorize', label: 'خطط الحفظ', icon: ICONS.memorize },
     { id: 'settings', label: 'الإعدادات العامة', icon: ICONS.settings },

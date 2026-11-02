@@ -14,6 +14,7 @@ export default function Navbar({
 }) {
   const navItems = [
     { id: 'reader', label: 'المصحف', icon: ICONS.mushaf },
+    { id: 'constellation', label: 'كوكبة القرآن', icon: ICONS.sparkles },
     { id: 'memorize', label: 'الحفظ', icon: ICONS.memorize },
     { id: 'mutashabihat', label: 'المتشابهات', icon: ICONS.mutashabihat },
     { id: 'tadabbur', label: 'تدبر', icon: ICONS.tadabbur },

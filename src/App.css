@@ -40,6 +40,30 @@
   padding-bottom: 95px; /* Clear fixed bottom player dock */
 }
 
+.app-layout-3col.layout-constellation-full {
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.center-stage-column.stage-constellation-full {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.center-main-scrollable.main-constellation-full {
+  padding: 0;
+  margin: 0;
+  height: calc(100vh - 72px);
+  max-height: calc(100vh - 72px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 /* --------------------------------------------------------------------------
    2. Left Sidebar (Brand, Navigation & Bottom Inscription)
    -------------------------------------------------------------------------- */

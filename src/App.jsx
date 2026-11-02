@@ -362,7 +362,7 @@ export default function App() {
   return (
     <div className="basair-master-app-container">
       {/* 3-Column Master Application Grid */}
-      <div className="app-layout-3col">
+      <div className={`app-layout-3col ${activeTab === 'constellation' ? 'layout-constellation-full' : ''}`}>
         {/* Left Navigation Sidebar with Logo & Spiritual Quote */}
         <SidebarLeft
           activeTab={activeTab}
@@ -374,7 +374,7 @@ export default function App() {
         />
 
         {/* Center Main Stage (Header + Content Views) */}
-        <div className="center-stage-column">
+        <div className={`center-stage-column ${activeTab === 'constellation' ? 'stage-constellation-full' : ''}`}>
           {/* Top Bar matching screenshot */}
           <Navbar
             activeTab={activeTab}
@@ -388,7 +388,7 @@ export default function App() {
           />
 
           {/* Active View Router */}
-          <main className="center-main-scrollable">
+          <main className={`center-main-scrollable ${activeTab === 'constellation' ? 'main-constellation-full' : ''}`}>
             {activeTab === 'reader' && (
               <ReaderView
                 surahData={surahData}
@@ -473,8 +473,9 @@ export default function App() {
         </div>
 
         {/* Right Sidebar (Daily Wird, Quick Tools, Favorite Reciters) */}
-        <SidebarRight
-          currentSurah={currentSurahMeta}
+        {activeTab !== 'constellation' && (
+          <SidebarRight
+            currentSurah={currentSurahMeta}
           currentAyahIndex={currentAyahIndex}
           totalAyahs={surahData ? surahData.numberOfAyahs : 7}
           selectedReciter={selectedReciter}
@@ -484,7 +485,8 @@ export default function App() {
           onOpenTafsir={() => handleOpenTafsir()}
           isPlaying={isPlaying}
           onTogglePlay={handleTogglePlay}
-        />
+          />
+        )}
       </div>
 
       {/* Modern Bottom Audio Dock matching screenshot (Only when not in Scholars Library to avoid dock overlap) */}

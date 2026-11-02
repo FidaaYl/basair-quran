@@ -738,15 +738,31 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
   };
 
   const toggleFullscreen = () => {
-    if (!containerRef.current) return;
-    if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen?.().catch(() => {});
+    if (!isFullscreen) {
       setIsFullscreen(true);
+      if (containerRef.current && !document.fullscreenElement) {
+        containerRef.current.requestFullscreen?.().catch(() => {});
+      }
     } else {
-      document.exitFullscreen?.().catch(() => {});
       setIsFullscreen(false);
+      if (document.fullscreenElement) {
+        document.exitFullscreen?.().catch(() => {});
+      }
     }
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isFullscreen) {
+        setIsFullscreen(false);
+        if (document.fullscreenElement) {
+          document.exitFullscreen?.().catch(() => {});
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFullscreen]);
 
   const SparklesIcon = ICONS.sparkles;
   const SearchIcon = ICONS.search;
@@ -762,6 +778,17 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
       role="region"
       aria-label="استكشف بصائر — الفضاء الكوني والمعرفي للقرآن الكريم"
     >
+      {isFullscreen && (
+        <button
+          type="button"
+          className="floating-fullscreen-exit animate-fade-in"
+          onClick={toggleFullscreen}
+          title="خروج من وضع ملء الشاشة (Escape)"
+        >
+          <span>✕ خروج من وضع ملء الشاشة</span>
+          <kbd className="exit-kbd-hint">ESC</kbd>
+        </button>
+      )}
       <div className="space-hud-topbar">
         <div className="hud-title-cluster">
           <div className="hud-brand-tag">
@@ -881,17 +908,19 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab })
               >
                 <RefreshIcon size={13} />
               </button>
-              <button
-                type="button"
-                className="hud-icon-btn"
-                onClick={toggleFullscreen}
-                title="ملء الشاشة"
-              >
-                ⛶
-              </button>
             </div>
           </div>
         )}
+
+        <button
+          type="button"
+          className={`hud-immersion-btn ${isFullscreen ? 'is-active' : ''}`}
+          onClick={toggleFullscreen}
+          title={isFullscreen ? 'تصغير الشاشة (Esc)' : 'توسيع المشهد لكامل الصفحة والشاشة ⛶'}
+        >
+          <span className="immersion-icon">{isFullscreen ? '🗗' : '⛶'}</span>
+          <span className="immersion-txt">{isFullscreen ? 'تصغير الشاشة' : 'ملء الصفحة بالكامل'}</span>
+        </button>
       </div>
 
       {activeVisualMode === 'constellation' && (

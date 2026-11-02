@@ -77,7 +77,7 @@ export default function Navbar({
           <button
             onClick={onOpenRestModal}
             className="navbar-tool-btn rest-btn"
-            title="مستكشف واجهات برمجة التطبيقات (TryHackMe REST APIs)"
+            title="مستكشف واجهات برمجة التطبيقات (REST APIs & Services)"
             aria-label="مستكشف واجهات برمجة التطبيقات REST API Explorer"
           >
             <TerminalIcon size={15} strokeWidth={1.8} className="text-emerald" />

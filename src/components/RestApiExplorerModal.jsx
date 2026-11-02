@@ -181,7 +181,7 @@ export default function RestApiExplorerModal({ isOpen, onClose }) {
     const handleExportSessionReport = () => {
     const reportData = {
       project: "Basa'ir Studio (بَصَائِر)",
-      course: "TryHackMe — REST APIs & Microservices",
+      architecture: "Basa'ir Cloud Engine — REST APIs & Microservices",
       exportTimestamp: new Date().toISOString(),
       totalRequestsIntercepted: logs.length,
       sessionMetrics: {
@@ -280,7 +280,7 @@ export default function RestApiExplorerModal({ isOpen, onClose }) {
                 <h3 className="header-title font-calligraphy">مستكشف واجهات برمجة التطبيقات (REST APIs & Microservices)</h3>
                 <span className="live-status-pill">
                   <span className="status-ping-dot" />
-                  TryHackMe Course Lab
+                  بصائر كلاود • متصل
                 </span>
               </div>
               <p className="header-subtitle">
@@ -632,7 +632,7 @@ export default function RestApiExplorerModal({ isOpen, onClose }) {
                 { code: 400, name: '400 Bad Request', type: 'client-err', desc: 'صيغة طلب غير صحيحة أو حقول ناقصة' },
                 { code: 401, name: '401 Unauthorized', type: 'client-err', desc: 'مفقود توكن التفويض Bearer Auth' },
                 { code: 404, name: '404 Not Found', type: 'client-err', desc: 'المسار أو المعرف المطلوب غير موجود' },
-                { code: 429, name: '429 Rate Limited', type: 'client-err', desc: 'تجاوز حد الطلبات المسموح بها (TryHackMe)' },
+                { code: 429, name: '429 Rate Limited', type: 'client-err', desc: 'تجاوز حد الطلبات المسموح بها (Rate Limit Exceeded)' },
                 { code: 500, name: '500 Server Error', type: 'server-err', desc: 'خطأ داخلي غير متوقع في الخادم' }
               ].map((s) => (
                 <div key={s.code} className={`sim-code-card sim-${s.type}`}>

@@ -251,7 +251,7 @@ export async function simulateHttpStatus(code) {
     429: {
       status: 'error',
       statusCode: 429,
-      description: 'Too Many Requests — Rate limit exceeded. TryHackMe: Retry-After: 60s.',
+      description: 'Too Many Requests — Rate limit exceeded. Retry-After: 60s.',
       headers: { 'Retry-After': '60', 'X-RateLimit-Limit': '100', 'X-RateLimit-Remaining': '0' }
     },
     500: {

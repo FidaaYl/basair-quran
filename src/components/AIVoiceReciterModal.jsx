@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ICONS, IslamicRosette, RosetteSpinner } from './common/IconSystem';
+import { ICONS } from './common/IconSystem';
 import { normalizeArabic } from '../services/quranApi';
 
 export default function AIVoiceReciterModal({
@@ -11,15 +11,16 @@ export default function AIVoiceReciterModal({
   const [currentAyahIdx, setCurrentAyahIdx] = useState(initialAyahIndex);
   const [isListening, setIsListening] = useState(false);
   const [recitationMode, setRecitationMode] = useState('blind');
-  const [recognizedWords, setRecognizedWords] = useState([]);
   const [matchedIndices, setMatchedIndices] = useState(new Set());
   const [transcribedTranscript, setTranscribedTranscript] = useState('');
-  const [hasSpeechSupport, setHasSpeechSupport] = useState(true);
-  const [isSimulationMode, setIsSimulationMode] = useState(false);
   const [recitationResult, setRecitationResult] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [audioLevel, setAudioLevel] = useState(0);
 
   const recognitionRef = useRef(null);
-  const simTimerRef = useRef(null);
+  const mediaStreamRef = useRef(null);
+  const audioContextRef = useRef(null);
+  const animFrameRef = useRef(null);
 
   const currentAyah = surahData?.ayahs?.[currentAyahIdx] || surahData?.ayahs?.[0];
 
@@ -33,29 +34,100 @@ export default function AIVoiceReciterModal({
 
   useEffect(() => {
     stopListening();
-    setRecognizedWords([]);
     setMatchedIndices(new Set());
     setTranscribedTranscript('');
     setRecitationResult(null);
+    setErrorMessage('');
+    setAudioLevel(0);
   }, [currentAyahIdx]);
 
   useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      setHasSpeechSupport(false);
-    }
+    return () => {
+      stopListening();
+    };
   }, []);
 
-  const startListening = () => {
-    setRecognizedWords([]);
+  const stopListening = () => {
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.onresult = null;
+        recognitionRef.current.onerror = null;
+        recognitionRef.current.onend = null;
+        recognitionRef.current.stop();
+      } catch {}
+      recognitionRef.current = null;
+    }
+
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+    }
+
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      mediaStreamRef.current = null;
+    }
+
+    if (audioContextRef.current) {
+      try {
+        audioContextRef.current.close();
+      } catch {}
+      audioContextRef.current = null;
+    }
+
+    setIsListening(false);
+    setAudioLevel(0);
+  };
+
+  const startListening = async () => {
     setMatchedIndices(new Set());
     setTranscribedTranscript('');
     setRecitationResult(null);
+    setErrorMessage('');
+
+    let stream = null;
+    try {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaStreamRef.current = stream;
+
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          const audioCtx = new AudioContextClass();
+          audioContextRef.current = audioCtx;
+          const source = audioCtx.createMediaStreamSource(stream);
+          const analyser = audioCtx.createAnalyser();
+          analyser.fftSize = 256;
+          source.connect(analyser);
+
+          const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+          const updateVolume = () => {
+            if (!analyser) return;
+            analyser.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+              sum += dataArray[i];
+            }
+            const avg = sum / dataArray.length;
+            setAudioLevel(Math.min(100, Math.round(avg * 1.8)));
+            animFrameRef.current = requestAnimationFrame(updateVolume);
+          };
+          updateVolume();
+        }
+      }
+    } catch (err) {
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        setErrorMessage('يرجى السماح بصلاحية الميكروفون في المتصفح لبدء التسميع الصوتي.');
+        return;
+      }
+    }
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      startSimulation();
+      setIsListening(true);
+      setErrorMessage('متصفحك لا يدعم التعرف الصوتي المباشر (Web Speech API). يمكنك التسميع بصوتك واستخدام زر "كشف الكلمات" للتحقق.');
       return;
     }
 
@@ -68,7 +140,7 @@ export default function AIVoiceReciterModal({
 
       recognition.onstart = () => {
         setIsListening(true);
-        setIsSimulationMode(false);
+        setErrorMessage('');
       };
 
       recognition.onresult = (event) => {
@@ -80,38 +152,30 @@ export default function AIVoiceReciterModal({
       };
 
       recognition.onerror = (e) => {
-        console.warn('Speech recognition error, activating fallback:', e);
-        if (e.error === 'not-allowed' || e.error === 'network' || e.error === 'service-not-allowed') {
+        if (e.error === 'not-allowed') {
+          setErrorMessage('تم رفض إذن الميكروفون. يرجى تفعيل إذن الميكروفون من إعدادات المتصفح.');
           stopListening();
-          startSimulation();
+        } else if (e.error === 'no-speech') {
+          setErrorMessage('جاري الاستماع... لم يتم التقاط صوت، اقرأ الآية بوضوح.');
+        } else if (e.error === 'network' || e.error === 'service-not-allowed') {
+          setErrorMessage('خدمة التعرف الصوتي غير متصلة حالياً بالشبكة. يمكنك التسميع الذاتي وكشف الكلمات للتحقق.');
         }
       };
 
       recognition.onend = () => {
-        setIsListening(false);
+        if (isListening && recognitionRef.current) {
+          try {
+            recognition.start();
+          } catch {}
+        }
       };
 
       recognitionRef.current = recognition;
       recognition.start();
     } catch (err) {
-      console.warn('Failed to start speech recognition, running simulator:', err);
-      startSimulation();
+      setErrorMessage('تعذر بدء التعرف الصوتي. يرجى التأكد من توصيل الميكروفون والمحاولة مرة أخرى.');
+      stopListening();
     }
-  };
-
-  const stopListening = () => {
-    if (recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-      } catch {}
-      recognitionRef.current = null;
-    }
-    if (simTimerRef.current) {
-      clearInterval(simTimerRef.current);
-      simTimerRef.current = null;
-    }
-    setIsListening(false);
-    setIsSimulationMode(false);
   };
 
   const processSpokenArabic = (transcript) => {
@@ -143,27 +207,22 @@ export default function AIVoiceReciterModal({
     }
   };
 
-  const startSimulation = () => {
-    setIsListening(true);
-    setIsSimulationMode(true);
-    let currentIdx = 0;
+  const revealSingleWord = (index) => {
+    setMatchedIndices((prev) => {
+      const next = new Set(prev);
+      next.add(index);
+      return next;
+    });
+  };
 
-    simTimerRef.current = setInterval(() => {
-      if (currentIdx < targetWords.length) {
-        setMatchedIndices((prev) => new Set([...prev, currentIdx]));
-        setTranscribedTranscript((prev) => `${prev} ${targetWords[currentIdx]}`);
-        currentIdx++;
-      } else {
-        clearInterval(simTimerRef.current);
-        simTimerRef.current = null;
-        setIsListening(false);
-        finishRecitation(targetWords.length, targetWords.length);
-      }
-    }, 700);
+  const revealAllWords = () => {
+    const all = new Set(targetWords.map((_, i) => i));
+    setMatchedIndices(all);
+    finishRecitation(targetWords.length, targetWords.length);
   };
 
   const finishRecitation = (matchedCount, totalCount) => {
-    const pct = Math.round((matchedCount / totalCount) * 100);
+    const pct = totalCount > 0 ? Math.round((matchedCount / totalCount) * 100) : 100;
     setRecitationResult({
       score: pct,
       matched: matchedCount,
@@ -177,6 +236,11 @@ export default function AIVoiceReciterModal({
     });
   };
 
+  const handleManualComplete = () => {
+    finishRecitation(matchedIndices.size, targetWords.length);
+    stopListening();
+  };
+
   if (!isOpen || !surahData || !currentAyah) return null;
 
   const totalAyahs = surahData.ayahs.length;
@@ -185,7 +249,6 @@ export default function AIVoiceReciterModal({
   const SparklesIcon = ICONS.sparkles;
   const ChevronRightIcon = ICONS.chevronRight;
   const ChevronLeftIcon = ICONS.chevronLeft;
-  const CheckIcon = ICONS.check;
 
   return (
     <div
@@ -199,7 +262,6 @@ export default function AIVoiceReciterModal({
       aria-label="مُعِين التسميع الذكي بالذكاء الاصطناعي"
     >
       <div className="ai-reciter-card" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="ai-reciter-header">
           <div className="ai-reciter-title-wrap">
             <SparklesIcon size={20} className="text-gold" />
@@ -207,6 +269,7 @@ export default function AIVoiceReciterModal({
           </div>
 
           <button
+            type="button"
             onClick={() => {
               stopListening();
               onClose();
@@ -218,10 +281,10 @@ export default function AIVoiceReciterModal({
           </button>
         </div>
 
-        {/* Subhead: Ayah Navigation & Mode Selector */}
         <div className="ai-reciter-controls-row">
           <div className="ai-ayah-navigator">
             <button
+              type="button"
               onClick={() => setCurrentAyahIdx((p) => Math.max(0, p - 1))}
               disabled={currentAyahIdx <= 0}
               className="ai-nav-step-btn"
@@ -233,6 +296,7 @@ export default function AIVoiceReciterModal({
               سُورَةُ {surahData.name} • الآية {currentAyah.numberInSurah} من {totalAyahs}
             </span>
             <button
+              type="button"
               onClick={() => setCurrentAyahIdx((p) => Math.min(totalAyahs - 1, p + 1))}
               disabled={currentAyahIdx >= totalAyahs - 1}
               className="ai-nav-step-btn"
@@ -242,15 +306,16 @@ export default function AIVoiceReciterModal({
             </button>
           </div>
 
-          {/* Mode Pill: Follow-along vs Blind Recall */}
           <div className="ai-mode-toggle" role="radiogroup">
             <button
+              type="button"
               className={`ai-mode-btn ${recitationMode === 'blind' ? 'active' : ''}`}
               onClick={() => setRecitationMode('blind')}
             >
               تسميع غيبي (كشف بالصوت)
             </button>
             <button
+              type="button"
               className={`ai-mode-btn ${recitationMode === 'follow' ? 'active' : ''}`}
               onClick={() => setRecitationMode('follow')}
             >
@@ -259,7 +324,6 @@ export default function AIVoiceReciterModal({
           </div>
         </div>
 
-        {/* Main Recitation Stage (Target Words) */}
         <div className="ai-reciter-stage">
           <div className="ai-words-display font-quran">
             {targetWords.map((word, index) => {
@@ -269,7 +333,10 @@ export default function AIVoiceReciterModal({
                 return (
                   <span
                     key={index}
+                    onClick={() => revealSingleWord(index)}
+                    title={isMatched ? word : 'انقر لكشف الكلمة'}
                     className={`ai-word-unit ${isMatched ? 'revealed-matched animate-fade-in' : 'hidden-masked'}`}
+                    style={{ cursor: isMatched ? 'default' : 'pointer' }}
                   >
                     {isMatched ? word : '۞'}
                   </span>
@@ -287,38 +354,51 @@ export default function AIVoiceReciterModal({
             })}
           </div>
 
-          {/* Live Audio Visualizer Animation */}
           {isListening && (
             <div className="ai-listening-waveform-wrap animate-fade-in">
               <div className="ai-soundwave-bars">
-                <span className="wave-bar bar-1" />
-                <span className="wave-bar bar-2" />
-                <span className="wave-bar bar-3" />
-                <span className="wave-bar bar-4" />
-                <span className="wave-bar bar-5" />
-                <span className="wave-bar bar-4" />
-                <span className="wave-bar bar-3" />
-                <span className="wave-bar bar-2" />
-                <span className="wave-bar bar-1" />
+                {[0.6, 1.2, 1.8, 1.4, 0.9, 1.5, 0.7].map((scale, i) => (
+                  <span
+                    key={i}
+                    className="wave-bar"
+                    style={{
+                      height: `${Math.max(6, Math.min(32, 8 + (audioLevel * scale * 0.3)))}px`,
+                      background: audioLevel > 15 ? '#10b981' : '#d4af37',
+                      transition: 'height 0.08s ease, background 0.15s ease'
+                    }}
+                  />
+                ))}
               </div>
               <span className="ai-listening-caption">
-                {isSimulationMode
-                  ? 'جاري محاكاة التسميع الصوتي واختبار دقة الكلمات...'
+                {audioLevel > 12
+                  ? 'صوت التلاوة مسموع: استمر في القراءة...'
                   : 'الميكروفون نشط: اقرأ الآية الكريمة بصوتك الآن...'}
               </span>
             </div>
           )}
 
-          {/* Live Transcribed Speech Preview */}
+          {errorMessage && (
+            <div className="ai-error-banner animate-fade-in" style={{
+              background: 'rgba(239, 68, 68, 0.12)',
+              border: '1px solid rgba(239, 68, 68, 0.35)',
+              borderRadius: '8px',
+              padding: '8px 14px',
+              color: '#fca5a5',
+              fontSize: '12px',
+              textAlign: 'center'
+            }}>
+              {errorMessage}
+            </div>
+          )}
+
           {transcribedTranscript && (
             <div className="ai-transcribed-preview">
-              <span className="preview-label">الكلمات التي التقطها الذكاء الاصطناعي:</span>
+              <span className="preview-label">الكلمات الملتقطة بالصوت:</span>
               <p className="preview-text">«{transcribedTranscript}»</p>
             </div>
           )}
         </div>
 
-        {/* Results Card if finished */}
         {recitationResult && (
           <div className="ai-recitation-result-card animate-fade-in">
             <div className="result-score-circle">
@@ -337,21 +417,77 @@ export default function AIVoiceReciterModal({
           </div>
         )}
 
-        {/* Bottom Interactive Controls */}
         <div className="ai-reciter-footer">
-          {!isListening ? (
-            <button onClick={startListening} className="ai-start-recite-btn">
-              <AudioLinesIcon size={18} />
-              <span>ابدأ التسميع بصوتك الآن</span>
-            </button>
-          ) : (
-            <button onClick={stopListening} className="ai-stop-recite-btn">
-              <span>إيقاف التسميع والتقييم</span>
-            </button>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            {!isListening ? (
+              <button type="button" onClick={startListening} className="ai-start-recite-btn">
+                <AudioLinesIcon size={18} />
+                <span>ابدأ التسميع بصوتك الآن</span>
+              </button>
+            ) : (
+              <button type="button" onClick={handleManualComplete} className="ai-stop-recite-btn" style={{
+                background: 'linear-gradient(135deg, #0b2b26 0%, #061c18 100%)',
+                border: '1px solid #10b981',
+                color: '#ffffff',
+                padding: '10px 22px',
+                borderRadius: '9999px',
+                fontSize: '14px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <span>إنهاء التسميع والتقييم</span>
+              </button>
+            )}
+
+            {recitationMode === 'blind' && matchedIndices.size < targetWords.length && (
+              <button
+                type="button"
+                onClick={revealAllWords}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(210, 170, 96, 0.35)',
+                  color: '#fbbf24',
+                  padding: '10px 18px',
+                  borderRadius: '9999px',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                اكشف الآية كاملة للتحقق
+              </button>
+            )}
+
+            {matchedIndices.size > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  stopListening();
+                  setMatchedIndices(new Set());
+                  setTranscribedTranscript('');
+                  setRecitationResult(null);
+                  setErrorMessage('');
+                }}
+                style={{
+                  background: 'transparent',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  color: '#94a3b8',
+                  padding: '10px 16px',
+                  borderRadius: '9999px',
+                  fontSize: '12px',
+                  cursor: 'pointer'
+                }}
+              >
+                إعادة المحاولة
+              </button>
+            )}
+          </div>
 
           <div className="ai-footer-hints">
-            <span>مدعوم بتقنية التعرّف الصوتي القرآني الفوري (Web Speech & Phonetics)</span>
+            <span>يلتقط صوتك الحقيقي عبر الميكروفون ويطابقه مع كلمات الآية فورياً دون تخمين</span>
           </div>
         </div>
       </div>

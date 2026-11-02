@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ICONS } from './common/IconSystem';
 import { normalizeArabic } from '../services/quranApi';
+import { getAyahAudioUrl, RECITERS } from '../data/reciters';
 
 export default function AIVoiceReciterModal({
   isOpen,
@@ -16,9 +17,17 @@ export default function AIVoiceReciterModal({
   const [recitationResult, setRecitationResult] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [audioLevel, setAudioLevel] = useState(0);
+  const [recordedAudioUrl, setRecordedAudioUrl] = useState(null);
+  const [isPlayingRecording, setIsPlayingRecording] = useState(false);
+  const [isPlayingSheikh, setIsPlayingSheikh] = useState(false);
+  const [isNetworkSpeechBlocked, setIsNetworkSpeechBlocked] = useState(false);
 
   const recognitionRef = useRef(null);
   const mediaStreamRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const recordingAudioObjRef = useRef(null);
+  const sheikhAudioObjRef = useRef(null);
   const audioContextRef = useRef(null);
   const animFrameRef = useRef(null);
 
@@ -34,16 +43,36 @@ export default function AIVoiceReciterModal({
 
   useEffect(() => {
     stopListening();
+    if (recordingAudioObjRef.current) {
+      recordingAudioObjRef.current.pause();
+      recordingAudioObjRef.current = null;
+    }
+    if (sheikhAudioObjRef.current) {
+      sheikhAudioObjRef.current.pause();
+      sheikhAudioObjRef.current = null;
+    }
+    setIsPlayingRecording(false);
+    setIsPlayingSheikh(false);
+    setRecordedAudioUrl(null);
     setMatchedIndices(new Set());
     setTranscribedTranscript('');
     setRecitationResult(null);
     setErrorMessage('');
     setAudioLevel(0);
+    setIsNetworkSpeechBlocked(false);
   }, [currentAyahIdx]);
 
   useEffect(() => {
     return () => {
       stopListening();
+      if (recordingAudioObjRef.current) {
+        recordingAudioObjRef.current.pause();
+        recordingAudioObjRef.current = null;
+      }
+      if (sheikhAudioObjRef.current) {
+        sheikhAudioObjRef.current.pause();
+        sheikhAudioObjRef.current = null;
+      }
     };
   }, []);
 
@@ -56,6 +85,13 @@ export default function AIVoiceReciterModal({
         recognitionRef.current.stop();
       } catch {}
       recognitionRef.current = null;
+    }
+
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      try {
+        mediaRecorderRef.current.stop();
+      } catch {}
+      mediaRecorderRef.current = null;
     }
 
     if (animFrameRef.current) {
@@ -80,16 +116,53 @@ export default function AIVoiceReciterModal({
   };
 
   const startListening = async () => {
+    if (recordingAudioObjRef.current) {
+      recordingAudioObjRef.current.pause();
+      recordingAudioObjRef.current = null;
+    }
+    if (sheikhAudioObjRef.current) {
+      sheikhAudioObjRef.current.pause();
+      sheikhAudioObjRef.current = null;
+    }
+    setIsPlayingRecording(false);
+    setIsPlayingSheikh(false);
+    setRecordedAudioUrl(null);
+    audioChunksRef.current = [];
     setMatchedIndices(new Set());
     setTranscribedTranscript('');
     setRecitationResult(null);
     setErrorMessage('');
+    setIsNetworkSpeechBlocked(false);
 
     let stream = null;
     try {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         mediaStreamRef.current = stream;
+
+        if (window.MediaRecorder) {
+          try {
+            const mimeType = MediaRecorder.isTypeSupported('audio/webm')
+              ? 'audio/webm'
+              : (MediaRecorder.isTypeSupported('audio/mp4') ? 'audio/mp4' : '');
+            const options = mimeType ? { mimeType } : {};
+            const recorder = new MediaRecorder(stream, options);
+            recorder.ondataavailable = (e) => {
+              if (e.data && e.data.size > 0) {
+                audioChunksRef.current.push(e.data);
+              }
+            };
+            recorder.onstop = () => {
+              if (audioChunksRef.current.length > 0) {
+                const blob = new Blob(audioChunksRef.current, { type: mimeType || 'audio/webm' });
+                const url = URL.createObjectURL(blob);
+                setRecordedAudioUrl(url);
+              }
+            };
+            recorder.start(250);
+            mediaRecorderRef.current = recorder;
+          } catch {}
+        }
 
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
         if (AudioContextClass) {
@@ -127,7 +200,8 @@ export default function AIVoiceReciterModal({
 
     if (!SpeechRecognition) {
       setIsListening(true);
-      setErrorMessage('متصفحك لا يدعم التعرف الصوتي المباشر (Web Speech API). يمكنك التسميع بصوتك واستخدام زر "كشف الكلمات" للتحقق.');
+      setIsNetworkSpeechBlocked(true);
+      setErrorMessage('متصفحك لا يدعم التعرف الصوتي السحابي المباشر. يمكنك التسميع الصوتي وحفظ تسجيلك وكشف الكلمات للتحقق.');
       return;
     }
 
@@ -158,12 +232,13 @@ export default function AIVoiceReciterModal({
         } else if (e.error === 'no-speech') {
           setErrorMessage('جاري الاستماع... لم يتم التقاط صوت، اقرأ الآية بوضوح.');
         } else if (e.error === 'network' || e.error === 'service-not-allowed') {
-          setErrorMessage('خدمة التعرف الصوتي غير متصلة حالياً بالشبكة. يمكنك التسميع الذاتي وكشف الكلمات للتحقق.');
+          setIsNetworkSpeechBlocked(true);
+          setErrorMessage('خدمة التعرف الصوتي السحابية محجوبة في هذا المتصفح (Brave / إعدادات الخصوصية).');
         }
       };
 
       recognition.onend = () => {
-        if (isListening && recognitionRef.current) {
+        if (isListening && recognitionRef.current && !isNetworkSpeechBlocked) {
           try {
             recognition.start();
           } catch {}
@@ -173,8 +248,8 @@ export default function AIVoiceReciterModal({
       recognitionRef.current = recognition;
       recognition.start();
     } catch (err) {
-      setErrorMessage('تعذر بدء التعرف الصوتي. يرجى التأكد من توصيل الميكروفون والمحاولة مرة أخرى.');
-      stopListening();
+      setIsNetworkSpeechBlocked(true);
+      setErrorMessage('تعذر بدء التعرف الصوتي السحابي. تم تفعيل وضع التسجيل الصوتي المباشر والتسميع الذاتي.');
     }
   };
 
@@ -241,6 +316,64 @@ export default function AIVoiceReciterModal({
     stopListening();
   };
 
+  const handleToggleUserRecording = () => {
+    if (!recordedAudioUrl) return;
+    if (isPlayingSheikh) {
+      if (sheikhAudioObjRef.current) {
+        sheikhAudioObjRef.current.pause();
+      }
+      setIsPlayingSheikh(false);
+    }
+
+    if (isPlayingRecording) {
+      if (recordingAudioObjRef.current) {
+        recordingAudioObjRef.current.pause();
+      }
+      setIsPlayingRecording(false);
+    } else {
+      if (!recordingAudioObjRef.current) {
+        const audio = new Audio(recordedAudioUrl);
+        audio.onended = () => setIsPlayingRecording(false);
+        recordingAudioObjRef.current = audio;
+      } else {
+        recordingAudioObjRef.current.src = recordedAudioUrl;
+      }
+      recordingAudioObjRef.current.play().catch(() => {});
+      setIsPlayingRecording(true);
+    }
+  };
+
+  const handleToggleSheikhAudio = () => {
+    if (!currentAyah) return;
+    if (isPlayingRecording) {
+      if (recordingAudioObjRef.current) {
+        recordingAudioObjRef.current.pause();
+      }
+      setIsPlayingRecording(false);
+    }
+
+    if (isPlayingSheikh) {
+      if (sheikhAudioObjRef.current) {
+        sheikhAudioObjRef.current.pause();
+      }
+      setIsPlayingSheikh(false);
+    } else {
+      const sheikhReciter = RECITERS[0];
+      const url = getAyahAudioUrl(sheikhReciter, currentAyah);
+      if (!url) return;
+
+      if (!sheikhAudioObjRef.current) {
+        const audio = new Audio(url);
+        audio.onended = () => setIsPlayingSheikh(false);
+        sheikhAudioObjRef.current = audio;
+      } else {
+        sheikhAudioObjRef.current.src = url;
+      }
+      sheikhAudioObjRef.current.play().catch(() => {});
+      setIsPlayingSheikh(true);
+    }
+  };
+
   if (!isOpen || !surahData || !currentAyah) return null;
 
   const totalAyahs = surahData.ayahs.length;
@@ -249,6 +382,8 @@ export default function AIVoiceReciterModal({
   const SparklesIcon = ICONS.sparkles;
   const ChevronRightIcon = ICONS.chevronRight;
   const ChevronLeftIcon = ICONS.chevronLeft;
+  const PlayIcon = ICONS.play;
+  const PauseIcon = ICONS.pause;
 
   return (
     <div
@@ -377,7 +512,39 @@ export default function AIVoiceReciterModal({
             </div>
           )}
 
-          {errorMessage && (
+          {isNetworkSpeechBlocked && (
+            <div className="ai-speech-guidance-card animate-fade-in">
+              <div className="guidance-header">
+                <span className="guidance-icon">💡</span>
+                <span className="guidance-title">تنبيه متصفح Brave وسياسات الخصوصية</span>
+              </div>
+              <p className="guidance-desc">
+                يحجب متصفح <strong>Brave</strong> الاتصال بخوادم التعرف الصوتي السحابية تلقائياً للحفاظ على الخصوصية. يمكنك حل ذلك <strong>مجاناً 100%</strong> بإحدى الخطوات التالية:
+              </p>
+              <div className="guidance-steps-list">
+                <div className="guidance-step-item">
+                  <span className="step-num">١</span>
+                  <div className="step-content">
+                    <strong>الخيار الأسهل والمجاني فوراً:</strong> افتح الرابط في متصفح <strong>Google Chrome</strong> أو <strong>Microsoft Edge</strong> حيث يعمل التعرف الصوتي بالعربية تلقائياً دون أي إعداد.
+                  </div>
+                </div>
+                <div className="guidance-step-item">
+                  <span className="step-num">٢</span>
+                  <div className="step-content">
+                    <strong>من داخل متصفح Brave:</strong> افتح إعدادات المتصفح <code>brave://settings/privacy</code> وفعّل خيار <strong>"Use Google services for push messaging and speech recognition"</strong> ثم أعد تحميل الصفحة.
+                  </div>
+                </div>
+                <div className="guidance-step-item">
+                  <span className="step-num">٣</span>
+                  <div className="step-content">
+                    <strong>التسميع الذاتي المباشر:</strong> يتم تسجيل صوتك محلياً في جهازك أثناء القراءة، اضغط إنهاء لتستمع لتسجيلك وتقارنه بتلاوة الشيخ!
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {errorMessage && !isNetworkSpeechBlocked && (
             <div className="ai-error-banner animate-fade-in" style={{
               background: 'rgba(239, 68, 68, 0.12)',
               border: '1px solid rgba(239, 68, 68, 0.35)',
@@ -395,6 +562,40 @@ export default function AIVoiceReciterModal({
             <div className="ai-transcribed-preview">
               <span className="preview-label">الكلمات الملتقطة بالصوت:</span>
               <p className="preview-text">«{transcribedTranscript}»</p>
+            </div>
+          )}
+
+          {recordedAudioUrl && !isListening && (
+            <div className="ai-audio-comparison-deck animate-fade-in">
+              <div className="comparison-card user-recording">
+                <div className="comp-info">
+                  <span className="comp-badge">🎙️ تسجيلك الصوتي</span>
+                  <span className="comp-sub">استمع إلى تلاوتك المسجلة عبر الميكروفون</span>
+                </div>
+                <button
+                  type="button"
+                  className={`comp-play-btn user-btn ${isPlayingRecording ? 'playing' : ''}`}
+                  onClick={handleToggleUserRecording}
+                >
+                  {isPlayingRecording ? <PauseIcon size={16} /> : <PlayIcon size={16} />}
+                  <span>{isPlayingRecording ? 'إيقاف التسجيل' : 'استمع لتسجيلك'}</span>
+                </button>
+              </div>
+
+              <div className="comparison-card sheikh-recitation">
+                <div className="comp-info">
+                  <span className="comp-badge sheikh">🕌 تلاوة الشيخ المعتمدة</span>
+                  <span className="comp-sub">استمع للتلاوة الصحيحة للآية للمقارنة</span>
+                </div>
+                <button
+                  type="button"
+                  className={`comp-play-btn sheikh-btn ${isPlayingSheikh ? 'playing' : ''}`}
+                  onClick={handleToggleSheikhAudio}
+                >
+                  {isPlayingSheikh ? <PauseIcon size={16} /> : <PlayIcon size={16} />}
+                  <span>{isPlayingSheikh ? 'إيقاف التلاوة' : 'استمع لتلاوة الشيخ'}</span>
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -438,7 +639,7 @@ export default function AIVoiceReciterModal({
                 alignItems: 'center',
                 gap: '8px'
               }}>
-                <span>إنهاء التسميع والتقييم</span>
+                <span>إنهاء التسميع وحفظ التسجيل</span>
               </button>
             )}
 
@@ -487,7 +688,7 @@ export default function AIVoiceReciterModal({
           </div>
 
           <div className="ai-footer-hints">
-            <span>يلتقط صوتك الحقيقي عبر الميكروفون ويطابقه مع كلمات الآية فورياً دون تخمين</span>
+            <span>يلتقط صوتك الحقيقي عبر الميكروفون ويحفظ تسجيلك مع إمكانية المقارنة بتلاوة الشيخ</span>
           </div>
         </div>
       </div>

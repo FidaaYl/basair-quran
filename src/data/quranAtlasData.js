@@ -4,8 +4,8 @@ export const QURAN_LOCATIONS = [
     name: 'مكة المكرمة وبكة والبلد الأمين',
     englishName: 'Makkah & Bakkah',
     region: 'شبه الجزيرة العربية (الحجاز)',
-    coordinates: { x: 48, y: 60.8 },
-    svgCoords: { x: 480, y: 395 },
+    coordinates: { x: 44.8, y: 38.3 },
+    svgCoords: { x: 448, y: 383 },
     category: 'holy',
     iconSymbol: '🕌',
     historicalEra: 'عهد إبراهيم وإسماعيل عليهما السلام والبعثة المحمدية',
@@ -19,8 +19,8 @@ export const QURAN_LOCATIONS = [
     name: 'المدينة المنورة (يثرب وطيبة)',
     englishName: 'Al-Madinah Al-Munawwarah',
     region: 'شبه الجزيرة العربية (الحجاز)',
-    coordinates: { x: 46.5, y: 50 },
-    svgCoords: { x: 465, y: 325 },
+    coordinates: { x: 44.3, y: 32.6 },
+    svgCoords: { x: 443, y: 326 },
     category: 'holy',
     iconSymbol: '🕌',
     historicalEra: 'عهد الهجرة النبوية وتأسيس المجتمع الإسلامي',
@@ -34,8 +34,8 @@ export const QURAN_LOCATIONS = [
     name: 'المسجد الأقصى وأكناف بيت المقدس',
     englishName: 'Al-Aqsa & Jerusalem',
     region: 'أرض فلسطين المباركة (الشام)',
-    coordinates: { x: 44, y: 31.5 },
-    svgCoords: { x: 440, y: 205 },
+    coordinates: { x: 34.0, y: 18.7 },
+    svgCoords: { x: 340, y: 187 },
     category: 'holy',
     iconSymbol: '🕌',
     historicalEra: 'مسرى النبي ﷺ وموطن داود وسليمان وعيسى عليهم السلام',
@@ -49,8 +49,8 @@ export const QURAN_LOCATIONS = [
     name: 'طور سيناء والوادي المقدس طوى',
     englishName: 'Mount Sinai & Tuwa Valley',
     region: 'شبه جزيرة سيناء (مصر)',
-    coordinates: { x: 39, y: 40 },
-    svgCoords: { x: 390, y: 260 },
+    coordinates: { x: 31.1, y: 24.9 },
+    svgCoords: { x: 311, y: 249 },
     category: 'mountain',
     iconSymbol: '⛰️',
     historicalEra: 'عهد كليم الله موسى عليه السلام ومناجاة الحق',
@@ -64,8 +64,8 @@ export const QURAN_LOCATIONS = [
     name: 'أرض مصر وخزائن الأرض واليم',
     englishName: 'Egypt & The River Nile',
     region: 'شمال شرق إفريقيا (حوض النيل)',
-    coordinates: { x: 31.5, y: 38.5 },
-    svgCoords: { x: 315, y: 250 },
+    coordinates: { x: 24.5, y: 22.0 },
+    svgCoords: { x: 245, y: 220 },
     category: 'river',
     iconSymbol: '🌊',
     historicalEra: 'عهد يوسف الصديق وموسى مع فرعون',
@@ -79,8 +79,8 @@ export const QURAN_LOCATIONS = [
     name: 'جبل الجودي (مستقر سفينة نوح)',
     englishName: 'Mount Judi (Noah\'s Ark)',
     region: 'الجزيرة الفراتية (شمال العراق وجنوب تركيا)',
-    coordinates: { x: 55, y: 20.8 },
-    svgCoords: { x: 550, y: 135 },
+    coordinates: { x: 51.0, y: 8.1 },
+    svgCoords: { x: 510, y: 81 },
     category: 'mountain',
     iconSymbol: '⛰️',
     historicalEra: 'طوفان نوح وبدء تاريخ البشرية الثاني',
@@ -94,8 +94,8 @@ export const QURAN_LOCATIONS = [
     name: 'الأحقاف (ديار عاد وإرم ذات العماد)',
     englishName: 'Al-Ahqaf & Iram (Ad)',
     region: 'جنوب شبه الجزيرة العربية (حضرموت والربع الخالي)',
-    coordinates: { x: 63, y: 73 },
-    svgCoords: { x: 630, y: 475 },
+    coordinates: { x: 68.9, y: 45.8 },
+    svgCoords: { x: 689, y: 458 },
     category: 'desert',
     iconSymbol: '🏜️',
     historicalEra: 'عهد نبي الله هود وقوم عاد العمالقة',
@@ -109,8 +109,8 @@ export const QURAN_LOCATIONS = [
     name: 'مأرب وجنات سبأ وسد العرم',
     englishName: 'Ma\'rib & Sheba Dam',
     region: 'اليمن السعيد',
-    coordinates: { x: 56.5, y: 76.2 },
-    svgCoords: { x: 565, y: 495 },
+    coordinates: { x: 57.9, y: 49.7 },
+    svgCoords: { x: 579, y: 497 },
     category: 'city',
     iconSymbol: '🏛️',
     historicalEra: 'مملكة سبأ وزمن الملكة بلقيس وسليمان',
@@ -124,8 +124,8 @@ export const QURAN_LOCATIONS = [
     name: 'مدين ومنازل أصحاب الأيكة',
     englishName: 'Madyan (Prophet Shu\'ayb)',
     region: 'شمال غرب الحجاز قرب خليج العقبة',
-    coordinates: { x: 42, y: 42.3 },
-    svgCoords: { x: 420, y: 275 },
+    coordinates: { x: 35.3, y: 25.3 },
+    svgCoords: { x: 353, y: 253 },
     category: 'city',
     iconSymbol: '🏛️',
     historicalEra: 'عهد نبي الله شعيب ومأوى موسى عليه السلام',
@@ -139,8 +139,8 @@ export const QURAN_LOCATIONS = [
     name: 'أرض بابل (بلاد الرافدين والفرات)',
     englishName: 'Babylon (Mesopotamia)',
     region: 'العراق (بلاد الرافدين)',
-    coordinates: { x: 59.5, y: 33 },
-    svgCoords: { x: 595, y: 215 },
+    coordinates: { x: 55.7, y: 17.3 },
+    svgCoords: { x: 557, y: 173 },
     category: 'city',
     iconSymbol: '🏛️',
     historicalEra: 'محنة هاروت وماروت وعهد إبراهيم مع النمرود',
@@ -158,11 +158,11 @@ export const PROPHETIC_ROUTES = [
     subtitle: 'من مكة المكرمة وغار ثور إلى قباء والمدينة المنورة',
     color: '#34d399',
     dashArray: '6, 6',
-    pathD: 'M 480 395 Q 470 360 465 325',
+    pathD: 'M 448 383 Q 442 355 443 326',
     milestones: [
-      { name: 'مكة المكرمة وغار ثور', x: 480, y: 395 },
-      { name: 'وادي القديد وعسفان', x: 472, y: 360 },
-      { name: 'مسجد قباء وطيبة الطيبة', x: 465, y: 325 }
+      { name: 'مكة المكرمة وغار ثور', x: 448, y: 383 },
+      { name: 'وادي القديد وعسفان', x: 442, y: 355 },
+      { name: 'مسجد قباء وطيبة الطيبة', x: 443, y: 326 }
     ]
   },
   {
@@ -171,11 +171,11 @@ export const PROPHETIC_ROUTES = [
     subtitle: 'من أرض مصر إلى مدين ثم الرجوع إلى الوادي المقدس طوى',
     color: '#fbbf24',
     dashArray: '5, 5',
-    pathD: 'M 315 250 Q 370 270 420 275 Q 405 265 390 260',
+    pathD: 'M 245 220 Q 300 235 353 253 Q 332 251 311 249',
     milestones: [
-      { name: 'أرض مصر واليم', x: 315, y: 250 },
-      { name: 'ماء مدين واللقاء بشعيب', x: 420, y: 275 },
-      { name: 'طور سيناء والوادي المقدس طوى', x: 390, y: 260 }
+      { name: 'أرض مصر واليم', x: 245, y: 220 },
+      { name: 'ماء مدين واللقاء بشعيب', x: 353, y: 253 },
+      { name: 'طور سيناء والوادي المقدس طوى', x: 311, y: 249 }
     ]
   },
   {
@@ -184,11 +184,11 @@ export const PROPHETIC_ROUTES = [
     subtitle: 'من بابل بالعراق إلى الشام ثم الحجاز وبناء البيت الحرام',
     color: '#f59e0b',
     dashArray: '4, 4',
-    pathD: 'M 595 215 Q 520 170 440 205 Q 460 300 480 395',
+    pathD: 'M 557 173 Q 440 140 340 187 Q 380 280 448 383',
     milestones: [
-      { name: 'أرض بابل', x: 595, y: 215 },
-      { name: 'أرض كنعان والقدس', x: 440, y: 205 },
-      { name: 'مكة المكرمة وبناء الكعبة', x: 480, y: 395 }
+      { name: 'أرض بابل', x: 557, y: 173 },
+      { name: 'أرض كنعان والقدس', x: 340, y: 187 },
+      { name: 'مكة المكرمة وبناء الكعبة', x: 448, y: 383 }
     ]
   },
   {
@@ -197,11 +197,11 @@ export const PROPHETIC_ROUTES = [
     subtitle: 'مسار القوافل التجارية من اليمن إلى مكة ثم بلاد الشام',
     color: '#38bdf8',
     dashArray: '4, 8',
-    pathD: 'M 565 495 Q 520 450 480 395 Q 460 300 440 205',
+    pathD: 'M 579 497 Q 510 440 448 383 Q 390 285 340 187',
     milestones: [
-      { name: 'اليمن السعيد (رحلة الشتاء)', x: 565, y: 495 },
-      { name: 'مكة المكرمة (حرم الله الآمن)', x: 480, y: 395 },
-      { name: 'بلاد الشام (رحلة الصيف)', x: 440, y: 205 }
+      { name: 'اليمن السعيد (رحلة الشتاء)', x: 579, y: 497 },
+      { name: 'مكة المكرمة (حرم الله الآمن)', x: 448, y: 383 },
+      { name: 'بلاد الشام (رحلة الصيف)', x: 340, y: 187 }
     ]
   }
 ];

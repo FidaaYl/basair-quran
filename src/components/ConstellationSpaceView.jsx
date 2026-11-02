@@ -94,10 +94,10 @@ const THEMATIC_LINKS = [
 
 const LOCATION_CONFIGS = {
   makkah: { labelDx: 46, labelDy: 4, labelAnchor: 'start' },
-  madinah: { labelDx: -46, labelDy: 4, labelAnchor: 'end' },
+  madinah: { labelDx: 46, labelDy: 4, labelAnchor: 'start' },
   aqsa: { labelDx: 0, labelDy: -32, labelAnchor: 'middle' },
-  sinai: { labelDx: -48, labelDy: -8, labelAnchor: 'end' },
-  madyan: { labelDx: 46, labelDy: 10, labelAnchor: 'start' },
+  sinai: { labelDx: -46, labelDy: 16, labelAnchor: 'end' },
+  madyan: { labelDx: 46, labelDy: 14, labelAnchor: 'start' },
   misr: { labelDx: -46, labelDy: 4, labelAnchor: 'end' },
   judi: { labelDx: 0, labelDy: -30, labelAnchor: 'middle' },
   babil: { labelDx: 46, labelDy: 4, labelAnchor: 'start' },
@@ -271,20 +271,20 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
 
   const handleFocusRegion = (regionKey) => {
     if (regionKey === 'hijaz') {
-      setMapZoom(1.9);
-      setMapPan({ x: -60, y: -120 });
+      setMapZoom(2.0);
+      setMapPan({ x: 100, y: -54 });
     } else if (regionKey === 'sham') {
       setMapZoom(2.2);
-      setMapPan({ x: -20, y: 130 });
+      setMapPan({ x: 320, y: 276 });
     } else if (regionKey === 'misr') {
-      setMapZoom(2.0);
-      setMapPan({ x: 180, y: 50 });
+      setMapZoom(2.1);
+      setMapPan({ x: 444, y: 180 });
     } else if (regionKey === 'iraq') {
-      setMapZoom(2.0);
-      setMapPan({ x: -260, y: 130 });
+      setMapZoom(2.1);
+      setMapPan({ x: -70, y: 390 });
     } else if (regionKey === 'yemen') {
       setMapZoom(1.9);
-      setMapPan({ x: -200, y: -270 });
+      setMapPan({ x: -234, y: -279 });
     } else {
       handleResetMapView();
     }
@@ -1868,119 +1868,162 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                     </g>
 
                     <path
-                      d="M 50 50 L 445 50 L 440 120 L 435 175 L 420 205 Q 390 215 360 200 Q 320 195 280 200 L 50 190 Z"
+                      d="M 50 195 Q 120 205 165 200 Q 195 200 215 198 Q 225 188 230 185 Q 242 178 255 178 Q 268 178 275 185 Q 282 190 288 195 Q 305 202 320 202 Q 330 200 336 196 Q 340 188 342 180 Q 344 172 345 163 Q 347 152 348 142 Q 349 133 350 125 Q 352 115 355 105 Q 356 95 357 85 Q 358 73 358 62 L 358 50 L 50 50 Z"
                       fill="url(#seaWaterGrad)"
-                      stroke="rgba(56, 189, 248, 0.45)"
+                      stroke="rgba(56, 189, 248, 0.55)"
                       strokeWidth="1.6"
                     />
 
                     <path
-                      d="M 340 235 L 355 268 L 385 272 L 400 248 L 405 275 L 430 330 L 460 395 L 495 460 L 530 520 L 545 545 L 535 558 L 495 515 L 455 450 L 420 385 L 390 320 L 365 270 L 340 235 Z"
+                      d="M 275 110 Q 295 98 318 95 Q 328 98 332 104 Q 320 110 300 115 Q 285 116 275 110 Z"
+                      fill="url(#parchmentLandGrad)"
+                      stroke="rgba(210, 170, 96, 0.6)"
+                      strokeWidth="1.2"
+                    />
+                    <text x="303" y="108" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="9" fontFamily="'Amiri', serif" textAnchor="middle">قُبْرُص</text>
+
+                    <path
+                      d="M 275 218 Q 295 240 317 268 Q 326 248 334 226 L 336 235 Q 340 255 343 268 Q 358 290 375 320 Q 395 350 418 385 Q 435 415 452 465 Q 475 510 505 555 Q 520 575 540 600 Q 544 612 545 616 L 532 615 Q 525 605 500 580 Q 475 550 455 520 Q 440 495 420 460 Q 390 420 365 385 Q 340 350 315 300 Q 300 275 288 255 Q 280 235 275 218 Z"
                       fill="url(#seaWaterGrad)"
-                      stroke="rgba(56, 189, 248, 0.48)"
+                      stroke="rgba(56, 189, 248, 0.55)"
                       strokeWidth="1.6"
                     />
 
                     <path
-                      d="M 630 240 Q 665 270 705 295 Q 740 320 770 340 L 785 335 Q 745 290 700 255 Q 660 230 630 240 Z"
+                      d="M 545 616 Q 560 614 575 610 Q 595 602 620 595 Q 660 580 680 575 Q 715 560 740 550 Q 765 538 795 525 Q 830 505 865 475 Q 890 440 920 395 Q 910 380 895 355 Q 875 335 855 310 Q 848 290 845 275 Q 840 265 810 275 Q 770 285 730 290 Q 700 285 695 255 Q 685 255 680 285 Q 675 290 665 275 Q 655 265 635 248 Q 615 225 595 205 Q 585 195 575 185 L 610 195 Q 640 215 675 240 Q 700 250 760 260 Q 830 250 845 255 Q 870 270 900 300 Q 940 340 950 370 L 950 600 L 540 600 Z"
                       fill="url(#seaWaterGrad)"
-                      stroke="rgba(56, 189, 248, 0.42)"
-                      strokeWidth="1.6"
-                    />
-
-                    <path
-                      d="M 535 558 Q 590 555 660 525 Q 735 480 805 415 L 950 440 L 950 600 L 490 600 Q 515 570 535 558 Z"
-                      fill="url(#seaWaterGrad)"
-                      stroke="rgba(56, 189, 248, 0.42)"
+                      stroke="rgba(56, 189, 248, 0.55)"
                       strokeWidth="1.6"
                     />
 
                     <g className="sea-wave-ripples" opacity="0.32" stroke="#38bdf8" strokeWidth="1" strokeDasharray="3, 5" fill="none">
-                      <path d="M 120 100 Q 140 95 160 100 M 200 130 Q 220 125 240 130 M 280 110 Q 300 105 320 110" />
-                      <path d="M 395 345 Q 405 340 415 345 M 430 405 Q 440 400 450 405 M 465 465 Q 475 460 485 465" />
-                      <path d="M 665 265 Q 680 260 695 265 M 710 295 Q 725 290 740 295" />
-                      <path d="M 620 570 Q 640 565 660 570 M 720 540 Q 740 535 760 540 M 820 500 Q 840 495 860 500" />
+                      <path d="M 120 100 Q 140 95 160 100 M 200 130 Q 220 125 240 130" />
+                      <path d="M 375 345 Q 385 340 395 345 M 430 460 Q 440 455 450 460" />
+                      <path d="M 720 270 Q 735 265 750 270" />
+                      <path d="M 620 570 Q 640 565 660 570 M 740 540 Q 760 535 780 540" />
                     </g>
 
-                    <g className="historic-dhow-ship red-sea" transform="translate(415, 360) scale(0.7) rotate(-35)" opacity={isLight ? 0.75 : 0.6}>
+                    <g className="historic-dhow-ship red-sea" transform="translate(395, 395) scale(0.65) rotate(-35)" opacity={isLight ? 0.75 : 0.6}>
                       <path d="M 0 0 C 15 10 35 10 50 0 C 40 18 10 18 0 0 Z" fill={isLight ? '#78350f' : '#d4af37'} />
                       <line x1="25" y1="0" x2="25" y2="-24" stroke={isLight ? '#78350f' : '#d4af37'} strokeWidth="1.5" />
                       <polygon points="25,-24 45,-8 25,-4" fill={isLight ? 'rgba(217, 119, 6, 0.4)' : 'rgba(251, 191, 36, 0.35)'} stroke={isLight ? '#92400e' : '#fbbf24'} strokeWidth="1" />
                     </g>
-                    <g className="historic-dhow-ship mediterranean" transform="translate(160, 145) scale(0.65) rotate(15)" opacity={isLight ? 0.75 : 0.6}>
+                    <g className="historic-dhow-ship mediterranean" transform="translate(160, 130) scale(0.65) rotate(15)" opacity={isLight ? 0.75 : 0.6}>
+                      <path d="M 0 0 C 15 10 35 10 50 0 C 40 18 10 18 0 0 Z" fill={isLight ? '#78350f' : '#d4af37'} />
+                      <line x1="25" y1="0" x2="25" y2="-24" stroke={isLight ? '#78350f' : '#d4af37'} strokeWidth="1.5" />
+                      <polygon points="25,-24 45,-8 25,-4" fill={isLight ? 'rgba(217, 119, 6, 0.4)' : 'rgba(251, 191, 36, 0.35)'} stroke={isLight ? '#92400e' : '#fbbf24'} strokeWidth="1" />
+                    </g>
+                    <g className="historic-dhow-ship persian-gulf" transform="translate(740, 240) scale(0.6) rotate(-20)" opacity={isLight ? 0.75 : 0.6}>
                       <path d="M 0 0 C 15 10 35 10 50 0 C 40 18 10 18 0 0 Z" fill={isLight ? '#78350f' : '#d4af37'} />
                       <line x1="25" y1="0" x2="25" y2="-24" stroke={isLight ? '#78350f' : '#d4af37'} strokeWidth="1.5" />
                       <polygon points="25,-24 45,-8 25,-4" fill={isLight ? 'rgba(217, 119, 6, 0.4)' : 'rgba(251, 191, 36, 0.35)'} stroke={isLight ? '#92400e' : '#fbbf24'} strokeWidth="1" />
                     </g>
 
                     <path
-                      d="M 300 600 Q 320 520 325 450 Q 315 360 320 250 Q 320 220 310 200 L 330 190 Q 340 220 330 250 Q 325 360 335 450 Q 330 520 310 600 Z"
-                      fill={isLight ? "rgba(2, 132, 199, 0.25)" : "rgba(56, 189, 248, 0.35)"}
+                      d="M 270 440 Q 265 395 260 370 Q 268 355 250 325 Q 242 295 235 240 Q 240 228 245 220"
+                      fill="none"
                       stroke={isLight ? "#0284c7" : "#38bdf8"}
-                      strokeWidth="1.8"
+                      strokeWidth="2.2"
                     />
-                    <path d="M 320 210 Q 300 190 290 185" fill="none" stroke={isLight ? "#0284c7" : "#38bdf8"} strokeWidth="1.5" />
-                    <path d="M 320 210 Q 340 190 350 185" fill="none" stroke={isLight ? "#0284c7" : "#38bdf8"} strokeWidth="1.5" />
-
                     <path
-                      d="M 510 120 Q 520 170 550 210 Q 580 230 635 245"
+                      d="M 245 220 Q 235 200 230 185"
                       fill="none"
                       stroke={isLight ? "#0284c7" : "#38bdf8"}
                       strokeWidth="1.8"
-                      strokeOpacity={isLight ? 0.9 : 0.75}
                     />
                     <path
-                      d="M 550 135 Q 565 170 590 200 Q 615 220 635 245"
+                      d="M 245 220 Q 260 200 275 185"
                       fill="none"
                       stroke={isLight ? "#0284c7" : "#38bdf8"}
                       strokeWidth="1.8"
+                    />
+                    <polygon
+                      points="245,220 230,185 255,178 275,185"
+                      fill={isLight ? "rgba(16, 185, 129, 0.16)" : "rgba(52, 211, 153, 0.12)"}
+                      stroke={isLight ? "rgba(16, 185, 129, 0.35)" : "rgba(52, 211, 153, 0.25)"}
+                      strokeWidth="1"
+                    />
+
+                    <path
+                      d="M 450 70 Q 440 90 465 115 Q 495 135 515 150 Q 535 162 557 173 Q 565 195 590 205 Q 600 200 605 195"
+                      fill="none"
+                      stroke={isLight ? "#0284c7" : "#38bdf8"}
+                      strokeWidth="2"
+                      strokeOpacity={isLight ? 0.9 : 0.75}
+                    />
+                    <path
+                      d="M 510 81 Q 525 105 545 135 Q 555 150 570 168 Q 590 182 605 195 L 575 185"
+                      fill="none"
+                      stroke={isLight ? "#0284c7" : "#38bdf8"}
+                      strokeWidth="2"
                       strokeOpacity={isLight ? 0.9 : 0.75}
                     />
 
-                    <g className="mountains-group" opacity={isLight ? 0.75 : 0.6}>
-                      {[[385, 260], [395, 265], [445, 330], [455, 370], [470, 420], [545, 135], [555, 130]].map(([mx, my], idx) => (
+                    <g className="mountains-group" opacity={isLight ? 0.8 : 0.65}>
+                      {[[355, 275], [372, 305], [390, 335], [412, 365], [435, 400], [455, 445], [475, 490], [495, 530], [515, 565], [535, 595]].map(([mx, my], idx) => (
                         <polygon
-                          key={`mtn-${idx}`}
-                          points={`${mx},${my - 12} ${mx - 10},${my + 6} ${mx + 10},${my + 6}`}
-                          fill={isLight ? "rgba(217, 119, 6, 0.2)" : "rgba(210, 170, 96, 0.2)"}
+                          key={`mtn-sarawat-${idx}`}
+                          points={`${mx},${my - 9} ${mx - 8},${my + 4} ${mx + 8},${my + 4}`}
+                          fill={isLight ? "rgba(217, 119, 6, 0.25)" : "rgba(210, 170, 96, 0.22)"}
+                          stroke={isLight ? "#d97706" : "#fbbf24"}
+                          strokeWidth="1"
+                        />
+                      ))}
+                      <polygon
+                        points="311,240 302,254 320,254"
+                        fill={isLight ? "rgba(217, 119, 6, 0.35)" : "rgba(210, 170, 96, 0.35)"}
+                        stroke={isLight ? "#b45309" : "#fde047"}
+                        strokeWidth="1.2"
+                      />
+                      <polygon
+                        points="510,72 499,88 521,88"
+                        fill={isLight ? "rgba(217, 119, 6, 0.35)" : "rgba(210, 170, 96, 0.35)"}
+                        stroke={isLight ? "#b45309" : "#fde047"}
+                        strokeWidth="1.2"
+                      />
+                      {[[355, 120], [358, 140], [360, 160]].map(([mx, my], idx) => (
+                        <polygon
+                          key={`mtn-sham-${idx}`}
+                          points={`${mx},${my - 8} ${mx - 7},${my + 3} ${mx + 7},${my + 3}`}
+                          fill={isLight ? "rgba(217, 119, 6, 0.22)" : "rgba(210, 170, 96, 0.2)"}
                           stroke={isLight ? "#d97706" : "#fbbf24"}
                           strokeWidth="1"
                         />
                       ))}
                     </g>
 
-                    <g className="sea-calligraphy-labels" opacity={isLight ? 0.85 : 0.5}>
-                      <text x="210" y="120" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="15" fontFamily="'Amiri', serif" textAnchor="middle">
+                    <g className="sea-calligraphy-labels" opacity={isLight ? 0.85 : 0.55}>
+                      <text x="180" y="90" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="15" fontFamily="'Amiri', serif" textAnchor="middle">
                         بَحْرُ الرُّومِ (المتوسط)
                       </text>
-                      <text x="440" y="440" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="15" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(-52 440 440)">
+                      <text x="410" y="440" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="15" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(-54 410 440)">
                         بَحْرُ القُلْزُمِ (البحر الأحمر)
                       </text>
-                      <text x="720" y="290" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(30 720 290)">
+                      <text x="720" y="225" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(18 720 225)">
                         بَحْرُ فَارِسَ (الخليج العربي)
                       </text>
-                      <text x="720" y="550" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                      <text x="740" y="585" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
                         بَحْرُ العَرَبِ وَالمُحِيطُ
                       </text>
                     </g>
 
-                    <g className="region-calligraphy-labels" opacity={isLight ? 0.9 : 0.65}>
-                      <text x="475" y="360" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="16" fontWeight="700" fontFamily="'Amiri', serif" textAnchor="middle">
+                    <g className="region-calligraphy-labels" opacity={isLight ? 0.85 : 0.65}>
+                      <text x="485" y="360" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="16" fontWeight="700" fontFamily="'Amiri', serif" textAnchor="middle">
                         بِلَادُ الحِجَازِ المُبَارَكَة
                       </text>
-                      <text x="440" y="160" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                      <text x="395" y="130" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
                         بِلَادُ الشَّامِ وَفِلَسْطِين
                       </text>
-                      <text x="260" y="270" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                      <text x="155" y="270" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
                         أَرْضُ الكِنَانَةِ (مِصْر)
                       </text>
-                      <text x="630" y="170" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                      <text x="635" y="145" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
                         بِلَادُ الرَّافِدَيْنِ (العِرَاق)
                       </text>
-                      <text x="590" y="525" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                      <text x="610" y="555" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
                         اليَمَنُ السَّعِيد
                       </text>
-                      <text x="660" y="440" fill={isLight ? "#92400e" : "#94a3b8"} fontSize="12" fontFamily="'Amiri', serif" textAnchor="middle">
+                      <text x="680" y="380" fill={isLight ? "#92400e" : "#94a3b8"} fontSize="12" fontFamily="'Amiri', serif" textAnchor="middle">
                         رِمَالُ الأَحْقَافِ (الرُّبْعُ الخَالِي)
                       </text>
                     </g>

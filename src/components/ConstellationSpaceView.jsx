@@ -92,6 +92,19 @@ const THEMATIC_LINKS = [
   [108, 109], [109, 110], [110, 111], [111, 112], [112, 113], [113, 114]
 ];
 
+const LOCATION_CONFIGS = {
+  makkah: { labelDx: 46, labelDy: 4, labelAnchor: 'start' },
+  madinah: { labelDx: -46, labelDy: 4, labelAnchor: 'end' },
+  aqsa: { labelDx: 0, labelDy: -32, labelAnchor: 'middle' },
+  sinai: { labelDx: -48, labelDy: -8, labelAnchor: 'end' },
+  madyan: { labelDx: 46, labelDy: 10, labelAnchor: 'start' },
+  misr: { labelDx: -46, labelDy: 4, labelAnchor: 'end' },
+  judi: { labelDx: 0, labelDy: -30, labelAnchor: 'middle' },
+  babil: { labelDx: 46, labelDy: 4, labelAnchor: 'start' },
+  ahqaf: { labelDx: 46, labelDy: 4, labelAnchor: 'start' },
+  marib: { labelDx: -46, labelDy: 4, labelAnchor: 'end' }
+};
+
 function buildInitial3DStars() {
   const stars = [];
   for (let i = 1; i <= N_SURAHS; i++) {
@@ -207,6 +220,85 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
   const [showPropheticRoutes, setShowPropheticRoutes] = useState(true);
   const [selectedRouteId, setSelectedRouteId] = useState('all');
   const [mapCategoryFilter, setMapCategoryFilter] = useState('all');
+
+  const [mapZoom, setMapZoom] = useState(1);
+  const [mapPan, setMapPan] = useState({ x: 0, y: 0 });
+  const [isMapDragging, setIsMapDragging] = useState(false);
+  const mapDragRef = useRef({ startX: 0, startY: 0, initialPanX: 0, initialPanY: 0, hasMoved: false });
+  const [isSpotlightCollapsed, setIsSpotlightCollapsed] = useState(false);
+
+  const handleMapMouseDown = (e) => {
+    if (e.button !== 0) return;
+    setIsMapDragging(true);
+    mapDragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      initialPanX: mapPan.x,
+      initialPanY: mapPan.y,
+      hasMoved: false
+    };
+  };
+
+  const handleMapMouseMove = (e) => {
+    if (!isMapDragging) return;
+    const dx = e.clientX - mapDragRef.current.startX;
+    const dy = e.clientY - mapDragRef.current.startY;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+      mapDragRef.current.hasMoved = true;
+    }
+    setMapPan({
+      x: mapDragRef.current.initialPanX + dx,
+      y: mapDragRef.current.initialPanY + dy
+    });
+  };
+
+  const handleMapMouseUp = () => {
+    setIsMapDragging(false);
+  };
+
+  const handleMapWheel = (e) => {
+    e.preventDefault();
+    const zoomFactor = e.deltaY < 0 ? 1.15 : 0.88;
+    setMapZoom((prevZoom) => Math.max(0.75, Math.min(3.5, prevZoom * zoomFactor)));
+  };
+
+  const handleZoomIn = () => setMapZoom((z) => Math.min(3.5, z * 1.25));
+  const handleZoomOut = () => setMapZoom((z) => Math.max(0.75, z * 0.8));
+  const handleResetMapView = () => {
+    setMapZoom(1);
+    setMapPan({ x: 0, y: 0 });
+  };
+
+  const handleFocusRegion = (regionKey) => {
+    if (regionKey === 'hijaz') {
+      setMapZoom(1.9);
+      setMapPan({ x: -60, y: -120 });
+    } else if (regionKey === 'sham') {
+      setMapZoom(2.2);
+      setMapPan({ x: -20, y: 130 });
+    } else if (regionKey === 'misr') {
+      setMapZoom(2.0);
+      setMapPan({ x: 180, y: 50 });
+    } else if (regionKey === 'iraq') {
+      setMapZoom(2.0);
+      setMapPan({ x: -260, y: 130 });
+    } else if (regionKey === 'yemen') {
+      setMapZoom(1.9);
+      setMapPan({ x: -200, y: -270 });
+    } else {
+      handleResetMapView();
+    }
+  };
+
+  const handleSelectLocationItem = (loc) => {
+    setSelectedLocation(loc);
+    setIsSpotlightCollapsed(false);
+    const coords = loc.svgCoords || { x: loc.coordinates.x * 10, y: loc.coordinates.y * 6.5 };
+    setMapPan({
+      x: (500 - coords.x) * (mapZoom > 1.2 ? 0.7 : 0.5),
+      y: (325 - coords.y) * (mapZoom > 1.2 ? 0.7 : 0.5)
+    });
+  };
 
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -1313,7 +1405,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
               <div className="chronicle-horizon-tape">
                 <div className="horizon-spine-rule" />
 
-                {filteredTimeline.map((item, idx) => {
+                {filteredTimeline.map((item) => {
                   const surahMeta = SURAHS_LIST.find((s) => s.number === item.number);
                   const isMedinan = item.era.startsWith('medinan');
                   const milestone = milestonesMap[item.order];
@@ -1327,70 +1419,90 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                           <div className="monument-content">
                             <span className="monument-badge">منعطف التاريخ الإسلامي الأكبر</span>
                             <h4 className="monument-title font-calligraphy">
-                              الهجرة النبوية المباركة إلى المدينة المنورة
+                              الهجرة النبوية المباركة إلى المدينة المنورة (١ هـ)
                             </h4>
                             <p className="monument-desc">
-                              تأسيس دار الإسلام وبناء المسجد النبوي الشريف وبدء تشريعات المجتمع والعبادات والمعاملات (السنة الأولى للهجرة - ٦٢٢ م).
+                              تأسيس دار الإسلام وبناء المسجد النبوي الشريف وبدء تشريعات المجتمع والعبادات والمعاملات (٦٢٢ م).
                             </p>
                           </div>
                         </div>
                       )}
 
-                      <div
-                        id={`chronicle-item-${item.order}`}
-                        className={`islamic-manuscript-card ${isMedinan ? 'is-medinan' : 'is-meccan'} ${activeTimelineSurah?.order === item.order ? 'active' : ''}`}
-                        onClick={() => setActiveTimelineSurah(item)}
-                      >
-                        <div className="mihrab-arch-crest">
-                          <span className="arch-finial">۩</span>
-                          <span className="arch-flourish">❖ ── ۞ ── ❖</span>
-                        </div>
-
-                        {milestone && (
-                          <div className="islamic-milestone-ribbon">
-                            <span className="milestone-rosette">✦</span>
-                            <span className="milestone-txt font-calligraphy">{milestone.title}</span>
-                          </div>
-                        )}
-
-                        <div className="unwan-cartouche-header">
-                          <div className="unwan-meta-line">
-                            <div className="islamic-star-seal">
-                              <span className="star-seal-icon">۞</span>
-                              <span className="star-seal-digit font-calligraphy">{item.order}</span>
+                      <div className="timeline-horizon-station-column">
+                        <div className="timeline-station-node">
+                          <div className="station-track-anchor">
+                            <span className="station-ring" />
+                            <div className="station-seal-orb font-calligraphy">
+                              <span className="station-seal-symbol">۞</span>
+                              <span className="station-order-number">{item.order}</span>
                             </div>
-                            <span className={`era-illumination-tag ${isMedinan ? 'medinan' : 'meccan'}`}>
-                              {isMedinan ? '🕌 تنزيل مدني مبارك' : '🕋 تنزيل مكي شريف'}
-                            </span>
-                            <span className="mushaf-bracket-badge">﴿ سورة #{item.number} ﴾</span>
+                            <span className="station-year-label">{item.year}</span>
                           </div>
 
-                          <h3 className="unwan-surah-heading font-calligraphy">سُورَةُ {item.name}</h3>
-                          <div className="unwan-year-ribbon font-calligraphy">{item.year}</div>
+                          {milestone && (
+                            <div className="station-milestone-beacon animate-fade-in">
+                              <span className="beacon-flourish">✦</span>
+                              <span className="beacon-title font-calligraphy">{milestone.title}</span>
+                              <span className="beacon-flourish">✦</span>
+                            </div>
+                          )}
+
+                          <div className="station-connector-finial">
+                            <span className="finial-drop-line" />
+                            <span className="finial-drop-rosette">❖</span>
+                          </div>
                         </div>
 
-                        <div className="manuscript-commentary-frame">
-                          <p className="manuscript-narrative-text">«{item.note}»</p>
-                        </div>
+                        <div
+                          id={`chronicle-item-${item.order}`}
+                          className={`islamic-manuscript-card ${isMedinan ? 'is-medinan' : 'is-meccan'} ${activeTimelineSurah?.order === item.order ? 'active' : ''}`}
+                          onClick={() => setActiveTimelineSurah(item)}
+                        >
+                          <div className="mihrab-arch-crest">
+                            <span className="arch-finial">۩</span>
+                            <span className="arch-flourish">❖ ── ۞ ── ❖</span>
+                          </div>
 
-                        <div className="manuscript-card-footer">
-                          <span className="ayah-count-medallion">
-                            ۞ {surahMeta ? surahMeta.numberOfAyahs : 0} آية كريمة
-                          </span>
+                          <div className="unwan-cartouche-header">
+                            <div className="unwan-meta-line">
+                              <span className="mushaf-bracket-badge">سورة #{item.number} في المصحف</span>
+                              <span className={`era-illumination-tag ${isMedinan ? 'medinan' : 'meccan'}`}>
+                                {isMedinan ? '🕌 تنزيل مدني مبارك' : '🕋 تنزيل مكي شريف'}
+                              </span>
+                            </div>
 
-                          <button
-                            type="button"
-                            className="islamic-read-action-btn"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onSelectSurah?.(item.number);
-                              onNavigateTab?.('reader');
-                            }}
-                            title="فتح السورة في المصحف الشريف والتلاوة"
-                          >
-                            <BookOpenIcon size={14} />
-                            <span>قراءة السورة ↵</span>
-                          </button>
+                            <h3 className="unwan-surah-heading font-calligraphy">سُورَةُ {item.name}</h3>
+                            <div className="unwan-station-sub font-calligraphy">
+                              ترتيب النزول: {item.order} من ١١٤ • {item.year}
+                            </div>
+                          </div>
+
+                          <div className="manuscript-commentary-frame">
+                            <div className="commentary-header-tag font-calligraphy">
+                              <span>سبب وسياق التنزيل:</span>
+                            </div>
+                            <p className="manuscript-narrative-text">«{item.note}»</p>
+                          </div>
+
+                          <div className="manuscript-card-footer">
+                            <span className="ayah-count-medallion">
+                              ۞ {surahMeta ? surahMeta.numberOfAyahs : 0} آية كريمة
+                            </span>
+
+                            <button
+                              type="button"
+                              className="islamic-read-action-btn"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onSelectSurah?.(item.number);
+                                onNavigateTab?.('reader');
+                              }}
+                              title="فتح السورة في المصحف الشريف والتلاوة"
+                            >
+                              <BookOpenIcon size={14} />
+                              <span>قراءة السورة ↵</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </React.Fragment>
@@ -1532,7 +1644,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                 <div
                   key={loc.id}
                   className={`location-list-item ${selectedLocation.id === loc.id ? 'active' : ''}`}
-                  onClick={() => setSelectedLocation(loc)}
+                  onClick={() => handleSelectLocationItem(loc)}
                   role="button"
                   tabIndex={0}
                 >
@@ -1592,7 +1704,88 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
               </div>
             </div>
 
-            <div className="interactive-map-board">
+            <div
+              className={`interactive-map-board ${isMapDragging ? 'is-dragging' : ''}`}
+              onMouseDown={handleMapMouseDown}
+              onMouseMove={handleMapMouseMove}
+              onMouseUp={handleMapMouseUp}
+              onMouseLeave={handleMapMouseUp}
+              onWheel={handleMapWheel}
+            >
+              <div className="map-floating-overlay-bar">
+                <div className="map-zoom-controls">
+                  <button
+                    type="button"
+                    className="map-zoom-btn"
+                    onClick={handleZoomIn}
+                    title="تكبير الخريطة (+)"
+                  >
+                    +
+                  </button>
+                  <span className="map-zoom-display font-calligraphy">
+                    {Math.round(mapZoom * 100)}%
+                  </span>
+                  <button
+                    type="button"
+                    className="map-zoom-btn"
+                    onClick={handleZoomOut}
+                    title="تصغير الخريطة (-)"
+                  >
+                    -
+                  </button>
+                  <button
+                    type="button"
+                    className="map-zoom-btn reset-btn"
+                    onClick={handleResetMapView}
+                    title="إعادة ضبط الرؤية المركزية"
+                  >
+                    ⟲
+                  </button>
+                </div>
+
+                <div className="map-region-shortcuts">
+                  <button
+                    type="button"
+                    className="region-shortcut-btn"
+                    onClick={() => handleFocusRegion('hijaz')}
+                  >
+                    🕌 الحجاز
+                  </button>
+                  <button
+                    type="button"
+                    className="region-shortcut-btn"
+                    onClick={() => handleFocusRegion('sham')}
+                  >
+                    🏛️ الشام والأقصى
+                  </button>
+                  <button
+                    type="button"
+                    className="region-shortcut-btn"
+                    onClick={() => handleFocusRegion('misr')}
+                  >
+                    ⛰️ سيناء ومصر
+                  </button>
+                  <button
+                    type="button"
+                    className="region-shortcut-btn"
+                    onClick={() => handleFocusRegion('iraq')}
+                  >
+                    🌊 بابل والجودي
+                  </button>
+                  <button
+                    type="button"
+                    className="region-shortcut-btn"
+                    onClick={() => handleFocusRegion('yemen')}
+                  >
+                    🌴 اليمن والأحقاف
+                  </button>
+                </div>
+
+                <div className="map-gesture-hint">
+                  <span>🖱️ سحب بالماوس للتحريك • عجلة الفأرة للتكبير والتصغير</span>
+                </div>
+              </div>
+
               <svg
                 viewBox="0 0 1000 650"
                 className="antique-cartography-svg"
@@ -1604,6 +1797,10 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                     <stop offset="60%" stopColor="#020d12" />
                     <stop offset="100%" stopColor="#010609" />
                   </radialGradient>
+
+                  <clipPath id="mapFrameClip">
+                    <rect x="50" y="50" width="900" height="550" rx="14" />
+                  </clipPath>
 
                   <linearGradient id="parchmentLandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                     {isLight ? (
@@ -1652,13 +1849,236 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                 <rect x="50" y="50" width="900" height="550" rx="14" fill="url(#parchmentLandGrad)" />
                 <rect x="50" y="50" width="900" height="550" rx="14" fill="url(#islamicLattice)" opacity={isLight ? 0.45 : 0.65} />
 
-                <g className="cartographic-rhumb-lines" opacity="0.12" stroke="#d4af37" strokeWidth="0.8">
-                  <line x1="100" y1="100" x2="950" y2="100" />
-                  <line x1="100" y1="100" x2="100" y2="600" />
-                  <line x1="100" y1="100" x2="950" y2="525" />
-                  <line x1="100" y1="100" x2="600" y2="600" />
-                  <line x1="100" y1="100" x2="950" y2="300" />
-                  <line x1="100" y1="100" x2="350" y2="600" />
+                <g clipPath="url(#mapFrameClip)">
+                  <g
+                    className="map-pan-zoom-container"
+                    transform={`translate(${mapPan.x}, ${mapPan.y}) scale(${mapZoom})`}
+                    style={{
+                      transformOrigin: '500px 325px',
+                      transition: isMapDragging ? 'none' : 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)'
+                    }}
+                  >
+                    <g className="cartographic-rhumb-lines" opacity="0.12" stroke="#d4af37" strokeWidth="0.8">
+                      <line x1="100" y1="100" x2="950" y2="100" />
+                      <line x1="100" y1="100" x2="100" y2="600" />
+                      <line x1="100" y1="100" x2="950" y2="525" />
+                      <line x1="100" y1="100" x2="600" y2="600" />
+                      <line x1="100" y1="100" x2="950" y2="300" />
+                      <line x1="100" y1="100" x2="350" y2="600" />
+                    </g>
+
+                    <path
+                      d="M 50 50 L 445 50 L 440 120 L 435 175 L 420 205 Q 390 215 360 200 Q 320 195 280 200 L 50 190 Z"
+                      fill="url(#seaWaterGrad)"
+                      stroke="rgba(56, 189, 248, 0.45)"
+                      strokeWidth="1.6"
+                    />
+
+                    <path
+                      d="M 340 235 L 355 268 L 385 272 L 400 248 L 405 275 L 430 330 L 460 395 L 495 460 L 530 520 L 545 545 L 535 558 L 495 515 L 455 450 L 420 385 L 390 320 L 365 270 L 340 235 Z"
+                      fill="url(#seaWaterGrad)"
+                      stroke="rgba(56, 189, 248, 0.48)"
+                      strokeWidth="1.6"
+                    />
+
+                    <path
+                      d="M 630 240 Q 665 270 705 295 Q 740 320 770 340 L 785 335 Q 745 290 700 255 Q 660 230 630 240 Z"
+                      fill="url(#seaWaterGrad)"
+                      stroke="rgba(56, 189, 248, 0.42)"
+                      strokeWidth="1.6"
+                    />
+
+                    <path
+                      d="M 535 558 Q 590 555 660 525 Q 735 480 805 415 L 950 440 L 950 600 L 490 600 Q 515 570 535 558 Z"
+                      fill="url(#seaWaterGrad)"
+                      stroke="rgba(56, 189, 248, 0.42)"
+                      strokeWidth="1.6"
+                    />
+
+                    <g className="sea-wave-ripples" opacity="0.32" stroke="#38bdf8" strokeWidth="1" strokeDasharray="3, 5" fill="none">
+                      <path d="M 120 100 Q 140 95 160 100 M 200 130 Q 220 125 240 130 M 280 110 Q 300 105 320 110" />
+                      <path d="M 395 345 Q 405 340 415 345 M 430 405 Q 440 400 450 405 M 465 465 Q 475 460 485 465" />
+                      <path d="M 665 265 Q 680 260 695 265 M 710 295 Q 725 290 740 295" />
+                      <path d="M 620 570 Q 640 565 660 570 M 720 540 Q 740 535 760 540 M 820 500 Q 840 495 860 500" />
+                    </g>
+
+                    <g className="historic-dhow-ship red-sea" transform="translate(415, 360) scale(0.7) rotate(-35)" opacity={isLight ? 0.75 : 0.6}>
+                      <path d="M 0 0 C 15 10 35 10 50 0 C 40 18 10 18 0 0 Z" fill={isLight ? '#78350f' : '#d4af37'} />
+                      <line x1="25" y1="0" x2="25" y2="-24" stroke={isLight ? '#78350f' : '#d4af37'} strokeWidth="1.5" />
+                      <polygon points="25,-24 45,-8 25,-4" fill={isLight ? 'rgba(217, 119, 6, 0.4)' : 'rgba(251, 191, 36, 0.35)'} stroke={isLight ? '#92400e' : '#fbbf24'} strokeWidth="1" />
+                    </g>
+                    <g className="historic-dhow-ship mediterranean" transform="translate(160, 145) scale(0.65) rotate(15)" opacity={isLight ? 0.75 : 0.6}>
+                      <path d="M 0 0 C 15 10 35 10 50 0 C 40 18 10 18 0 0 Z" fill={isLight ? '#78350f' : '#d4af37'} />
+                      <line x1="25" y1="0" x2="25" y2="-24" stroke={isLight ? '#78350f' : '#d4af37'} strokeWidth="1.5" />
+                      <polygon points="25,-24 45,-8 25,-4" fill={isLight ? 'rgba(217, 119, 6, 0.4)' : 'rgba(251, 191, 36, 0.35)'} stroke={isLight ? '#92400e' : '#fbbf24'} strokeWidth="1" />
+                    </g>
+
+                    <path
+                      d="M 300 600 Q 320 520 325 450 Q 315 360 320 250 Q 320 220 310 200 L 330 190 Q 340 220 330 250 Q 325 360 335 450 Q 330 520 310 600 Z"
+                      fill={isLight ? "rgba(2, 132, 199, 0.25)" : "rgba(56, 189, 248, 0.35)"}
+                      stroke={isLight ? "#0284c7" : "#38bdf8"}
+                      strokeWidth="1.8"
+                    />
+                    <path d="M 320 210 Q 300 190 290 185" fill="none" stroke={isLight ? "#0284c7" : "#38bdf8"} strokeWidth="1.5" />
+                    <path d="M 320 210 Q 340 190 350 185" fill="none" stroke={isLight ? "#0284c7" : "#38bdf8"} strokeWidth="1.5" />
+
+                    <path
+                      d="M 510 120 Q 520 170 550 210 Q 580 230 635 245"
+                      fill="none"
+                      stroke={isLight ? "#0284c7" : "#38bdf8"}
+                      strokeWidth="1.8"
+                      strokeOpacity={isLight ? 0.9 : 0.75}
+                    />
+                    <path
+                      d="M 550 135 Q 565 170 590 200 Q 615 220 635 245"
+                      fill="none"
+                      stroke={isLight ? "#0284c7" : "#38bdf8"}
+                      strokeWidth="1.8"
+                      strokeOpacity={isLight ? 0.9 : 0.75}
+                    />
+
+                    <g className="mountains-group" opacity={isLight ? 0.75 : 0.6}>
+                      {[[385, 260], [395, 265], [445, 330], [455, 370], [470, 420], [545, 135], [555, 130]].map(([mx, my], idx) => (
+                        <polygon
+                          key={`mtn-${idx}`}
+                          points={`${mx},${my - 12} ${mx - 10},${my + 6} ${mx + 10},${my + 6}`}
+                          fill={isLight ? "rgba(217, 119, 6, 0.2)" : "rgba(210, 170, 96, 0.2)"}
+                          stroke={isLight ? "#d97706" : "#fbbf24"}
+                          strokeWidth="1"
+                        />
+                      ))}
+                    </g>
+
+                    <g className="sea-calligraphy-labels" opacity={isLight ? 0.85 : 0.5}>
+                      <text x="210" y="120" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="15" fontFamily="'Amiri', serif" textAnchor="middle">
+                        بَحْرُ الرُّومِ (المتوسط)
+                      </text>
+                      <text x="440" y="440" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="15" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(-52 440 440)">
+                        بَحْرُ القُلْزُمِ (البحر الأحمر)
+                      </text>
+                      <text x="720" y="290" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(30 720 290)">
+                        بَحْرُ فَارِسَ (الخليج العربي)
+                      </text>
+                      <text x="720" y="550" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                        بَحْرُ العَرَبِ وَالمُحِيطُ
+                      </text>
+                    </g>
+
+                    <g className="region-calligraphy-labels" opacity={isLight ? 0.9 : 0.65}>
+                      <text x="475" y="360" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="16" fontWeight="700" fontFamily="'Amiri', serif" textAnchor="middle">
+                        بِلَادُ الحِجَازِ المُبَارَكَة
+                      </text>
+                      <text x="440" y="160" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                        بِلَادُ الشَّامِ وَفِلَسْطِين
+                      </text>
+                      <text x="260" y="270" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                        أَرْضُ الكِنَانَةِ (مِصْر)
+                      </text>
+                      <text x="630" y="170" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                        بِلَادُ الرَّافِدَيْنِ (العِرَاق)
+                      </text>
+                      <text x="590" y="525" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                        اليَمَنُ السَّعِيد
+                      </text>
+                      <text x="660" y="440" fill={isLight ? "#92400e" : "#94a3b8"} fontSize="12" fontFamily="'Amiri', serif" textAnchor="middle">
+                        رِمَالُ الأَحْقَافِ (الرُّبْعُ الخَالِي)
+                      </text>
+                    </g>
+
+                    {showPropheticRoutes && PROPHETIC_ROUTES.filter((r) => selectedRouteId === 'all' || r.id === selectedRouteId).map((route) => (
+                      <g key={route.id} className="prophetic-route-svg-group">
+                        <path
+                          d={route.pathD}
+                          fill="none"
+                          stroke={route.color}
+                          strokeWidth="2.8"
+                          strokeDasharray={route.dashArray}
+                          strokeLinecap="round"
+                          opacity="0.85"
+                        />
+                        {route.milestones.map((m, idx) => (
+                          <circle
+                            key={`${route.id}-m-${idx}`}
+                            cx={m.x}
+                            cy={m.y}
+                            r="4"
+                            fill="#ffffff"
+                            stroke={route.color}
+                            strokeWidth="2"
+                          />
+                        ))}
+                      </g>
+                    ))}
+
+                    {QURAN_LOCATIONS.map((loc) => {
+                      const isSelected = selectedLocation.id === loc.id;
+                      const coords = loc.svgCoords || { x: loc.coordinates.x * 10, y: loc.coordinates.y * 6.5 };
+                      const locCfg = LOCATION_CONFIGS[loc.id] || { labelDx: 0, labelDy: 22, labelAnchor: 'middle' };
+                      const boxX = locCfg.labelAnchor === 'start' ? 10 : (locCfg.labelAnchor === 'end' ? -86 : -38);
+                      const boxY = locCfg.labelAnchor === 'middle' && locCfg.labelDy < 0 ? -36 : (locCfg.labelDy || 14);
+                      const textX = boxX + 38;
+                      const textY = boxY + 12;
+
+                      return (
+                        <g
+                          key={`svg-pin-${loc.id}`}
+                          className={`islamic-map-node ${isSelected ? 'is-selected' : ''}`}
+                          transform={`translate(${coords.x}, ${coords.y})`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSelectLocationItem(loc);
+                          }}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          {isSelected && (
+                            <>
+                              <circle cx="0" cy="0" r="26" fill="none" stroke="#fbbf24" strokeWidth="1.5" opacity="0.6">
+                                <animate attributeName="r" values="16;30;16" dur="2.4s" repeatCount="indefinite" />
+                                <animate attributeName="opacity" values="0.8;0;0.8" dur="2.4s" repeatCount="indefinite" />
+                              </circle>
+                              <circle cx="0" cy="0" r="18" fill="rgba(251, 191, 36, 0.2)" stroke="#fbbf24" strokeWidth="1.5" />
+                            </>
+                          )}
+
+                          <polygon
+                            points="0,-12 3,-4 11,-4 5,2 7,10 0,5 -7,10 -5,2 -11,-4 -3,-4"
+                            fill={isSelected ? '#d4af37' : (isLight ? '#ffffff' : 'rgba(11, 43, 38, 0.95)')}
+                            stroke={isLight ? '#d4af37' : '#fbbf24'}
+                            strokeWidth="1.5"
+                          />
+
+                          <circle cx="0" cy="0" r="9" fill={isSelected ? (isLight ? '#fef3c7' : '#0b2b26') : (isLight ? '#ffffff' : '#041318')} stroke={isLight ? '#d4af37' : '#fbbf24'} strokeWidth="1.2" />
+                          <text x="0" y="3.5" fill={isLight ? '#0f172a' : '#ffffff'} fontSize="9" textAnchor="middle">
+                            {loc.iconSymbol}
+                          </text>
+
+                          <g className="location-pin-label-group">
+                            <rect
+                              x={boxX}
+                              y={boxY}
+                              width="76"
+                              height="18"
+                              rx="9"
+                              fill={isSelected ? (isLight ? '#ffffff' : 'rgba(7, 24, 30, 0.98)') : (isLight ? '#ffffff' : 'rgba(3, 11, 14, 0.88)')}
+                              stroke={isSelected ? '#d4af37' : (isLight ? 'rgba(180, 140, 60, 0.5)' : 'rgba(210, 170, 96, 0.35)')}
+                              strokeWidth="1"
+                            />
+                            <text
+                              x={textX}
+                              y={textY}
+                              fill={isSelected ? '#b45309' : (isLight ? '#0f172a' : '#e2e8f0')}
+                              fontSize="10"
+                              fontWeight="700"
+                              textAnchor="middle"
+                              fontFamily="'Amiri', serif"
+                            >
+                              {loc.name.split(' ')[0]} {loc.name.split(' ')[1] || ''}
+                            </text>
+                          </g>
+                        </g>
+                      );
+                    })}
+                  </g>
                 </g>
 
                 <path
@@ -1676,113 +2096,6 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                   strokeDasharray="4, 4"
                 />
 
-                <path
-                  d="M 50 50 L 445 50 L 440 120 L 435 175 L 420 205 Q 390 215 360 200 Q 320 195 280 200 L 50 190 Z"
-                  fill="url(#seaWaterGrad)"
-                  stroke="rgba(56, 189, 248, 0.45)"
-                  strokeWidth="1.6"
-                />
-
-                <path
-                  d="M 340 235 L 355 268 L 385 272 L 400 248 L 405 275 L 430 330 L 460 395 L 495 460 L 530 520 L 545 545 L 535 558 L 495 515 L 455 450 L 420 385 L 390 320 L 365 270 L 340 235 Z"
-                  fill="url(#seaWaterGrad)"
-                  stroke="rgba(56, 189, 248, 0.48)"
-                  strokeWidth="1.6"
-                />
-
-                <path
-                  d="M 630 240 Q 665 270 705 295 Q 740 320 770 340 L 785 335 Q 745 290 700 255 Q 660 230 630 240 Z"
-                  fill="url(#seaWaterGrad)"
-                  stroke="rgba(56, 189, 248, 0.42)"
-                  strokeWidth="1.6"
-                />
-
-                <path
-                  d="M 535 558 Q 590 555 660 525 Q 735 480 805 415 L 950 440 L 950 600 L 490 600 Q 515 570 535 558 Z"
-                  fill="url(#seaWaterGrad)"
-                  stroke="rgba(56, 189, 248, 0.42)"
-                  strokeWidth="1.6"
-                />
-
-                <g className="sea-wave-ripples" opacity="0.32" stroke="#38bdf8" strokeWidth="1" strokeDasharray="3, 5" fill="none">
-                  <path d="M 120 100 Q 140 95 160 100 M 200 130 Q 220 125 240 130 M 280 110 Q 300 105 320 110" />
-                  <path d="M 395 345 Q 405 340 415 345 M 430 405 Q 440 400 450 405 M 465 465 Q 475 460 485 465" />
-                  <path d="M 665 265 Q 680 260 695 265 M 710 295 Q 725 290 740 295" />
-                  <path d="M 620 570 Q 640 565 660 570 M 720 540 Q 740 535 760 540 M 820 500 Q 840 495 860 500" />
-                </g>
-
-                <path
-                  d="M 300 600 Q 320 520 325 450 Q 315 360 320 250 Q 320 220 310 200 L 330 190 Q 340 220 330 250 Q 325 360 335 450 Q 330 520 310 600 Z"
-                  fill={isLight ? "rgba(2, 132, 199, 0.25)" : "rgba(56, 189, 248, 0.35)"}
-                  stroke={isLight ? "#0284c7" : "#38bdf8"}
-                  strokeWidth="1.8"
-                />
-                <path d="M 320 210 Q 300 190 290 185" fill="none" stroke={isLight ? "#0284c7" : "#38bdf8"} strokeWidth="1.5" />
-                <path d="M 320 210 Q 340 190 350 185" fill="none" stroke={isLight ? "#0284c7" : "#38bdf8"} strokeWidth="1.5" />
-
-                <path
-                  d="M 510 120 Q 520 170 550 210 Q 580 230 635 245"
-                  fill="none"
-                  stroke={isLight ? "#0284c7" : "#38bdf8"}
-                  strokeWidth="1.8"
-                  strokeOpacity={isLight ? 0.9 : 0.75}
-                />
-                <path
-                  d="M 550 135 Q 565 170 590 200 Q 615 220 635 245"
-                  fill="none"
-                  stroke={isLight ? "#0284c7" : "#38bdf8"}
-                  strokeWidth="1.8"
-                  strokeOpacity={isLight ? 0.9 : 0.75}
-                />
-
-                <g className="mountains-group" opacity={isLight ? 0.75 : 0.6}>
-                  {[[385, 260], [395, 265], [445, 330], [455, 370], [470, 420], [545, 135], [555, 130]].map(([mx, my], idx) => (
-                    <polygon
-                      key={`mtn-${idx}`}
-                      points={`${mx},${my - 12} ${mx - 10},${my + 6} ${mx + 10},${my + 6}`}
-                      fill={isLight ? "rgba(217, 119, 6, 0.2)" : "rgba(210, 170, 96, 0.2)"}
-                      stroke={isLight ? "#d97706" : "#fbbf24"}
-                      strokeWidth="1"
-                    />
-                  ))}
-                </g>
-
-                <g className="sea-calligraphy-labels" opacity={isLight ? 0.85 : 0.5}>
-                  <text x="210" y="120" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="15" fontFamily="'Amiri', serif" textAnchor="middle">
-                    بَحْرُ الرُّومِ (المتوسط)
-                  </text>
-                  <text x="440" y="440" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="15" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(-52 440 440)">
-                    بَحْرُ القُلْزُمِ (البحر الأحمر)
-                  </text>
-                  <text x="720" y="290" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(30 720 290)">
-                    بَحْرُ فَارِسَ (الخليج العربي)
-                  </text>
-                  <text x="720" y="550" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
-                    بَحْرُ العَرَبِ وَالمُحِيطُ
-                  </text>
-                </g>
-
-                <g className="region-calligraphy-labels" opacity={isLight ? 0.9 : 0.65}>
-                  <text x="475" y="360" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="16" fontWeight="700" fontFamily="'Amiri', serif" textAnchor="middle">
-                    بِلَادُ الحِجَازِ المُبَارَكَة
-                  </text>
-                  <text x="440" y="160" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
-                    بِلَادُ الشَّامِ وَفِلَسْطِين
-                  </text>
-                  <text x="260" y="270" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
-                    أَرْضُ الكِنَانَةِ (مِصْر)
-                  </text>
-                  <text x="630" y="170" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
-                    بِلَادُ الرَّافِدَيْنِ (العِرَاق)
-                  </text>
-                  <text x="590" y="525" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
-                    اليَمَنُ السَّعِيد
-                  </text>
-                  <text x="660" y="440" fill={isLight ? "#92400e" : "#94a3b8"} fontSize="12" fontFamily="'Amiri', serif" textAnchor="middle">
-                    رِمَالُ الأَحْقَافِ (الرُّبْعُ الخَالِي)
-                  </text>
-                </g>
-
                 <g className="astrolabe-compass-rose" transform="translate(100, 100)">
                   <circle cx="0" cy="0" r="42" fill={isLight ? "rgba(255, 255, 255, 0.95)" : "rgba(4, 14, 18, 0.85)"} stroke={isLight ? "#d4af37" : "#fbbf24"} strokeWidth="1.5" />
                   <circle cx="0" cy="0" r="38" fill="none" stroke="rgba(210, 170, 96, 0.4)" strokeWidth="1" strokeDasharray="2, 4" />
@@ -1796,130 +2109,68 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                   <text x="48" y="4" fill={isLight ? "#64748b" : "#94a3b8"} fontSize="10" textAnchor="start" fontFamily="'Amiri', serif">مَشْرِق</text>
                   <text x="-48" y="4" fill={isLight ? "#64748b" : "#94a3b8"} fontSize="10" textAnchor="end" fontFamily="'Amiri', serif">مَغْرِب</text>
                 </g>
-
-                {showPropheticRoutes && PROPHETIC_ROUTES.filter((r) => selectedRouteId === 'all' || r.id === selectedRouteId).map((route) => (
-                  <g key={route.id} className="prophetic-route-svg-group">
-                    <path
-                      d={route.pathD}
-                      fill="none"
-                      stroke={route.color}
-                      strokeWidth="2.8"
-                      strokeDasharray={route.dashArray}
-                      strokeLinecap="round"
-                      opacity="0.85"
-                    />
-                    {route.milestones.map((m, idx) => (
-                      <circle
-                        key={`${route.id}-m-${idx}`}
-                        cx={m.x}
-                        cy={m.y}
-                        r="4"
-                        fill="#ffffff"
-                        stroke={route.color}
-                        strokeWidth="2"
-                      />
-                    ))}
-                  </g>
-                ))}
-
-                {QURAN_LOCATIONS.map((loc) => {
-                  const isSelected = selectedLocation.id === loc.id;
-                  const coords = loc.svgCoords || { x: loc.coordinates.x * 10, y: loc.coordinates.y * 6.5 };
-
-                  return (
-                    <g
-                      key={`svg-pin-${loc.id}`}
-                      className={`islamic-map-node ${isSelected ? 'is-selected' : ''}`}
-                      transform={`translate(${coords.x}, ${coords.y})`}
-                      onClick={() => setSelectedLocation(loc)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      {isSelected && (
-                        <>
-                          <circle cx="0" cy="0" r="26" fill="none" stroke="#fbbf24" strokeWidth="1.5" opacity="0.6">
-                            <animate attributeName="r" values="16;30;16" dur="2.4s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0.8;0;0.8" dur="2.4s" repeatCount="indefinite" />
-                          </circle>
-                          <circle cx="0" cy="0" r="18" fill="rgba(251, 191, 36, 0.2)" stroke="#fbbf24" strokeWidth="1.5" />
-                        </>
-                      )}
-
-                      <polygon
-                        points="0,-12 3,-4 11,-4 5,2 7,10 0,5 -7,10 -5,2 -11,-4 -3,-4"
-                        fill={isSelected ? '#d4af37' : (isLight ? '#ffffff' : 'rgba(11, 43, 38, 0.95)')}
-                        stroke={isLight ? '#d4af37' : '#fbbf24'}
-                        strokeWidth="1.5"
-                      />
-
-                      <circle cx="0" cy="0" r="9" fill={isSelected ? (isLight ? '#fef3c7' : '#0b2b26') : (isLight ? '#ffffff' : '#041318')} stroke={isLight ? '#d4af37' : '#fbbf24'} strokeWidth="1.2" />
-                      <text x="0" y="3.5" fill={isLight ? '#0f172a' : '#ffffff'} fontSize="9" textAnchor="middle">
-                        {loc.iconSymbol}
-                      </text>
-
-                      <g transform="translate(0, 22)">
-                        <rect
-                          x="-38"
-                          y="-10"
-                          width="76"
-                          height="18"
-                          rx="9"
-                          fill={isSelected ? (isLight ? '#ffffff' : 'rgba(7, 24, 30, 0.98)') : (isLight ? '#ffffff' : 'rgba(3, 11, 14, 0.85)')}
-                          stroke={isSelected ? '#d4af37' : (isLight ? 'rgba(180, 140, 60, 0.5)' : 'rgba(210, 170, 96, 0.35)')}
-                          strokeWidth="1"
-                        />
-                        <text
-                          x="0"
-                          y="3"
-                          fill={isSelected ? '#b45309' : (isLight ? '#0f172a' : '#e2e8f0')}
-                          fontSize="10"
-                          fontWeight="700"
-                          textAnchor="middle"
-                          fontFamily="'Amiri', serif"
-                        >
-                          {loc.name.split(' ')[0]} {loc.name.split(' ')[1] || ''}
-                        </text>
-                      </g>
-                    </g>
-                  );
-                })}
               </svg>
 
-              <div className="atlas-selected-spotlight animate-slide-up">
-                <div className="spotlight-mihrab-crest">
-                  <span className="crest-seal">۩</span>
-                  <span className="crest-sub">الموقع القرآني الموثق</span>
-                </div>
-
-                <div className="spotlight-header">
-                  <div className="spotlight-title-group">
-                    <div className="spotlight-badge-line">
-                      <span className="spotlight-region-tag">{selectedLocation.region}</span>
-                      <span className="spotlight-era-tag">✦ {selectedLocation.historicalEra}</span>
-                    </div>
-                    <h3 className="spotlight-name font-calligraphy">{selectedLocation.name}</h3>
-                    <span className="spotlight-en">{selectedLocation.englishName}</span>
-                  </div>
-
+              {isSpotlightCollapsed ? (
+                <div className="atlas-spotlight-pill">
                   <button
                     type="button"
-                    className="spotlight-reader-btn"
-                    onClick={() => {
-                      onSelectSurah?.(selectedLocation.surahNumber);
-                      onNavigateTab?.('reader');
-                    }}
+                    className="spotlight-pill-expand-btn font-calligraphy"
+                    onClick={() => setIsSpotlightCollapsed(false)}
                   >
-                    <BookOpenIcon size={16} />
-                    <span>فتح {selectedLocation.surahRef} في المصحف ↵</span>
+                    <span className="pill-seal">۞</span>
+                    <span className="pill-title">الموقع القرآني المختار: {selectedLocation.name}</span>
+                    <span className="pill-action">▲ إظهار لوحة المعلم</span>
                   </button>
                 </div>
+              ) : (
+                <div className="atlas-selected-spotlight animate-slide-up">
+                  <div className="spotlight-mihrab-crest">
+                    <div className="crest-left">
+                      <span className="crest-seal">۩</span>
+                      <span className="crest-sub">الموقع القرآني الموثق</span>
+                    </div>
+                    <button
+                      type="button"
+                      className="spotlight-collapse-btn font-calligraphy"
+                      onClick={() => setIsSpotlightCollapsed(true)}
+                      title="تصغير اللوحة لرؤية كامل مساحة الخريطة"
+                    >
+                      ▼ تصغير اللوحة
+                    </button>
+                  </div>
 
-                <div className="spotlight-verse-banner">
-                  <p className="verse-text font-calligraphy">"{selectedLocation.verse}"</p>
-                  <span className="verse-source">— {selectedLocation.surahRef}</span>
+                  <div className="spotlight-header">
+                    <div className="spotlight-title-group">
+                      <div className="spotlight-badge-line">
+                        <span className="spotlight-region-tag">{selectedLocation.region}</span>
+                        <span className="spotlight-era-tag">✦ {selectedLocation.historicalEra}</span>
+                      </div>
+                      <h3 className="spotlight-name font-calligraphy">{selectedLocation.name}</h3>
+                      <span className="spotlight-en">{selectedLocation.englishName}</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="spotlight-reader-btn"
+                      onClick={() => {
+                        onSelectSurah?.(selectedLocation.surahNumber);
+                        onNavigateTab?.('reader');
+                      }}
+                    >
+                      <BookOpenIcon size={16} />
+                      <span>فتح {selectedLocation.surahRef} في المصحف ↵</span>
+                    </button>
+                  </div>
+
+                  <div className="spotlight-verse-banner">
+                    <p className="verse-text font-calligraphy">"{selectedLocation.verse}"</p>
+                    <span className="verse-source">— {selectedLocation.surahRef}</span>
+                  </div>
+
+                  <p className="spotlight-story">{selectedLocation.story}</p>
                 </div>
-
-                <p className="spotlight-story">{selectedLocation.story}</p>
-              </div>
+              )}
             </div>
           </div>
         </div>

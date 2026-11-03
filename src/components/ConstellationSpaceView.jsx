@@ -1874,32 +1874,67 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                     </g>
 
                     <path
-                      d="M 50 200 C 100 205, 160 205, 220 195 C 230 185, 242 176, 252 176 C 260 176, 272 178, 282 184 C 292 190, 305 194, 320 192 C 330 190, 340 185, 350 178 C 353 172, 354 165, 354 158 C 354 150, 355 142, 356 135 C 357 128, 356 122, 358 115 C 360 108, 362 98, 364 88 C 366 80, 368 70, 370 60 C 350 62, 320 64, 290 65 C 260 66, 220 65, 180 62 C 140 60, 90 56, 50 54 L 50 50 L 50 200 Z"
+                      d="M 50 190 C 100 192, 145 195, 185 190 C 205 180, 245 178, 265 190 C 285 195, 310 192, 335 180 C 342 165, 345 145, 346 130 C 348 110, 352 85, 356 50 L 50 50 Z"
                       fill="url(#seaWaterGrad)"
-                      stroke="rgba(56, 189, 248, 0.55)"
-                      strokeWidth="1.6"
+                      stroke="rgba(56, 189, 248, 0.75)"
+                      strokeWidth="1.8"
+                    />
+                    <path
+                      d="M 50 190 C 100 192, 145 195, 185 190 C 205 180, 245 178, 265 190 C 285 195, 310 192, 335 180 C 342 165, 345 145, 346 130 C 348 110, 352 85, 356 50"
+                      fill="none"
+                      stroke="#38bdf8"
+                      strokeWidth="5"
+                      opacity="0.32"
                     />
 
                     <path
-                      d="M 285 110 C 295 98, 315 95, 328 100 C 338 104, 348 98, 355 96 C 348 102, 335 108, 325 112 C 305 118, 292 116, 285 110 Z"
+                      d="M 285 110 C 295 98, 318 95, 332 102 C 342 106, 352 100, 358 98 C 350 105, 336 112, 325 116 C 305 120, 292 118, 285 110 Z"
                       fill="url(#parchmentLandGrad)"
-                      stroke="rgba(210, 170, 96, 0.6)"
-                      strokeWidth="1.2"
+                      stroke="rgba(210, 170, 96, 0.75)"
+                      strokeWidth="1.3"
                     />
-                    <text x="315" y="108" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="9" fontFamily="'Amiri', serif" textAnchor="middle">قُبْرُص</text>
+                    <text x="320" y="108" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="9.5" fontWeight="700" fontFamily="'Amiri', serif" textAnchor="middle">قُبْرُص</text>
 
                     <path
-                      d="M 295 228 C 305 242, 312 260, 322 282 C 326 270, 332 255, 340 240 C 348 260, 362 285, 375 315 C 388 340, 402 368, 415 395 C 425 415, 438 445, 452 478 C 465 505, 480 535, 498 565 C 515 585, 528 602, 538 614 L 524 614 C 515 600, 498 575, 480 545 C 460 515, 442 485, 425 450 C 405 415, 385 378, 365 340 C 345 305, 325 270, 308 245 C 300 235, 296 230, 295 228 Z"
+                      d="M 270 215 C 278 245, 288 275, 298 305 C 315 345, 338 390, 365 435 C 390 475, 420 520, 455 560 C 475 580, 495 592, 508 598 L 542 598 C 530 568, 515 538, 495 500 C 475 460, 452 425, 435 398 C 420 375, 400 350, 380 325 C 365 305, 352 288, 340 270 C 335 255, 330 238, 328 222 L 322 222 C 318 240, 312 260, 305 282 C 295 260, 285 238, 276 215 Z"
                       fill="url(#seaWaterGrad)"
-                      stroke="rgba(56, 189, 248, 0.55)"
-                      strokeWidth="1.6"
+                      stroke="rgba(56, 189, 248, 0.75)"
+                      strokeWidth="1.8"
+                    />
+                    <path
+                      d="M 270 215 C 278 245, 288 275, 298 305 C 315 345, 338 390, 365 435 C 390 475, 420 520, 455 560 C 475 580, 495 592, 508 598 M 542 598 C 530 568, 515 538, 495 500 C 475 460, 452 425, 435 398 C 420 375, 400 350, 380 325 C 365 305, 352 288, 340 270 C 335 255, 330 238, 328 222"
+                      fill="none"
+                      stroke="#38bdf8"
+                      strokeWidth="5"
+                      opacity="0.32"
                     />
 
                     <path
-                      d="M 538 614 C 555 610, 575 600, 600 592 C 630 584, 665 572, 705 558 C 745 542, 785 522, 825 495 C 855 470, 878 442, 888 415 C 880 385, 860 355, 835 325 C 810 295, 785 268, 770 250 C 755 265, 735 282, 705 292 C 690 295, 680 270, 672 265 C 665 265, 655 275, 650 295 C 642 290, 630 275, 620 255 C 612 242, 602 228, 592 215 C 605 210, 625 220, 650 232 C 680 242, 715 252, 750 258 C 772 255, 792 258, 815 275 C 845 295, 885 315, 930 335 C 945 342, 950 348, 950 600 L 538 614 Z"
+                      d="M 640 160 C 655 180, 680 205, 715 225 C 735 230, 745 208, 755 208 C 760 215, 762 232, 765 245 C 780 258, 802 262, 822 254 C 830 248, 835 235, 836 226 L 844 220 C 815 198, 775 180, 735 168 C 700 158, 668 155, 640 160 Z"
                       fill="url(#seaWaterGrad)"
-                      stroke="rgba(56, 189, 248, 0.55)"
-                      strokeWidth="1.6"
+                      stroke="rgba(56, 189, 248, 0.75)"
+                      strokeWidth="1.8"
+                    />
+                    <path
+                      d="M 640 160 C 655 180, 680 205, 715 225 C 735 230, 745 208, 755 208 C 760 215, 762 232, 765 245 C 780 258, 802 262, 822 254 C 830 248, 835 235, 836 226"
+                      fill="none"
+                      stroke="#38bdf8"
+                      strokeWidth="5"
+                      opacity="0.32"
+                    />
+
+                    <path
+                      d="M 542 598 C 560 592, 590 588, 630 582 C 670 575, 720 568, 775 555 C 820 540, 860 515, 895 480 C 908 450, 915 410, 910 365 C 902 320, 878 280, 844 220 L 950 220 L 950 600 L 508 600 L 508 598 Z"
+                      fill="url(#seaWaterGrad)"
+                      stroke="rgba(56, 189, 248, 0.75)"
+                      strokeWidth="1.8"
+                    />
+                    <path
+                      d="M 542 598 C 560 592, 590 588, 630 582 C 670 575, 720 568, 775 555 C 820 540, 860 515, 895 480 C 908 450, 915 410, 910 365 C 902 320, 878 280, 844 220"
+                      fill="none"
+                      stroke="#38bdf8"
+                      strokeWidth="5"
+                      opacity="0.32"
                     />
 
                     <g className="sea-wave-ripples" opacity="0.32" stroke="#38bdf8" strokeWidth="1" strokeDasharray="3, 5" fill="none">
@@ -1909,7 +1944,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                       <path d="M 620 570 Q 640 565 660 570 M 740 540 Q 760 535 780 540" />
                     </g>
 
-                    <g className="historic-dhow-ship red-sea" transform="translate(395, 395) scale(0.65) rotate(-35)" opacity={isLight ? 0.75 : 0.6}>
+                    <g className="historic-dhow-ship red-sea" transform="translate(395, 410) scale(0.65) rotate(-35)" opacity={isLight ? 0.75 : 0.6}>
                       <path d="M 0 0 C 15 10 35 10 50 0 C 40 18 10 18 0 0 Z" fill={isLight ? '#78350f' : '#d4af37'} />
                       <line x1="25" y1="0" x2="25" y2="-24" stroke={isLight ? '#78350f' : '#d4af37'} strokeWidth="1.5" />
                       <polygon points="25,-24 45,-8 25,-4" fill={isLight ? 'rgba(217, 119, 6, 0.4)' : 'rgba(251, 191, 36, 0.35)'} stroke={isLight ? '#92400e' : '#fbbf24'} strokeWidth="1" />
@@ -1919,109 +1954,116 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                       <line x1="25" y1="0" x2="25" y2="-24" stroke={isLight ? '#78350f' : '#d4af37'} strokeWidth="1.5" />
                       <polygon points="25,-24 45,-8 25,-4" fill={isLight ? 'rgba(217, 119, 6, 0.4)' : 'rgba(251, 191, 36, 0.35)'} stroke={isLight ? '#92400e' : '#fbbf24'} strokeWidth="1" />
                     </g>
-                    <g className="historic-dhow-ship persian-gulf" transform="translate(740, 240) scale(0.6) rotate(-20)" opacity={isLight ? 0.75 : 0.6}>
+                    <g className="historic-dhow-ship persian-gulf" transform="translate(740, 220) scale(0.6) rotate(-20)" opacity={isLight ? 0.75 : 0.6}>
                       <path d="M 0 0 C 15 10 35 10 50 0 C 40 18 10 18 0 0 Z" fill={isLight ? '#78350f' : '#d4af37'} />
                       <line x1="25" y1="0" x2="25" y2="-24" stroke={isLight ? '#78350f' : '#d4af37'} strokeWidth="1.5" />
                       <polygon points="25,-24 45,-8 25,-4" fill={isLight ? 'rgba(217, 119, 6, 0.4)' : 'rgba(251, 191, 36, 0.35)'} stroke={isLight ? '#92400e' : '#fbbf24'} strokeWidth="1" />
                     </g>
 
                     <path
-                      d="M 235 470 C 238 430, 242 390, 240 350 C 238 310, 230 270, 225 235"
+                      d="M 220 500 C 228 440, 238 380, 234 320 C 230 280, 230 255, 232 245"
+                      fill="none"
+                      stroke={isLight ? "#0284c7" : "#38bdf8"}
+                      strokeWidth="3.2"
+                      strokeLinecap="round"
+                    />
+                    <polygon
+                      points="232,245 208,188 256,188"
+                      fill={isLight ? "rgba(16, 185, 129, 0.25)" : "rgba(52, 211, 153, 0.18)"}
+                      stroke={isLight ? "rgba(16, 185, 129, 0.5)" : "rgba(52, 211, 153, 0.35)"}
+                      strokeWidth="1.2"
+                    />
+                    <path
+                      d="M 232 245 C 225 220, 218 200, 215 188 M 232 245 C 240 220, 246 200, 248 188"
+                      fill="none"
+                      stroke={isLight ? "#0284c7" : "#38bdf8"}
+                      strokeWidth="2"
+                    />
+
+                    <path
+                      d="M 565 78 C 575 105, 595 130, 615 145 C 625 152, 632 156, 640 160"
                       fill="none"
                       stroke={isLight ? "#0284c7" : "#38bdf8"}
                       strokeWidth="2.2"
+                      strokeLinecap="round"
                     />
                     <path
-                      d="M 225 235 C 220 215, 215 200, 215 192"
+                      d="M 515 85 C 535 110, 565 138, 600 155 C 618 158, 630 158, 640 160"
                       fill="none"
                       stroke={isLight ? "#0284c7" : "#38bdf8"}
-                      strokeWidth="1.8"
-                    />
-                    <path
-                      d="M 225 235 C 235 215, 245 200, 250 185"
-                      fill="none"
-                      stroke={isLight ? "#0284c7" : "#38bdf8"}
-                      strokeWidth="1.8"
-                    />
-                    <polygon
-                      points="225,235 215,192 232,185 250,185"
-                      fill={isLight ? "rgba(16, 185, 129, 0.22)" : "rgba(52, 211, 153, 0.16)"}
-                      stroke={isLight ? "rgba(16, 185, 129, 0.45)" : "rgba(52, 211, 153, 0.3)"}
-                      strokeWidth="1"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
                     />
 
-                    <path
-                      d="M 560 80 C 570 100, 580 120, 590 145 C 598 165, 602 185, 595 212"
-                      fill="none"
-                      stroke={isLight ? "#0284c7" : "#38bdf8"}
-                      strokeWidth="2"
-                      strokeOpacity={isLight ? 0.9 : 0.75}
-                    />
-                    <path
-                      d="M 520 95 C 525 120, 535 145, 555 165 C 575 180, 585 195, 595 212"
-                      fill="none"
-                      stroke={isLight ? "#0284c7" : "#38bdf8"}
-                      strokeWidth="2"
-                      strokeOpacity={isLight ? 0.9 : 0.75}
-                    />
-
-                    <g className="mountains-group" opacity={isLight ? 0.8 : 0.65}>
-                      {[[365, 290], [380, 320], [398, 350], [415, 385], [435, 420], [455, 460], [475, 500], [495, 540], [515, 575]].map(([mx, my], idx) => (
+                    <g className="mountains-group" opacity={isLight ? 0.85 : 0.7}>
+                      {[
+                        [348, 278], [360, 305], [375, 335], [395, 365], [415, 395],
+                        [435, 430], [455, 465], [475, 500], [495, 535], [515, 565]
+                      ].map(([mx, my], idx) => (
                         <polygon
                           key={`mtn-sarawat-${idx}`}
                           points={`${mx},${my - 9} ${mx - 8},${my + 4} ${mx + 8},${my + 4}`}
-                          fill={isLight ? "rgba(217, 119, 6, 0.25)" : "rgba(210, 170, 96, 0.22)"}
+                          fill={isLight ? "rgba(217, 119, 6, 0.28)" : "rgba(210, 170, 96, 0.25)"}
                           stroke={isLight ? "#d97706" : "#fbbf24"}
-                          strokeWidth="1"
+                          strokeWidth="1.2"
                         />
                       ))}
                       <polygon
-                        points="310,246 301,260 319,260"
-                        fill={isLight ? "rgba(217, 119, 6, 0.4)" : "rgba(210, 170, 96, 0.4)"}
+                        points="312,243 303,257 321,257"
+                        fill={isLight ? "rgba(217, 119, 6, 0.45)" : "rgba(210, 170, 96, 0.45)"}
                         stroke={isLight ? "#b45309" : "#fde047"}
-                        strokeWidth="1.2"
+                        strokeWidth="1.4"
                       />
                       <polygon
-                        points="560,71 549,87 571,87"
-                        fill={isLight ? "rgba(217, 119, 6, 0.4)" : "rgba(210, 170, 96, 0.4)"}
+                        points="565,69 554,85 576,85"
+                        fill={isLight ? "rgba(217, 119, 6, 0.45)" : "rgba(210, 170, 96, 0.45)"}
                         stroke={isLight ? "#b45309" : "#fde047"}
-                        strokeWidth="1.2"
+                        strokeWidth="1.4"
                       />
                     </g>
 
-                    <g className="sea-calligraphy-labels" opacity={isLight ? 0.85 : 0.55}>
-                      <text x="180" y="90" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="15" fontFamily="'Amiri', serif" textAnchor="middle">
+                    <g className="sea-calligraphy-labels" opacity={isLight ? 0.9 : 0.7}>
+                      <text x="180" y="90" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="15" fontWeight="700" fontFamily="'Amiri', serif" textAnchor="middle">
                         بَحْرُ الرُّومِ (المتوسط)
                       </text>
-                      <text x="430" y="440" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="15" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(-54 430 440)">
+                      <text x="420" y="445" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="15" fontWeight="700" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(-54 420 445)">
                         بَحْرُ القُلْزُمِ (البحر الأحمر)
                       </text>
-                      <text x="710" y="240" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(16 710 240)">
+                      <text x="730" y="195" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="14" fontWeight="700" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(18 730 195)">
                         بَحْرُ فَارِسَ (الخليج العربي)
                       </text>
-                      <text x="740" y="585" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
-                        بَحْرُ العَرَبِ وَالمُحِيطُ
+                      <text x="740" y="585" fill={isLight ? "#0369a1" : "#38bdf8"} fontSize="14" fontWeight="700" fontFamily="'Amiri', serif" textAnchor="middle">
+                        بَحْرُ العَرَبِ وَالمُحِيطُ الهِنْدِي
+                      </text>
+                      <text x="282" y="260" fill={isLight ? "#0284c7" : "#38bdf8"} fontSize="9" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(-65 282 260)">
+                        خليج السويس
+                      </text>
+                      <text x="325" y="248" fill={isLight ? "#0284c7" : "#38bdf8"} fontSize="9" fontFamily="'Amiri', serif" textAnchor="middle" transform="rotate(-75 325 248)">
+                        خليج العقبة
                       </text>
                     </g>
 
-                    <g className="region-calligraphy-labels" opacity={isLight ? 0.85 : 0.65}>
-                      <text x="480" y="380" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="16" fontWeight="700" fontFamily="'Amiri', serif" textAnchor="middle">
+                    <g className="region-calligraphy-labels" opacity={isLight ? 0.9 : 0.75}>
+                      <text x="495" y="380" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="16" fontWeight="700" fontFamily="'Amiri', serif" textAnchor="middle">
                         بِلَادُ الحِجَازِ المُبَارَكَة
                       </text>
-                      <text x="400" y="130" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                      <text x="390" y="130" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontWeight="600" fontFamily="'Amiri', serif" textAnchor="middle">
                         بِلَادُ الشَّامِ وَفِلَسْطِين
                       </text>
-                      <text x="150" y="270" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
-                        أَرْضُ الكِنَانَةِ (مِصْر)
+                      <text x="160" y="270" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontWeight="600" fontFamily="'Amiri', serif" textAnchor="middle">
+                        أَرْضُ الكِنَانَةِ (مِصْر وَالنِّيل)
                       </text>
-                      <text x="640" y="145" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                      <text x="650" y="135" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontWeight="600" fontFamily="'Amiri', serif" textAnchor="middle">
                         بِلَادُ الرَّافِدَيْنِ (العِرَاق)
                       </text>
-                      <text x="590" y="560" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontFamily="'Amiri', serif" textAnchor="middle">
+                      <text x="610" y="555" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="14" fontWeight="600" fontFamily="'Amiri', serif" textAnchor="middle">
                         اليَمَنُ السَّعِيد
                       </text>
-                      <text x="700" y="410" fill={isLight ? "#92400e" : "#94a3b8"} fontSize="12" fontFamily="'Amiri', serif" textAnchor="middle">
+                      <text x="730" y="410" fill={isLight ? "#92400e" : "#94a3b8"} fontSize="12.5" fontFamily="'Amiri', serif" textAnchor="middle">
                         رِمَالُ الأَحْقَافِ (الرُّبْعُ الخَالِي)
+                      </text>
+                      <text x="590" y="330" fill={isLight ? "#92400e" : "#94a3b8"} fontSize="12" fontFamily="'Amiri', serif" textAnchor="middle">
+                        نَجْدُ وَاليَمَامَة
                       </text>
                     </g>
 
@@ -2054,10 +2096,10 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                       const isSelected = selectedLocation && selectedLocation.id === loc.id;
                       const coords = loc.svgCoords || { x: loc.coordinates.x * 10, y: loc.coordinates.y * 6.5 };
                       const locCfg = LOCATION_CONFIGS[loc.id] || { labelDx: 14, labelDy: -9, labelAnchor: 'start' };
-                      const boxX = locCfg.labelAnchor === 'start' ? (locCfg.labelDx || 14) : (locCfg.labelAnchor === 'end' ? (locCfg.labelDx || -90) : -38);
-                      const boxY = locCfg.labelDy !== undefined ? locCfg.labelDy : -9;
-                      const textX = boxX + 38;
-                      const textY = boxY + 12.5;
+                      const boxX = locCfg.labelAnchor === 'start' ? (locCfg.labelDx || 14) : (locCfg.labelAnchor === 'end' ? (locCfg.labelDx || -96) : -41);
+                      const boxY = locCfg.labelDy !== undefined ? locCfg.labelDy : -9.5;
+                      const textX = boxX + 41;
+                      const textY = boxY + 13;
 
                       return (
                         <g
@@ -2080,6 +2122,16 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                             </>
                           )}
 
+                          {loc.id === 'makkah' && (
+                            <g className="makkah-sanctuary-halo">
+                              <circle cx="0" cy="0" r="32" fill="none" stroke="#d4af37" strokeWidth="1" strokeDasharray="3, 4" opacity="0.65">
+                                <animate attributeName="r" values="24;36;24" dur="3.5s" repeatCount="indefinite" />
+                                <animate attributeName="opacity" values="0.75;0.2;0.75" dur="3.5s" repeatCount="indefinite" />
+                              </circle>
+                              <circle cx="0" cy="0" r="18" fill="rgba(212, 175, 55, 0.18)" stroke="#d4af37" strokeWidth="1.2" />
+                            </g>
+                          )}
+
                           <polygon
                             points="0,-12 3,-4 11,-4 5,2 7,10 0,5 -7,10 -5,2 -11,-4 -3,-4"
                             fill={isSelected ? '#d4af37' : (isLight ? '#ffffff' : 'rgba(11, 43, 38, 0.95)')}
@@ -2096,9 +2148,9 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                             <rect
                               x={boxX}
                               y={boxY}
-                              width="76"
-                              height="18"
-                              rx="9"
+                              width="82"
+                              height="19"
+                              rx="9.5"
                               fill={isSelected ? (isLight ? '#ffffff' : 'rgba(7, 24, 30, 0.98)') : (isLight ? '#ffffff' : 'rgba(3, 11, 14, 0.88)')}
                               stroke={isSelected ? '#d4af37' : (isLight ? 'rgba(180, 140, 60, 0.5)' : 'rgba(210, 170, 96, 0.35)')}
                               strokeWidth="1"
@@ -2136,18 +2188,33 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                   strokeDasharray="4, 4"
                 />
 
-                <g className="astrolabe-compass-rose" transform="translate(100, 100)">
-                  <circle cx="0" cy="0" r="42" fill={isLight ? "rgba(255, 255, 255, 0.95)" : "rgba(4, 14, 18, 0.85)"} stroke={isLight ? "#d4af37" : "#fbbf24"} strokeWidth="1.5" />
-                  <circle cx="0" cy="0" r="38" fill="none" stroke="rgba(210, 170, 96, 0.4)" strokeWidth="1" strokeDasharray="2, 4" />
-                  <polygon points="0,-40 6,-8 0,0 -6,-8" fill={isLight ? "#d4af37" : "#fbbf24"} />
-                  <polygon points="0,40 6,8 0,0 -6,8" fill={isLight ? "#94a3b8" : "rgba(251, 191, 36, 0.4)"} />
-                  <polygon points="40,0 8,6 0,0 8,-6" fill={isLight ? "#b45309" : "rgba(251, 191, 36, 0.6)"} />
-                  <polygon points="-40,0 -8,6 0,0 -8,-6" fill={isLight ? "#b45309" : "rgba(251, 191, 36, 0.6)"} />
-                  <circle cx="0" cy="0" r="5" fill="#ffffff" stroke={isLight ? "#d4af37" : "#fbbf24"} strokeWidth="1.5" />
-                  <text x="0" y="-46" fill={isLight ? "#92400e" : "#fbbf24"} fontSize="11" fontWeight="700" textAnchor="middle" fontFamily="'Amiri', serif">شَمَال</text>
-                  <text x="0" y="54" fill={isLight ? "#64748b" : "#94a3b8"} fontSize="10" textAnchor="middle" fontFamily="'Amiri', serif">جَنُوب</text>
-                  <text x="48" y="4" fill={isLight ? "#64748b" : "#94a3b8"} fontSize="10" textAnchor="start" fontFamily="'Amiri', serif">مَشْرِق</text>
-                  <text x="-48" y="4" fill={isLight ? "#64748b" : "#94a3b8"} fontSize="10" textAnchor="end" fontFamily="'Amiri', serif">مَغْرِب</text>
+                <g className="astrolabe-compass-rose" transform="translate(145, 125)">
+                  <circle cx="0" cy="0" r="46" fill={isLight ? "rgba(255, 255, 255, 0.98)" : "rgba(4, 14, 18, 0.92)"} stroke={isLight ? "#d4af37" : "#fbbf24"} strokeWidth="2" />
+                  <circle cx="0" cy="0" r="41" fill="none" stroke="rgba(210, 170, 96, 0.4)" strokeWidth="1" strokeDasharray="2, 4" />
+                  
+                  <polygon points="0,-36 6,-8 0,0 -6,-8" fill={isLight ? "#b45309" : "#fbbf24"} />
+                  <polygon points="0,36 6,8 0,0 -6,8" fill={isLight ? "#d97706" : "rgba(251, 191, 36, 0.6)"} />
+                  <polygon points="36,0 8,6 0,0 8,-6" fill={isLight ? "#d97706" : "rgba(251, 191, 36, 0.6)"} />
+                  <polygon points="-36,0 -8,6 0,0 -8,-6" fill={isLight ? "#d97706" : "rgba(251, 191, 36, 0.6)"} />
+                  
+                  <polygon points="25,-25 6,-4 0,0 4,-6" fill={isLight ? "#d4af37" : "rgba(210, 170, 96, 0.4)"} />
+                  <polygon points="-25,-25 -6,-4 0,0 -4,-6" fill={isLight ? "#d4af37" : "rgba(210, 170, 96, 0.4)"} />
+                  <polygon points="25,25 6,4 0,0 4,6" fill={isLight ? "#d4af37" : "rgba(210, 170, 96, 0.4)"} />
+                  <polygon points="-25,25 -6,4 0,0 -4,6" fill={isLight ? "#d4af37" : "rgba(210, 170, 96, 0.4)"} />
+
+                  <circle cx="0" cy="0" r="5" fill="#ffffff" stroke={isLight ? "#b45309" : "#fbbf24"} strokeWidth="1.6" />
+
+                  <rect x="-24" y="-58" width="48" height="17" rx="8" fill={isLight ? "#fef3c7" : "rgba(11, 43, 38, 0.95)"} stroke={isLight ? "#d4af37" : "#fbbf24"} strokeWidth="1" />
+                  <text x="0" y="-46" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="11" fontWeight="800" textAnchor="middle" fontFamily="'Amiri', serif">شَمَال ↑</text>
+
+                  <rect x="-24" y="42" width="48" height="17" rx="8" fill={isLight ? "#ffffff" : "rgba(4, 14, 18, 0.9)"} stroke={isLight ? "#cbd5e1" : "rgba(210, 170, 96, 0.5)"} strokeWidth="1" />
+                  <text x="0" y="54" fill={isLight ? "#78350f" : "#e2e8f0"} fontSize="10.5" fontWeight="700" textAnchor="middle" fontFamily="'Amiri', serif">جَنُوب ↓</text>
+
+                  <rect x="36" y="-8.5" width="48" height="17" rx="8" fill={isLight ? "#ffffff" : "rgba(4, 14, 18, 0.9)"} stroke={isLight ? "#cbd5e1" : "rgba(210, 170, 96, 0.5)"} strokeWidth="1" />
+                  <text x="60" y="3.5" fill={isLight ? "#78350f" : "#e2e8f0"} fontSize="10.5" fontWeight="700" textAnchor="middle" fontFamily="'Amiri', serif">شَرْق →</text>
+
+                  <rect x="-84" y="-8.5" width="48" height="17" rx="8" fill={isLight ? "#ffffff" : "rgba(4, 14, 18, 0.9)"} stroke={isLight ? "#cbd5e1" : "rgba(210, 170, 96, 0.5)"} strokeWidth="1" />
+                  <text x="-60" y="3.5" fill={isLight ? "#78350f" : "#e2e8f0"} fontSize="10.5" fontWeight="700" textAnchor="middle" fontFamily="'Amiri', serif">← غَرْب</text>
                 </g>
               </svg>
 
@@ -2199,35 +2266,40 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                       </div>
                     </div>
 
-                    <div className="spotlight-header">
-                      <div className="spotlight-title-group">
-                        <div className="spotlight-badge-line">
-                          <span className="spotlight-region-tag">{selectedLocation.region}</span>
-                          <span className="spotlight-era-tag">✦ {selectedLocation.historicalEra}</span>
+                    <div className="spotlight-scroll-body">
+                      <div className="spotlight-header">
+                        <div className="spotlight-title-group">
+                          <div className="spotlight-badge-line">
+                            <span className="spotlight-region-tag">{selectedLocation.region}</span>
+                            <span className="spotlight-era-tag">✦ {selectedLocation.historicalEra}</span>
+                          </div>
+                          <h3 className="spotlight-name font-calligraphy">{selectedLocation.name}</h3>
+                          <span className="spotlight-en">{selectedLocation.englishName}</span>
                         </div>
-                        <h3 className="spotlight-name font-calligraphy">{selectedLocation.name}</h3>
-                        <span className="spotlight-en">{selectedLocation.englishName}</span>
+
+                        <button
+                          type="button"
+                          className="spotlight-reader-btn"
+                          onClick={() => {
+                            onSelectSurah?.(selectedLocation.surahNumber);
+                            onNavigateTab?.('reader');
+                          }}
+                        >
+                          <BookOpenIcon size={16} />
+                          <span>فتح {selectedLocation.surahRef} في المصحف ↵</span>
+                        </button>
                       </div>
 
-                      <button
-                        type="button"
-                        className="spotlight-reader-btn"
-                        onClick={() => {
-                          onSelectSurah?.(selectedLocation.surahNumber);
-                          onNavigateTab?.('reader');
-                        }}
-                      >
-                        <BookOpenIcon size={16} />
-                        <span>فتح {selectedLocation.surahRef} في المصحف ↵</span>
-                      </button>
-                    </div>
+                      <div className="spotlight-verse-banner">
+                        <p className="verse-text font-calligraphy">"{selectedLocation.verse}"</p>
+                        <span className="verse-source">— {selectedLocation.surahRef}</span>
+                      </div>
 
-                    <div className="spotlight-verse-banner">
-                      <p className="verse-text font-calligraphy">"{selectedLocation.verse}"</p>
-                      <span className="verse-source">— {selectedLocation.surahRef}</span>
+                      <div className="spotlight-story-wrapper">
+                        <span className="story-lead-tag">✦ البيان التوثيقي والتاريخي:</span>
+                        <p className="spotlight-story">{selectedLocation.story}</p>
+                      </div>
                     </div>
-
-                    <p className="spotlight-story">{selectedLocation.story}</p>
                   </div>
                 )
               )}

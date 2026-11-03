@@ -2112,10 +2112,10 @@
   position: absolute;
   bottom: 18px;
   left: 20px;
-  width: 440px;
+  width: 460px;
   max-width: calc(100% - 40px);
-  max-height: 52%;
-  overflow-y: auto;
+  max-height: min(78vh, 540px);
+  overflow: hidden;
   background: rgba(5, 17, 21, 0.96);
   border: 1.5px solid #d4af37;
   outline: 1px solid rgba(212, 175, 55, 0.35);
@@ -2128,6 +2128,55 @@
   flex-direction: column;
   gap: 10px;
   z-index: 50;
+}
+
+.spotlight-scroll-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 6px;
+  padding-bottom: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: #d4af37 transparent;
+}
+
+.spotlight-scroll-body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.spotlight-scroll-body::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+}
+
+.spotlight-scroll-body::-webkit-scrollbar-thumb {
+  background: #d4af37;
+  border-radius: 4px;
+}
+
+.spotlight-scroll-body::-webkit-scrollbar-thumb:hover {
+  background: #fbbf24;
+}
+
+.spotlight-story-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.story-lead-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fbbf24;
+  letter-spacing: 0.3px;
 }
 
 .crest-actions-group {
@@ -2287,9 +2336,9 @@
 }
 
 .spotlight-story {
-  font-size: 13px;
+  font-size: 13.5px;
   color: #e2e8f0;
-  line-height: 1.65;
+  line-height: 1.75;
   margin: 0;
 }
 
@@ -3173,9 +3222,35 @@
   color: #92400e;
 }
 
+.is-light-theme .spotlight-scroll-body,
+[data-theme='light'] .spotlight-scroll-body {
+  scrollbar-color: #b45309 transparent;
+}
+
+.is-light-theme .spotlight-scroll-body::-webkit-scrollbar-track,
+[data-theme='light'] .spotlight-scroll-body::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.is-light-theme .spotlight-scroll-body::-webkit-scrollbar-thumb,
+[data-theme='light'] .spotlight-scroll-body::-webkit-scrollbar-thumb {
+  background: #d4af37;
+}
+
+.is-light-theme .spotlight-story-wrapper,
+[data-theme='light'] .spotlight-story-wrapper {
+  background: rgba(254, 243, 199, 0.4);
+  border-color: rgba(212, 175, 55, 0.35);
+}
+
+.is-light-theme .story-lead-tag,
+[data-theme='light'] .story-lead-tag {
+  color: #92400e;
+}
+
 .is-light-theme .spotlight-story,
 [data-theme='light'] .spotlight-story {
-  color: #334155;
+  color: #1e293b;
 }
 
 .is-light-theme .spotlight-reader-btn,

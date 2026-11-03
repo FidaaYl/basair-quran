@@ -1444,9 +1444,12 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
 
                           {milestone && (
                             <div className="station-milestone-beacon animate-fade-in">
-                              <span className="beacon-flourish">✦</span>
-                              <span className="beacon-title font-calligraphy">{milestone.title}</span>
-                              <span className="beacon-flourish">✦</span>
+                              <div className="milestone-pavilion-badge">
+                                <span className="beacon-sparkle">✦</span>
+                                <span className="beacon-title font-calligraphy">{milestone.title}</span>
+                                <span className="beacon-sparkle">✦</span>
+                              </div>
+                              <div className="beacon-anchor-needle" />
                             </div>
                           )}
 

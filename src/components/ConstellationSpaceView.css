@@ -919,14 +919,14 @@
   align-items: flex-start;
   min-width: max-content;
   height: 100%;
-  padding: 48px 44px 36px;
+  padding: 82px 44px 36px;
   gap: 28px;
   position: relative;
 }
 
 .horizon-spine-rule {
   position: absolute;
-  top: 66px;
+  top: 100px;
   left: 0;
   right: 0;
   height: 3px;
@@ -1047,7 +1047,7 @@
 
 .station-milestone-beacon {
   position: absolute;
-  bottom: calc(100% + 12px);
+  bottom: calc(100% + 6px);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -1055,42 +1055,43 @@
   align-items: center;
   z-index: 10;
   pointer-events: none;
-  min-width: 220px;
+  min-width: max-content;
 }
 
-.milestone-arch-roof {
-  font-size: 14px;
-  color: #fbbf24;
-  margin-bottom: -2px;
-}
-
-.milestone-beacon-badge {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(6, 44, 38, 0.95) 100%);
-  border: 1.5px solid #10b981;
-  border-radius: 12px;
-  padding: 6px 14px;
-  display: flex;
+.milestone-pavilion-badge {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(16, 185, 129, 0.35);
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.3) 0%, rgba(6, 44, 38, 0.95) 100%);
+  border: 1.5px solid #d4af37;
+  border-radius: var(--radius-full);
+  padding: 4px 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 14px rgba(212, 175, 55, 0.35);
   backdrop-filter: blur(8px);
+  white-space: nowrap;
 }
 
-.beacon-sparkle {
-  color: #fbbf24;
-  font-size: 12px;
-}
-
-.beacon-tag {
-  color: #34d399;
-  font-size: 11px;
+.milestone-pavilion-badge .beacon-title {
+  font-size: 13px;
   font-weight: 700;
+  color: #fbbf24;
+  letter-spacing: 0.3px;
+  line-height: 1.35;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 
-.beacon-desc {
-  color: #e2e8f0;
+.milestone-pavilion-badge .beacon-sparkle {
+  color: #fbbf24;
   font-size: 11px;
-  font-weight: 600;
+  line-height: 1;
+}
+
+.beacon-anchor-needle {
+  width: 1.5px;
+  height: 8px;
+  background: #d4af37;
+  margin-top: 2px;
+  box-shadow: 0 0 4px rgba(212, 175, 55, 0.5);
 }
 
 .unwan-station-sub {
@@ -2849,6 +2850,35 @@
 .is-light-theme .station-year-label,
 [data-theme='light'] .station-year-label {
   color: #92400e;
+}
+
+.is-light-theme .milestone-pavilion-badge,
+[data-theme='light'] .milestone-pavilion-badge,
+.constellation-space-root.is-light-theme .milestone-pavilion-badge {
+  background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%) !important;
+  border: 1.5px solid #d4af37 !important;
+  box-shadow: 0 4px 14px rgba(180, 140, 60, 0.2), 0 0 10px rgba(212, 175, 55, 0.25) !important;
+}
+
+.is-light-theme .milestone-pavilion-badge .beacon-title,
+[data-theme='light'] .milestone-pavilion-badge .beacon-title,
+.constellation-space-root.is-light-theme .milestone-pavilion-badge .beacon-title {
+  color: #78350f !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
+}
+
+.is-light-theme .milestone-pavilion-badge .beacon-sparkle,
+[data-theme='light'] .milestone-pavilion-badge .beacon-sparkle,
+.constellation-space-root.is-light-theme .milestone-pavilion-badge .beacon-sparkle {
+  color: #b45309 !important;
+}
+
+.is-light-theme .beacon-anchor-needle,
+[data-theme='light'] .beacon-anchor-needle,
+.constellation-space-root.is-light-theme .beacon-anchor-needle {
+  background: #d4af37 !important;
+  box-shadow: none !important;
 }
 
 .is-light-theme .unwan-station-sub,

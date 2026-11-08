@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { ICONS } from './common/IconSystem';
 import { SURAHS_LIST } from '../data/surahsList';
-import { REVELATION_ORDER, TIMELINE_MILESTONES } from '../data/revelationTimelineData';
+import { REVELATION_ORDER, TIMELINE_MILESTONES, PROPHETIC_JOURNEY_STAGES } from '../data/revelationTimelineData';
 import { QURAN_LOCATIONS, PROPHETIC_ROUTES } from '../data/quranAtlasData';
 import './ConstellationSpaceView.css';
 
@@ -93,17 +93,161 @@ const THEMATIC_LINKS = [
 ];
 
 const LOCATION_CONFIGS = {
-  makkah: { labelDx: 14, labelDy: -9, labelAnchor: 'start' },
-  madinah: { labelDx: 14, labelDy: -9, labelAnchor: 'start' },
-  aqsa: { labelDx: 0, labelDy: -32, labelAnchor: 'middle' },
-  sinai: { labelDx: -90, labelDy: -9, labelAnchor: 'end' },
-  madyan: { labelDx: 14, labelDy: -9, labelAnchor: 'start' },
-  misr: { labelDx: -90, labelDy: -9, labelAnchor: 'end' },
-  judi: { labelDx: 0, labelDy: -32, labelAnchor: 'middle' },
-  babil: { labelDx: 14, labelDy: -9, labelAnchor: 'start' },
-  ahqaf: { labelDx: 14, labelDy: -9, labelAnchor: 'start' },
-  marib: { labelDx: -90, labelDy: -9, labelAnchor: 'end' }
+  makkah: { labelDx: 0, labelDy: 34, labelAnchor: 'middle' },
+  madinah: { labelDx: 42, labelDy: -8, labelAnchor: 'start' },
+  aqsa: { labelDx: 0, labelDy: -34, labelAnchor: 'middle' },
+  sinai: { labelDx: -46, labelDy: 18, labelAnchor: 'end' },
+  madyan: { labelDx: 34, labelDy: 12, labelAnchor: 'start' },
+  misr: { labelDx: -46, labelDy: -18, labelAnchor: 'end' },
+  judi: { labelDx: 0, labelDy: -28, labelAnchor: 'middle' },
+  babil: { labelDx: 34, labelDy: -12, labelAnchor: 'start' },
+  ahqaf: { labelDx: 0, labelDy: 28, labelAnchor: 'middle' },
+  marib: { labelDx: 0, labelDy: 26, labelAnchor: 'middle' }
 };
+
+function renderSacredMiniature(locId, isLight, isSelected) {
+  switch (locId) {
+    case 'makkah':
+      return (
+        <g className="sacred-vignette makkah-vignette">
+          <ellipse cx="0" cy="8" rx="36" ry="18" fill={isLight ? "rgba(255, 255, 255, 0.96)" : "rgba(15, 23, 42, 0.94)"} stroke="#d4af37" strokeWidth="1.4" />
+          <ellipse cx="0" cy="8" rx="28" ry="13" fill="none" stroke="rgba(212, 175, 55, 0.4)" strokeWidth="0.9" strokeDasharray="2, 3" />
+          <ellipse cx="0" cy="8" rx="20" ry="9" fill="none" stroke="rgba(212, 175, 55, 0.55)" strokeWidth="0.9" strokeDasharray="2, 3" />
+          
+          <polygon points="0,-10 11,-2 0,4 -11,-2" fill="#050505" stroke="#d4af37" strokeWidth="0.8" />
+          <polygon points="0,4 11,-2 11,13 0,19" fill="#141414" stroke="#d4af37" strokeWidth="0.8" />
+          <polygon points="-11,-2 0,4 0,19 -11,13" fill="#202020" stroke="#d4af37" strokeWidth="0.8" />
+          
+          <line x1="-11" y1="2" x2="0" y2="8" stroke="#fbbf24" strokeWidth="1.8" />
+          <line x1="0" y1="8" x2="11" y2="2" stroke="#f59e0b" strokeWidth="1.8" />
+          <rect x="2" y="9" width="3.5" height="6.5" rx="0.5" fill="#fde047" stroke="#b45309" strokeWidth="0.5" />
+          <path d="M -13,-3 C -18,0 -18,8 -13,11" fill="none" stroke="#fef08a" strokeWidth="1.4" strokeLinecap="round" />
+          
+          <line x1="-28" y1="14" x2="-28" y2="-12" stroke={isLight ? "#ffffff" : "#f8fafc"} strokeWidth="2.2" />
+          <polygon points="-28,-16 -30,-12 -26,-12" fill="#fbbf24" />
+          <line x1="28" y1="14" x2="28" y2="-12" stroke={isLight ? "#ffffff" : "#f8fafc"} strokeWidth="2.2" />
+          <polygon points="28,-16 26,-12 30,-12" fill="#fbbf24" />
+        </g>
+      );
+    case 'madinah':
+      return (
+        <g className="sacred-vignette madinah-vignette">
+          <path d="M -22,16 L -22,-6 C -22,-18 0,-24 0,-24 C 0,-24 22,-18 22,-6 L 22,16 Z" fill={isLight ? "rgba(16, 185, 129, 0.16)" : "rgba(16, 185, 129, 0.24)"} stroke="#10b981" strokeWidth="1.3" />
+          <rect x="-10" y="-3" width="20" height="7" rx="1.5" fill="#047857" stroke="#10b981" strokeWidth="0.8" />
+          <path d="M -10,-3 C -10,-14 0,-18 0,-18 C 0,-18 10,-14 10,-3 Z" fill="url(#greenDomeGrad)" stroke="#34d399" strokeWidth="1" />
+          <circle cx="0" cy="-20" r="1.6" fill="#fbbf24" />
+          <line x1="0" y1="-18" x2="0" y2="-21" stroke="#fbbf24" strokeWidth="1" />
+          
+          <rect x="-18" y="-18" width="3.2" height="34" rx="0.8" fill="#ffffff" stroke="#94a3b8" strokeWidth="0.6" />
+          <line x1="-20" y1="-8" x2="-14" y2="-8" stroke="#fbbf24" strokeWidth="1.2" />
+          <line x1="-20" y1="2" x2="-14" y2="2" stroke="#fbbf24" strokeWidth="1.2" />
+          <polygon points="-16.4,-23 -18,-18 -14.8,-18" fill="#047857" stroke="#10b981" strokeWidth="0.5" />
+          
+          <path d="M 16,14 Q 18,6 16,0" stroke="#78350f" strokeWidth="1.3" fill="none" />
+          <path d="M 16,0 Q 11,-4 8,-2 M 16,0 Q 21,-4 24,-2 M 16,0 Q 16,-6 16,-9" stroke="#15803d" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+        </g>
+      );
+    case 'aqsa':
+      return (
+        <g className="sacred-vignette aqsa-vignette">
+          <rect x="-22" y="10" width="44" height="5" rx="1.5" fill="#fef3c7" stroke="#d4af37" strokeWidth="1" />
+          <rect x="-18" y="-4" width="36" height="14" rx="1.2" fill="url(#blueTilesGrad)" stroke="#1e40af" strokeWidth="1" />
+          <rect x="-14" y="0" width="3.2" height="6" rx="1.6" fill="#fef08a" opacity="0.95" />
+          <rect x="-6" y="0" width="3.2" height="6" rx="1.6" fill="#fef08a" opacity="0.95" />
+          <rect x="2" y="0" width="3.2" height="6" rx="1.6" fill="#fef08a" opacity="0.95" />
+          <rect x="10" y="0" width="3.2" height="6" rx="1.6" fill="#fef08a" opacity="0.95" />
+          <rect x="-12" y="-8" width="24" height="4" fill="#0284c7" stroke="#d4af37" strokeWidth="0.8" />
+          <path d="M -12,-8 C -12,-21 0,-25 0,-25 C 0,-25 12,-21 12,-8 Z" fill="url(#goldDomeGrad)" stroke="#f59e0b" strokeWidth="1.2" />
+          <circle cx="0" cy="-27.5" r="2.2" fill="#fde047" stroke="#b45309" strokeWidth="0.6" />
+        </g>
+      );
+    case 'sinai':
+      return (
+        <g className="sacred-vignette sinai-vignette">
+          <polygon points="0,-16 -18,12 18,12" fill="url(#sinaiMtnGrad)" stroke="#b45309" strokeWidth="1.2" />
+          <polygon points="0,-16 -6,12 8,12" fill="rgba(251, 191, 36, 0.25)" />
+          <line x1="0" y1="-18" x2="0" y2="-32" stroke="#fde047" strokeWidth="2" strokeLinecap="round" opacity="0.9" />
+          <line x1="0" y1="-18" x2="-12" y2="-29" stroke="#fde047" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
+          <line x1="0" y1="-18" x2="12" y2="-29" stroke="#fde047" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
+          <line x1="0" y1="-18" x2="-22" y2="-21" stroke="#fde047" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
+          <line x1="0" y1="-18" x2="22" y2="-21" stroke="#fde047" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
+        </g>
+      );
+    case 'misr':
+      return (
+        <g className="sacred-vignette misr-vignette">
+          <path d="M 0,20 Q 3,0 0,-15" stroke="#0284c7" strokeWidth="3" fill="none" strokeLinecap="round" />
+          <polygon points="-12,-4 -23,12 -1,12" fill="url(#pyramidGrad)" stroke="#b45309" strokeWidth="1" />
+          <polygon points="4,0 -5,12 13,12" fill="url(#pyramidGrad)" stroke="#92400e" strokeWidth="0.8" />
+          <path d="M 18,12 Q 19,4 17,-2" stroke="#78350f" strokeWidth="1.2" fill="none" />
+          <circle cx="17" cy="-3" r="3.5" fill="#15803d" />
+        </g>
+      );
+    case 'judi':
+      return (
+        <g className="sacred-vignette judi-vignette">
+          <polygon points="0,-14 -16,12 16,12" fill="url(#judiMtnGrad)" stroke="#475569" strokeWidth="1.2" />
+          <path d="M -9,-11 C -6,-6 6,-6 9,-11 Z" fill="#78350f" stroke="#b45309" strokeWidth="0.9" />
+          <rect x="-4" y="-15" width="8" height="4" fill="#92400e" rx="0.5" />
+          <polygon points="0,-18 -5,-15 5,-15" fill="#b45309" />
+        </g>
+      );
+    case 'babil':
+      return (
+        <g className="sacred-vignette babil-vignette">
+          <polygon points="-14,12 14,12 11,5 -11,5" fill="#d97706" stroke="#92400e" strokeWidth="0.8" />
+          <polygon points="-10,5 10,5 8,-1 -8,-1" fill="#b45309" stroke="#78350f" strokeWidth="0.8" />
+          <polygon points="-6,-1 6,-1 5,-7 -5,-7" fill="#78350f" stroke="#451a03" strokeWidth="0.8" />
+          <line x1="0" y1="12" x2="0" y2="-7" stroke="#fef3c7" strokeWidth="1" />
+        </g>
+      );
+    case 'ahqaf':
+      return (
+        <g className="sacred-vignette ahqaf-vignette">
+          <path d="M -26,10 Q -10,-2 8,6 Q 18,2 28,10" fill="none" stroke="#d97706" strokeWidth="2" opacity="0.8" />
+          <g transform="translate(-16, 2) scale(0.75)">
+            <ellipse cx="0" cy="0" rx="5" ry="3.5" fill="#78350f" />
+            <ellipse cx="2" cy="-4" rx="2.5" ry="3" fill="#78350f" />
+            <path d="M -4,0 Q -7,-5 -5,-8 Q -4,-9 -2,-8" stroke="#78350f" strokeWidth="1.2" fill="none" />
+            <line x1="-3" y1="3" x2="-4" y2="9" stroke="#78350f" strokeWidth="1" />
+            <line x1="-1" y1="3" x2="0" y2="9" stroke="#78350f" strokeWidth="1" />
+            <line x1="2" y1="3" x2="1" y2="9" stroke="#78350f" strokeWidth="1" />
+            <line x1="4" y1="3" x2="5" y2="9" stroke="#78350f" strokeWidth="1" />
+          </g>
+          <g transform="translate(6, 4) scale(0.68)">
+            <ellipse cx="0" cy="0" rx="5" ry="3.5" fill="#78350f" />
+            <ellipse cx="2" cy="-4" rx="2.5" ry="3" fill="#78350f" />
+            <path d="M -4,0 Q -7,-5 -5,-8 Q -4,-9 -2,-8" stroke="#78350f" strokeWidth="1.2" fill="none" />
+            <line x1="-3" y1="3" x2="-4" y2="9" stroke="#78350f" strokeWidth="1" />
+            <line x1="-1" y1="3" x2="0" y2="9" stroke="#78350f" strokeWidth="1" />
+            <line x1="2" y1="3" x2="1" y2="9" stroke="#78350f" strokeWidth="1" />
+            <line x1="4" y1="3" x2="5" y2="9" stroke="#78350f" strokeWidth="1" />
+          </g>
+          <line x1="-7" y1="5" x2="2" y2="6" stroke="#b45309" strokeWidth="0.6" strokeDasharray="1, 1" />
+        </g>
+      );
+    case 'marib':
+      return (
+        <g className="sacred-vignette marib-vignette">
+          <path d="M -15,8 L 15,8 L 13,0 L -13,0 Z" fill="#94a3b8" stroke="#475569" strokeWidth="1" />
+          <rect x="-7" y="2" width="4" height="5" fill="#0284c7" />
+          <rect x="3" y="2" width="4" height="5" fill="#0284c7" />
+          <circle cx="-20" cy="4" r="5" fill="#15803d" stroke="#166534" strokeWidth="0.8" />
+          <circle cx="20" cy="4" r="5" fill="#15803d" stroke="#166534" strokeWidth="0.8" />
+        </g>
+      );
+    case 'madyan':
+      return (
+        <g className="sacred-vignette madyan-vignette">
+          <path d="M -10,12 L -10,-2 Q 0,-8 10,-2 L 10,12 Z" fill="#d97706" stroke="#92400e" strokeWidth="0.8" />
+          <path d="M -4,12 L -4,3 Q 0,0 4,3 L 4,12 Z" fill="#451a03" />
+          <ellipse cx="16" cy="9" rx="5" ry="3" fill="#0284c7" stroke="#78350f" strokeWidth="0.9" />
+        </g>
+      );
+    default:
+      return null;
+  }
+}
 
 function buildInitial3DStars() {
   const stars = [];
@@ -208,9 +352,11 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
   const [timelineEraFilter, setTimelineEraFilter] = useState('all');
   const [timelineSearch, setTimelineSearch] = useState('');
   const [activeEpochTab, setActiveEpochTab] = useState('all');
-  const [timelineLayoutMode, setTimelineLayoutMode] = useState('horizon');
+  const [timelineLayoutMode, setTimelineLayoutMode] = useState('roadmap');
   const [activeTimelineSurah, setActiveTimelineSurah] = useState(null);
   const [timelineProgress, setTimelineProgress] = useState(0);
+  const [roadmapEraFilter, setRoadmapEraFilter] = useState('all');
+  const [activeRoadmapStage, setActiveRoadmapStage] = useState(null);
 
   const timelineTrackRef = useRef(null);
   const isTimelineDraggingRef = useRef(false);
@@ -842,6 +988,26 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
     });
   }, [activeEpochTab, timelineEraFilter, timelineSearch]);
 
+  const filteredRoadmapStages = useMemo(() => {
+    return PROPHETIC_JOURNEY_STAGES.filter((stage) => {
+      if (roadmapEraFilter !== 'all') {
+        if (roadmapEraFilter === 'before' && stage.era !== 'قبل البعثة') return false;
+        if (roadmapEraFilter === 'meccan' && stage.era !== 'العهد المكي') return false;
+        if (roadmapEraFilter === 'medinan' && stage.era !== 'العهد المدني') return false;
+      }
+      if (timelineSearch.trim()) {
+        const q = timelineSearch.trim().toLowerCase();
+        const matchTitle = stage.title.toLowerCase().includes(q);
+        const matchEn = stage.englishTitle.toLowerCase().includes(q);
+        const matchDesc = stage.desc.toLowerCase().includes(q);
+        const matchVerse = stage.verse.toLowerCase().includes(q);
+        const matchBadge = stage.badgeText.toLowerCase().includes(q);
+        if (!matchTitle && !matchEn && !matchDesc && !matchVerse && !matchBadge) return false;
+      }
+      return true;
+    });
+  }, [roadmapEraFilter, timelineSearch]);
+
   const milestonesMap = useMemo(() => {
     const map = {};
     TIMELINE_MILESTONES.forEach((m) => {
@@ -1326,11 +1492,19 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
               <div className="chronicle-layout-toggles">
                 <button
                   type="button"
+                  className={`layout-toggle-btn ${timelineLayoutMode === 'roadmap' ? 'active' : ''}`}
+                  onClick={() => setTimelineLayoutMode('roadmap')}
+                  title="مسار السفر النبوي الشريف (طريق متعرج - ٢٢ محطة تاريخية)"
+                >
+                  🗺️ مسار السفر النبوي
+                </button>
+                <button
+                  type="button"
                   className={`layout-toggle-btn ${timelineLayoutMode === 'horizon' ? 'active' : ''}`}
                   onClick={() => setTimelineLayoutMode('horizon')}
-                  title="المسار الزمني الممتد (أفقي)"
+                  title="المسار الزمني الممتد (أفقي لجميع سور القرآن)"
                 >
-                  المسار الأفقي
+                  📜 شريط السور (١١٤)
                 </button>
                 <button
                   type="button"
@@ -1338,7 +1512,7 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                   onClick={() => setTimelineLayoutMode('ledger')}
                   title="السجل الوثائقي المتتابع (عمودي)"
                 >
-                  السجل التوثيقي
+                  📑 السجل التوثيقي
                 </button>
               </div>
 
@@ -1367,32 +1541,143 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
             </div>
           </div>
 
-          <div className="chronicle-epochs-bar">
-            <span className="epochs-bar-title text-gold">الحقب التاريخية:</span>
-            <div className="epochs-pills-track">
-              <button
-                type="button"
-                className={`epoch-pill-item ${activeEpochTab === 'all' ? 'active' : ''}`}
-                onClick={() => setActiveEpochTab('all')}
-              >
-                جميع السور (١١٤)
-              </button>
-              {HISTORICAL_EPOCHS.map((ep) => (
-                <button
-                  key={ep.id}
-                  type="button"
-                  className={`epoch-pill-item ${activeEpochTab === ep.id ? 'active' : ''} ${ep.era}`}
-                  onClick={() => {
-                    setActiveEpochTab(ep.id);
-                    jumpToOrderStation(ep.startOrder);
-                  }}
-                >
-                  <span className="epoch-item-name">{ep.name}</span>
-                  <span className="epoch-item-span">({ep.span})</span>
-                </button>
-              ))}
+          {timelineLayoutMode === 'roadmap' ? (
+            <div className="prophetic-roadmap-stage animate-fade-in">
+              <div className="roadmap-era-filter-bar">
+                <span className="roadmap-filter-label text-gold">مراحل السفر النبوي:</span>
+                <div className="roadmap-filter-pills">
+                  <button
+                    type="button"
+                    className={`roadmap-era-pill ${roadmapEraFilter === 'all' ? 'active' : ''}`}
+                    onClick={() => setRoadmapEraFilter('all')}
+                  >
+                    جميع المحطات (٢٢)
+                  </button>
+                  <button
+                    type="button"
+                    className={`roadmap-era-pill before ${roadmapEraFilter === 'before' ? 'active' : ''}`}
+                    onClick={() => setRoadmapEraFilter('before')}
+                  >
+                    قبل البعثة النبوية (٤)
+                  </button>
+                  <button
+                    type="button"
+                    className={`roadmap-era-pill meccan ${roadmapEraFilter === 'meccan' ? 'active' : ''}`}
+                    onClick={() => setRoadmapEraFilter('meccan')}
+                  >
+                    فجر الوحي والعهد المكي (٩)
+                  </button>
+                  <button
+                    type="button"
+                    className={`roadmap-era-pill medinan ${roadmapEraFilter === 'medinan' ? 'active' : ''}`}
+                    onClick={() => setRoadmapEraFilter('medinan')}
+                  >
+                    الهجرة والعهد المدني (٩)
+                  </button>
+                </div>
+              </div>
+
+              <div className="roadmap-canvas-wrapper">
+                <div className="roadmap-serpentine-track" />
+
+                <div className="roadmap-stations-flow">
+                  {filteredRoadmapStages.map((stage, index) => {
+                    const isEven = index % 2 === 0;
+                    const isSelected = activeRoadmapStage && activeRoadmapStage.id === stage.id;
+
+                    return (
+                      <div
+                        key={stage.id}
+                        className={`roadmap-station-row ${isEven ? 'row-right' : 'row-left'} ${isSelected ? 'is-selected' : ''}`}
+                      >
+                        <div className="roadmap-spine-node">
+                          <div className="roadmap-milestone-orb font-calligraphy">
+                            <span className="orb-numeral">{stage.stageNumber}</span>
+                            <span className="orb-ring" />
+                          </div>
+                          <div className="roadmap-spine-spur" />
+                        </div>
+
+                        <div
+                          className="roadmap-station-card animate-scale-in"
+                          onClick={() => setActiveRoadmapStage(isSelected ? null : stage)}
+                        >
+                          <div className="station-card-topbar">
+                            <div className="station-badge-cluster">
+                              <span className="station-era-tag">{stage.era}</span>
+                              <span className="station-badge-text">✦ {stage.badgeText}</span>
+                            </div>
+                            <span className="station-year-badge">{stage.year}</span>
+                          </div>
+
+                          <div className="station-card-body">
+                            <div className="station-icon-medallion">
+                              <span className="medallion-icon">{stage.iconSymbol}</span>
+                            </div>
+
+                            <div className="station-meta-content">
+                              <h3 className="station-title font-calligraphy">{stage.title}</h3>
+                              <span className="station-english-title">{stage.englishTitle}</span>
+                              <p className="station-desc">{stage.desc}</p>
+                            </div>
+                          </div>
+
+                          <div className="station-verse-ribbon">
+                            <span className="verse-icon-lead">۞</span>
+                            <p className="station-verse-text font-calligraphy">"{stage.verse}"</p>
+                            <span className="station-verse-source">— {stage.surahRef}</span>
+                          </div>
+
+                          <div className="station-card-actions">
+                            <button
+                              type="button"
+                              className="station-reader-btn"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (onSelectSurah) onSelectSurah(stage.surahNumber);
+                                if (onNavigateTab) onNavigateTab('reader');
+                              }}
+                            >
+                              <BookOpenIcon size={14} />
+                              <span>تلاوة السورة في المصحف ↵</span>
+                            </button>
+                            <span className="station-stage-step-tag">المحطة {stage.stageNumber} من ٢٢</span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
-          </div>
+          ) : (
+            <>
+              <div className="chronicle-epochs-bar">
+                <span className="epochs-bar-title text-gold">الحقب التاريخية:</span>
+                <div className="epochs-pills-track">
+                  <button
+                    type="button"
+                    className={`epoch-pill-item ${activeEpochTab === 'all' ? 'active' : ''}`}
+                    onClick={() => setActiveEpochTab('all')}
+                  >
+                    جميع السور (١١٤)
+                  </button>
+                  {HISTORICAL_EPOCHS.map((ep) => (
+                    <button
+                      key={ep.id}
+                      type="button"
+                      className={`epoch-pill-item ${activeEpochTab === ep.id ? 'active' : ''} ${ep.era}`}
+                      onClick={() => {
+                        setActiveEpochTab(ep.id);
+                        jumpToOrderStation(ep.startOrder);
+                      }}
+                    >
+                      <span className="epoch-item-name">{ep.name}</span>
+                      <span className="epoch-item-span">({ep.span})</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
 
           {timelineLayoutMode === 'horizon' ? (
             <div
@@ -1610,6 +1895,8 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                 <div className="rail-thumb-dot" style={{ right: `${timelineProgress * 100}%` }} />
               </div>
             </div>
+          )}
+            </>
           )}
         </div>
       )}
@@ -1849,6 +2136,59 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                     <path d="M 0 20 L 20 0 L 40 20 L 20 40 Z" fill="none" stroke={isLight ? "rgba(180, 140, 60, 0.08)" : "rgba(210, 170, 96, 0.04)"} strokeWidth="0.8" />
                     <circle cx="20" cy="20" r="3" fill="none" stroke={isLight ? "rgba(180, 140, 60, 0.1)" : "rgba(210, 170, 96, 0.06)"} strokeWidth="0.8" />
                   </pattern>
+
+                  <linearGradient id="titleCartoucheGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    {isLight ? (
+                      <>
+                        <stop offset="0%" stopColor="#fffbeb" />
+                        <stop offset="50%" stopColor="#fef3c7" />
+                        <stop offset="100%" stopColor="#fde68a" />
+                      </>
+                    ) : (
+                      <>
+                        <stop offset="0%" stopColor="#0a2e2b" />
+                        <stop offset="50%" stopColor="#061c1a" />
+                        <stop offset="100%" stopColor="#0f443e" />
+                      </>
+                    )}
+                  </linearGradient>
+
+                  <linearGradient id="greenDomeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#34d399" />
+                    <stop offset="45%" stopColor="#059669" />
+                    <stop offset="100%" stopColor="#064e3b" />
+                  </linearGradient>
+
+                  <linearGradient id="goldDomeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#fef08a" />
+                    <stop offset="40%" stopColor="#fbbf24" />
+                    <stop offset="80%" stopColor="#d97706" />
+                    <stop offset="100%" stopColor="#b45309" />
+                  </linearGradient>
+
+                  <linearGradient id="blueTilesGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#0284c7" />
+                    <stop offset="50%" stopColor="#1d4ed8" />
+                    <stop offset="100%" stopColor="#1e3a8a" />
+                  </linearGradient>
+
+                  <linearGradient id="sinaiMtnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#b45309" />
+                    <stop offset="50%" stopColor="#78350f" />
+                    <stop offset="100%" stopColor="#451a03" />
+                  </linearGradient>
+
+                  <linearGradient id="judiMtnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#64748b" />
+                    <stop offset="50%" stopColor="#334155" />
+                    <stop offset="100%" stopColor="#0f172a" />
+                  </linearGradient>
+
+                  <linearGradient id="pyramidGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#fbbf24" />
+                    <stop offset="50%" stopColor="#d97706" />
+                    <stop offset="100%" stopColor="#92400e" />
+                  </linearGradient>
                 </defs>
 
                 <rect width="1000" height="650" fill={isLight ? "#ede6da" : "#030c10"} />
@@ -2095,11 +2435,20 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                     {QURAN_LOCATIONS.map((loc) => {
                       const isSelected = selectedLocation && selectedLocation.id === loc.id;
                       const coords = loc.svgCoords || { x: loc.coordinates.x * 10, y: loc.coordinates.y * 6.5 };
-                      const locCfg = LOCATION_CONFIGS[loc.id] || { labelDx: 14, labelDy: -9, labelAnchor: 'start' };
-                      const boxX = locCfg.labelAnchor === 'start' ? (locCfg.labelDx || 14) : (locCfg.labelAnchor === 'end' ? (locCfg.labelDx || -96) : -41);
-                      const boxY = locCfg.labelDy !== undefined ? locCfg.labelDy : -9.5;
-                      const textX = boxX + 41;
-                      const textY = boxY + 13;
+                      const locCfg = LOCATION_CONFIGS[loc.id] || { labelDx: 0, labelDy: 30, labelAnchor: 'middle' };
+                      const boxWidth = 92;
+                      const boxHeight = 21;
+                      let boxX = -boxWidth / 2;
+                      if (locCfg.labelAnchor === 'start') {
+                        boxX = locCfg.labelDx || 30;
+                      } else if (locCfg.labelAnchor === 'end') {
+                        boxX = (locCfg.labelDx || -30) - boxWidth;
+                      } else {
+                        boxX = -boxWidth / 2 + (locCfg.labelDx || 0);
+                      }
+                      const boxY = locCfg.labelDy !== undefined ? locCfg.labelDy : 24;
+                      const textX = boxX + boxWidth / 2;
+                      const textY = boxY + 14.5;
 
                       return (
                         <g
@@ -2113,53 +2462,42 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                           style={{ cursor: 'pointer' }}
                         >
                           {isSelected && (
-                            <>
-                              <circle cx="0" cy="0" r="26" fill="none" stroke="#fbbf24" strokeWidth="1.5" opacity="0.6">
-                                <animate attributeName="r" values="16;30;16" dur="2.4s" repeatCount="indefinite" />
-                                <animate attributeName="opacity" values="0.8;0;0.8" dur="2.4s" repeatCount="indefinite" />
+                            <g className="landmark-selection-pulse">
+                              <circle cx="0" cy="0" r="34" fill="none" stroke="#fbbf24" strokeWidth="1.8" opacity="0.8">
+                                <animate attributeName="r" values="24;42;24" dur="2.4s" repeatCount="indefinite" />
+                                <animate attributeName="opacity" values="0.85;0.1;0.85" dur="2.4s" repeatCount="indefinite" />
                               </circle>
-                              <circle cx="0" cy="0" r="18" fill="rgba(251, 191, 36, 0.2)" stroke="#fbbf24" strokeWidth="1.5" />
-                            </>
+                              <circle cx="0" cy="0" r="24" fill="rgba(251, 191, 36, 0.22)" stroke="#fbbf24" strokeWidth="1.5" />
+                            </g>
                           )}
 
                           {loc.id === 'makkah' && (
                             <g className="makkah-sanctuary-halo">
-                              <circle cx="0" cy="0" r="32" fill="none" stroke="#d4af37" strokeWidth="1" strokeDasharray="3, 4" opacity="0.65">
-                                <animate attributeName="r" values="24;36;24" dur="3.5s" repeatCount="indefinite" />
-                                <animate attributeName="opacity" values="0.75;0.2;0.75" dur="3.5s" repeatCount="indefinite" />
+                              <circle cx="0" cy="8" r="42" fill="none" stroke="#d4af37" strokeWidth="1.2" strokeDasharray="3, 4" opacity="0.75">
+                                <animate attributeName="r" values="36;46;36" dur="3.5s" repeatCount="indefinite" />
+                                <animate attributeName="opacity" values="0.8;0.25;0.8" dur="3.5s" repeatCount="indefinite" />
                               </circle>
-                              <circle cx="0" cy="0" r="18" fill="rgba(212, 175, 55, 0.18)" stroke="#d4af37" strokeWidth="1.2" />
                             </g>
                           )}
 
-                          <polygon
-                            points="0,-12 3,-4 11,-4 5,2 7,10 0,5 -7,10 -5,2 -11,-4 -3,-4"
-                            fill={isSelected ? '#d4af37' : (isLight ? '#ffffff' : 'rgba(11, 43, 38, 0.95)')}
-                            stroke={isLight ? '#d4af37' : '#fbbf24'}
-                            strokeWidth="1.5"
-                          />
-
-                          <circle cx="0" cy="0" r="9" fill={isSelected ? (isLight ? '#fef3c7' : '#0b2b26') : (isLight ? '#ffffff' : '#041318')} stroke={isLight ? '#d4af37' : '#fbbf24'} strokeWidth="1.2" />
-                          <text x="0" y="3.5" fill={isLight ? '#0f172a' : '#ffffff'} fontSize="9" textAnchor="middle">
-                            {loc.iconSymbol}
-                          </text>
+                          {renderSacredMiniature(loc.id, isLight, isSelected)}
 
                           <g className="location-pin-label-group">
                             <rect
                               x={boxX}
                               y={boxY}
-                              width="82"
-                              height="19"
-                              rx="9.5"
-                              fill={isSelected ? (isLight ? '#ffffff' : 'rgba(7, 24, 30, 0.98)') : (isLight ? '#ffffff' : 'rgba(3, 11, 14, 0.88)')}
-                              stroke={isSelected ? '#d4af37' : (isLight ? 'rgba(180, 140, 60, 0.5)' : 'rgba(210, 170, 96, 0.35)')}
-                              strokeWidth="1"
+                              width={boxWidth}
+                              height={boxHeight}
+                              rx="10.5"
+                              fill={isSelected ? (isLight ? '#ffffff' : 'rgba(7, 24, 30, 0.98)') : (isLight ? 'rgba(255, 255, 255, 0.96)' : 'rgba(3, 11, 14, 0.92)')}
+                              stroke={isSelected ? '#d4af37' : (isLight ? 'rgba(180, 140, 60, 0.6)' : 'rgba(210, 170, 96, 0.45)')}
+                              strokeWidth={isSelected ? '1.6' : '1'}
                             />
                             <text
                               x={textX}
                               y={textY}
-                              fill={isSelected ? '#b45309' : (isLight ? '#0f172a' : '#e2e8f0')}
-                              fontSize="10"
+                              fill={isSelected ? '#b45309' : (isLight ? '#0f172a' : '#f8fafc')}
+                              fontSize="10.5"
                               fontWeight="700"
                               textAnchor="middle"
                               fontFamily="'Amiri', serif"
@@ -2171,6 +2509,17 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                       );
                     })}
                   </g>
+                </g>
+
+                <g className="atlas-title-cartouche" transform="translate(500, 78)">
+                  <polygon points="-240,0 -220,-16 220,-16 240,0 220,16 -220,16" fill="url(#titleCartoucheGrad)" stroke="#d4af37" strokeWidth="1.5" />
+                  <polygon points="-234,0 -216,-12 216,-12 234,0 216,12 -216,12" fill="none" stroke="rgba(212, 175, 55, 0.45)" strokeWidth="0.8" strokeDasharray="3, 3" />
+                  <text x="0" y="-1" fill={isLight ? "#78350f" : "#fbbf24"} fontSize="13.5" fontWeight="800" textAnchor="middle" fontFamily="'Amiri', serif">
+                    خَرِيطَةُ شِبْهِ الجَزِيرَةِ العَرَبِيَّةِ وَالمَعَالِمِ القُرْآنِيَّةِ المُقَدَّسَةِ
+                  </text>
+                  <text x="0" y="11" fill={isLight ? "#92400e" : "#94a3b8"} fontSize="8.5" fontWeight="600" textAnchor="middle" fontFamily="'Amiri', serif" letterSpacing="0.5">
+                    ✦ HOLY SANCTUARIES & QURANIC LANDMARKS ATLAS ✦
+                  </text>
                 </g>
 
                 <path

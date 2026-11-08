@@ -919,14 +919,14 @@
   align-items: flex-start;
   min-width: max-content;
   height: 100%;
-  padding: 82px 44px 36px;
+  padding: 112px 44px 36px;
   gap: 28px;
   position: relative;
 }
 
 .horizon-spine-rule {
   position: absolute;
-  top: 100px;
+  top: 130px;
   left: 0;
   right: 0;
   height: 3px;
@@ -3335,4 +3335,523 @@
 .is-light-theme .spotlight-collapse-btn:hover,
 [data-theme='light'] .spotlight-collapse-btn:hover {
   background: #fefce8;
+}
+
+
+/* =========================================================================
+   Prophetic Journey Winding Roadmap (سِفْر المسار النبوي الشريف)
+   ========================================================================= */
+
+.prophetic-roadmap-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(210, 170, 96, 0.4) transparent;
+  padding: 16px 24px 60px;
+}
+
+.prophetic-roadmap-stage::-webkit-scrollbar {
+  width: 8px;
+}
+
+.prophetic-roadmap-stage::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.prophetic-roadmap-stage::-webkit-scrollbar-thumb {
+  background: rgba(210, 170, 96, 0.4);
+  border-radius: 4px;
+}
+
+.roadmap-era-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(4, 19, 24, 0.75);
+  border: 1px solid rgba(210, 170, 96, 0.25);
+  border-radius: var(--radius-full);
+  padding: 8px 18px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(10px);
+  width: fit-content;
+  align-self: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.roadmap-filter-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.roadmap-filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.roadmap-era-pill {
+  border: 1px solid rgba(210, 170, 96, 0.3);
+  background: rgba(255, 255, 255, 0.04);
+  color: #94a3b8;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.roadmap-era-pill:hover {
+  background: rgba(212, 175, 55, 0.15);
+  color: #f8fafc;
+  border-color: #d4af37;
+}
+
+.roadmap-era-pill.active {
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.35) 0%, rgba(6, 44, 38, 0.95) 100%);
+  border-color: #fbbf24;
+  color: #fbbf24;
+  box-shadow: 0 0 14px rgba(251, 191, 36, 0.35);
+}
+
+.roadmap-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 20px 0 60px;
+}
+
+.roadmap-serpentine-track {
+  position: absolute;
+  top: 30px;
+  bottom: 40px;
+  left: 50%;
+  width: 4px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, 
+    #fbbf24 0%, 
+    #d97706 20%, 
+    #10b981 50%, 
+    #059669 80%, 
+    #fbbf24 100%
+  );
+  border-radius: 2px;
+  box-shadow: 0 0 16px rgba(251, 191, 36, 0.45);
+  opacity: 0.85;
+}
+
+.roadmap-stations-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  position: relative;
+  z-index: 2;
+}
+
+.roadmap-station-row {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.roadmap-station-row.row-right {
+  justify-content: flex-start;
+  padding-right: calc(50% + 36px);
+  padding-left: 0;
+}
+
+.roadmap-station-row.row-left {
+  justify-content: flex-end;
+  padding-left: calc(50% + 36px);
+  padding-right: 0;
+}
+
+.roadmap-spine-node {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.roadmap-milestone-orb {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #0d383b 0%, #031317 100%);
+  border: 2px solid #d4af37;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 0 18px rgba(212, 175, 55, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.roadmap-station-row:hover .roadmap-milestone-orb,
+.roadmap-station-row.is-selected .roadmap-milestone-orb {
+  transform: scale(1.15);
+  border-color: #fbbf24;
+  box-shadow: 0 0 24px rgba(251, 191, 36, 0.7);
+}
+
+.orb-numeral {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fbbf24;
+}
+
+.orb-ring {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 1px dashed rgba(210, 170, 96, 0.4);
+}
+
+.roadmap-spine-spur {
+  position: absolute;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, #d4af37, rgba(212, 175, 55, 0.2));
+}
+
+.roadmap-station-row.row-right .roadmap-spine-spur {
+  right: 100%;
+  width: 36px;
+  transform: translateY(-50%);
+}
+
+.roadmap-station-row.row-left .roadmap-spine-spur {
+  left: 100%;
+  width: 36px;
+  transform: translateY(-50%);
+}
+
+.roadmap-station-card {
+  width: 100%;
+  background: rgba(5, 23, 29, 0.88);
+  border: 1.5px solid rgba(210, 170, 96, 0.35);
+  border-radius: var(--radius-xl);
+  padding: 20px 22px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+}
+
+.roadmap-station-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(210, 170, 96, 0.75);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 175, 55, 0.25);
+}
+
+.roadmap-station-row.is-selected .roadmap-station-card {
+  border-color: #fbbf24;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.7), 0 0 24px rgba(251, 191, 36, 0.45);
+}
+
+.station-card-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.station-badge-cluster {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.station-era-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.station-badge-text {
+  font-size: 11.5px;
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+.station-year-badge {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 9px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.station-card-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.station-icon-medallion {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.2) 0%, rgba(6, 44, 38, 0.8) 100%);
+  border: 1.5px solid rgba(210, 170, 96, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.medallion-icon {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.station-meta-content {
+  flex: 1;
+}
+
+.station-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #f8fafc;
+  line-height: 1.35;
+  margin-bottom: 2px;
+}
+
+.station-english-title {
+  display: block;
+  font-size: 11px;
+  color: #94a3b8;
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+.station-desc {
+  font-size: 13px;
+  line-height: 1.65;
+  color: #cbd5e1;
+}
+
+.station-verse-ribbon {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.12) 0%, rgba(6, 44, 38, 0.5) 100%);
+  border-right: 3px solid #d4af37;
+  border-radius: 0 10px 10px 0;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+
+.verse-icon-lead {
+  font-size: 14px;
+  color: #fbbf24;
+  line-height: 1;
+}
+
+.station-verse-text {
+  font-size: 14.5px;
+  color: #fde047;
+  line-height: 1.65;
+  flex: 1;
+}
+
+.station-verse-source {
+  font-size: 11px;
+  color: #fbbf24;
+  white-space: nowrap;
+}
+
+.station-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 10px;
+}
+
+.station-reader-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fbbf24;
+  background: rgba(217, 119, 6, 0.15);
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  border-radius: var(--radius-full);
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.station-reader-btn:hover {
+  background: rgba(217, 119, 6, 0.35);
+  border-color: #fbbf24;
+  transform: translateX(-3px);
+}
+
+.station-stage-step-tag {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* =========================================================================
+   Atlas Miniatures & Cartouche
+   ========================================================================= */
+
+.atlas-title-cartouche {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.35));
+  pointer-events: none;
+}
+
+.sacred-vignette {
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.islamic-map-node:hover .sacred-vignette {
+  transform: scale(1.12);
+}
+
+/* =========================================================================
+   Light Theme Adaptations for Roadmap & Atlas
+   ========================================================================= */
+
+.is-light-theme .roadmap-era-filter-bar,
+[data-theme='light'] .roadmap-era-filter-bar {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(180, 140, 60, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.is-light-theme .roadmap-era-pill,
+[data-theme='light'] .roadmap-era-pill {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.is-light-theme .roadmap-era-pill:hover,
+[data-theme='light'] .roadmap-era-pill:hover {
+  background: #fef3c7;
+  color: #78350f;
+  border-color: #d4af37;
+}
+
+.is-light-theme .roadmap-era-pill.active,
+[data-theme='light'] .roadmap-era-pill.active {
+  background: linear-gradient(135deg, #fef3c7 0%, #ede3cc 100%);
+  border-color: #b45309;
+  color: #78350f;
+}
+
+.is-light-theme .roadmap-milestone-orb,
+[data-theme='light'] .roadmap-milestone-orb {
+  background: radial-gradient(circle at 35% 35%, #fffbeb 0%, #fef3c7 100%);
+  border-color: #d4af37;
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.35), 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.is-light-theme .orb-numeral,
+[data-theme='light'] .orb-numeral {
+  color: #78350f;
+}
+
+.is-light-theme .roadmap-station-card,
+[data-theme='light'] .roadmap-station-card {
+  background: #ffffff;
+  border-color: rgba(180, 140, 60, 0.35);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+}
+
+.is-light-theme .roadmap-station-card:hover,
+[data-theme='light'] .roadmap-station-card:hover {
+  border-color: #d4af37;
+  box-shadow: 0 12px 32px rgba(180, 140, 60, 0.2);
+}
+
+.is-light-theme .station-title,
+[data-theme='light'] .station-title {
+  color: #0f172a;
+}
+
+.is-light-theme .station-desc,
+[data-theme='light'] .station-desc {
+  color: #334155;
+}
+
+.is-light-theme .station-icon-medallion,
+[data-theme='light'] .station-icon-medallion {
+  background: #fffbeb;
+  border-color: #d4af37;
+}
+
+.is-light-theme .station-verse-ribbon,
+[data-theme='light'] .station-verse-ribbon {
+  background: #fffbeb;
+  border-right-color: #b45309;
+}
+
+.is-light-theme .station-verse-text,
+[data-theme='light'] .station-verse-text {
+  color: #78350f;
+}
+
+.is-light-theme .station-reader-btn,
+[data-theme='light'] .station-reader-btn {
+  background: #fef3c7;
+  color: #78350f;
+  border-color: #d4af37;
+}
+
+.is-light-theme .station-reader-btn:hover,
+[data-theme='light'] .station-reader-btn:hover {
+  background: #fde68a;
+}
+
+@media (max-width: 768px) {
+  .roadmap-serpentine-track {
+    left: 28px;
+  }
+  .roadmap-spine-node {
+    left: 28px;
+  }
+  .roadmap-station-row.row-right,
+  .roadmap-station-row.row-left {
+    padding-right: 0;
+    padding-left: 64px;
+    justify-content: flex-start;
+  }
+  .roadmap-station-row.row-right .roadmap-spine-spur,
+  .roadmap-station-row.row-left .roadmap-spine-spur {
+    left: 100%;
+    right: auto;
+    width: 20px;
+  }
 }

@@ -372,6 +372,12 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
   const [isMapDragging, setIsMapDragging] = useState(false);
   const mapDragRef = useRef({ startX: 0, startY: 0, initialPanX: 0, initialPanY: 0, hasMoved: false });
   const [isSpotlightCollapsed, setIsSpotlightCollapsed] = useState(false);
+  const [spotlightPos, setSpotlightPos] = useState({ x: 24, y: 70 });
+  const [spotlightSize, setSpotlightSize] = useState({ width: 440, height: 430 });
+  const isDraggingSpotlightRef = useRef(false);
+  const isResizingSpotlightRef = useRef(false);
+  const spotlightDragStartRef = useRef({ mouseX: 0, mouseY: 0, startX: 0, startY: 0 });
+  const spotlightResizeStartRef = useRef({ mouseX: 0, mouseY: 0, startW: 0, startH: 0 });
 
   const handleMapMouseDown = (e) => {
     if (e.button !== 0) return;
@@ -444,6 +450,76 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
       x: (500 - coords.x) * (mapZoom > 1.2 ? 0.7 : 0.5),
       y: (325 - coords.y) * (mapZoom > 1.2 ? 0.7 : 0.5)
     });
+  };
+
+  const handleSpotlightDragStart = (e) => {
+    if (e.button !== 0) return;
+    if (e.target.closest('button') || e.target.closest('input')) return;
+    e.stopPropagation();
+    isDraggingSpotlightRef.current = true;
+    spotlightDragStartRef.current = {
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+      startX: spotlightPos.x,
+      startY: spotlightPos.y
+    };
+
+    const handleMouseMove = (moveEvent) => {
+      if (!isDraggingSpotlightRef.current) return;
+      const dx = moveEvent.clientX - spotlightDragStartRef.current.mouseX;
+      const dy = moveEvent.clientY - spotlightDragStartRef.current.mouseY;
+      setSpotlightPos({
+        x: Math.max(10, Math.min(window.innerWidth - 200, spotlightDragStartRef.current.startX + dx)),
+        y: Math.max(10, Math.min(window.innerHeight - 150, spotlightDragStartRef.current.startY + dy))
+      });
+    };
+
+    const handleMouseUp = () => {
+      isDraggingSpotlightRef.current = false;
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+  };
+
+  const handleSpotlightResizeStart = (e) => {
+    if (e.button !== 0) return;
+    e.stopPropagation();
+    e.preventDefault();
+    isResizingSpotlightRef.current = true;
+    spotlightResizeStartRef.current = {
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+      startW: spotlightSize.width,
+      startH: spotlightSize.height
+    };
+
+    const handleMouseMove = (moveEvent) => {
+      if (!isResizingSpotlightRef.current) return;
+      const dx = moveEvent.clientX - spotlightResizeStartRef.current.mouseX;
+      const dy = moveEvent.clientY - spotlightResizeStartRef.current.mouseY;
+      setSpotlightSize({
+        width: Math.max(300, Math.min(window.innerWidth - 60, spotlightResizeStartRef.current.startW + dx)),
+        height: Math.max(240, Math.min(window.innerHeight - 100, spotlightResizeStartRef.current.startH + dy))
+      });
+    };
+
+    const handleMouseUp = () => {
+      isResizingSpotlightRef.current = false;
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+  };
+
+  const handleResetSpotlightPos = (e) => {
+    if (e) e.stopPropagation();
+    setSpotlightPos({ x: 24, y: 70 });
+    setSpotlightSize({ width: 440, height: 430 });
   };
 
   const canvasRef = useRef(null);
@@ -2589,13 +2665,43 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                     </button>
                   </div>
                 ) : (
-                  <div className="atlas-selected-spotlight animate-slide-up">
-                    <div className="spotlight-mihrab-crest">
+                  <div
+                    className="atlas-selected-spotlight animate-slide-up"
+                    style={{
+                      left: `${spotlightPos.x}px`,
+                      top: `${spotlightPos.y}px`,
+                      width: `${spotlightSize.width}px`,
+                      height: `${spotlightSize.height}px`,
+                      bottom: 'auto'
+                    }}
+                    onWheel={(e) => {
+                      e.stopPropagation();
+                    }}
+                    onMouseDown={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <div
+                      className="spotlight-mihrab-crest is-draggable"
+                      onMouseDown={handleSpotlightDragStart}
+                      title="اسحب اللوحة لتحريكها بحرية على الخريطة"
+                    >
                       <div className="crest-left">
+                        <span className="spotlight-drag-handle-pill" title="انقر مع السحب للتحريك">
+                          ✥ اسحب للتحريك
+                        </span>
                         <span className="crest-seal">۩</span>
                         <span className="crest-sub">الموقع القرآني الموثق</span>
                       </div>
                       <div className="crest-actions-group">
+                        <button
+                          type="button"
+                          className="spotlight-reset-pos-btn"
+                          onClick={handleResetSpotlightPos}
+                          title="إعادة البطاقة لموضعها وحجمها الافتراضي"
+                        >
+                          ↺
+                        </button>
                         <button
                           type="button"
                           className="spotlight-collapse-btn font-calligraphy"
@@ -2615,7 +2721,12 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                       </div>
                     </div>
 
-                    <div className="spotlight-scroll-body">
+                    <div
+                      className="spotlight-scroll-body"
+                      onWheel={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
                       <div className="spotlight-header">
                         <div className="spotlight-title-group">
                           <div className="spotlight-badge-line">
@@ -2648,6 +2759,14 @@ export default function ConstellationSpaceView({ onSelectSurah, onNavigateTab, t
                         <span className="story-lead-tag">✦ البيان التوثيقي والتاريخي:</span>
                         <p className="spotlight-story">{selectedLocation.story}</p>
                       </div>
+                    </div>
+
+                    <div
+                      className="spotlight-resize-grip"
+                      onMouseDown={handleSpotlightResizeStart}
+                      title="اسحب من هنا لتعديل حجم البطاقة طولاً وعرضاً"
+                    >
+                      ◢
                     </div>
                   </div>
                 )
